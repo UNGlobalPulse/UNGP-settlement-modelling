@@ -91,7 +91,7 @@ for area in world.areas:
 # =================================== policies ===============================#
 
 policies = Policies.from_file(
-    camp_configs_path / "defaults/policy/policy.yaml",
+    camp_configs_path / "defaults/policy/home_care_policy.yaml",
     base_policy_modules=("june.policy", "camps.policy"),
 )
 
@@ -107,7 +107,7 @@ interaction = ContactAveraging.from_file(config_filename=camp_configs_path / 'de
 =======
 interaction = ContactAveraging.from_file(
     config_filename=camp_configs_path
-    / "defaults/interaction/ContactInteraction_low.yaml",
+    / "defaults/interaction/ContactInteraction_med_low_low.yaml",
     selector=selector,
 )
 >>>>>>> 06d21698 (isolation units implemented)
