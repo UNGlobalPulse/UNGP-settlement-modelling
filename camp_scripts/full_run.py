@@ -48,8 +48,8 @@ from june.groups.leisure import HouseholdVisitsDistributor
 
 # create empty world's geography
 #world = generate_empty_world({"super_area": ["CXB-219-C"]})
-world = generate_empty_world({"region": ["CXB-219", "CXB-217"]})
-#world = generate_empty_world()
+#world = generate_empty_world({"region": ["CXB-219", "CXB-217"]})
+world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -108,7 +108,7 @@ interaction = ContactAveraging.from_file(config_filename=camp_configs_path / 'de
 =======
 interaction = ContactAveraging.from_file(
     config_filename=camp_configs_path
-    / "defaults/interaction/ContactInteraction_med_low_low.yaml",
+    / "defaults/interaction/ContactInteraction_med_low_low_low.yaml",
     selector=selector,
 )
 >>>>>>> 06d21698 (isolation units implemented)
