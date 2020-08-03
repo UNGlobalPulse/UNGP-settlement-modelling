@@ -108,7 +108,7 @@ interaction = ContactAveraging.from_file(config_filename=camp_configs_path / 'de
 =======
 interaction = ContactAveraging.from_file(
     config_filename=camp_configs_path
-    / "defaults/interaction/ContactInteraction_med_low_low_low.yaml",
+    / "defaults/interaction/ContactInteraction_med_low_low.yaml",
     selector=selector,
 )
 >>>>>>> 06d21698 (isolation units implemented)
