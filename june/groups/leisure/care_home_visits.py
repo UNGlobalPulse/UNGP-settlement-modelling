@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import yaml
-from typing import List, Optional
+from random import randint, shuffle
 from june.demography.geography import Areas, SuperAreas
 from june.groups import CareHomes, Households, Household
 
@@ -15,7 +15,6 @@ default_config_filename = configs_path / "defaults/groups/leisure/care_home_visi
 class CareHomeVisitsDistributor(SocialVenueDistributor):
     def __init__(
         self,
-        super_areas: SuperAreas,
         male_age_probabilities: dict = None,
         female_age_probabilities: dict = None,
         neighbours_to_consider=None,
@@ -32,15 +31,14 @@ class CareHomeVisitsDistributor(SocialVenueDistributor):
             weekend_boost=weekend_boost,
             drags_household_probability=drags_household_probability,
         )
-        self.link_households_to_care_homes(super_areas)
 
     @classmethod
     def from_config(
-        cls, super_areas: SuperAreas, config_filename: str = default_config_filename
+        cls, config_filename: str = default_config_filename
     ):
         with open(config_filename) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
-        return cls(super_areas, **config)
+        return cls(**config)
 
     def link_households_to_care_homes(self, super_areas):
         """
@@ -61,7 +59,7 @@ class CareHomeVisitsDistributor(SocialVenueDistributor):
                     for household in area.households
                     if household.type in ["families", "ya_parents", "nokids"]
                 ]
-                np.random.shuffle(households_super_area)
+                shuffle(households_super_area)
             for area in super_area.areas:
                 if area.care_home is not None:
                     people_in_care_home = [
@@ -93,7 +91,7 @@ class CareHomeVisitsDistributor(SocialVenueDistributor):
             return None
         alive_relatives = [relative for relative in relatives if relative.dead is False]
         return alive_relatives[
-            np.random.randint(0, len(alive_relatives))
+            randint(0, len(alive_relatives) - 1)
         ].residence.group
 
     def get_poisson_parameter(self, sex, age, is_weekend: bool = False):

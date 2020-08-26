@@ -1,5 +1,4 @@
 import datetime
-from typing import Union, Optional, List, Dict
 
 from .policy import Policy, Policies, PolicyCollection
 from june.groups import Hospitals, Hospital, MedicalFacilities, MedicalFacility
@@ -42,6 +41,7 @@ class Hospitalisation(MedicalCarePolicy):
     enough. When the person recovers, releases the person from the hospital.
     """
 
+<<<<<<< HEAD
     def apply(
         self,
         person: Person,
@@ -84,3 +84,26 @@ class Hospitalisation(MedicalCarePolicy):
                     )
             return True
         return False
+=======
+    def apply(self, person: Person, hospitals: Hospitals):
+        if person.recovered:
+            if person.medical_facility is not None:
+                person.medical_facility.group.release_as_patient(person)
+            return
+        symptoms_tag = person.infection.tag
+        if symptoms_tag in hospitalised_tags:
+            if person.medical_facility is None:
+                hospitals.allocate_patient(person)
+            elif symptoms_tag == SymptomTag.hospitalised:
+                person.subgroups.medical_facility = person.medical_facility.group[
+                    person.medical_facility.group.SubgroupType.patients
+                ]
+            elif symptoms_tag == SymptomTag.intensive_care:
+                person.subgroups.medical_facility = person.medical_facility.group[
+                    person.medical_facility.group.SubgroupType.icu_patients
+                ]
+            else:
+                raise ValueError(
+                    f"Person with symptoms tag {person.infection.tag} cannot go to hospital."
+                )
+>>>>>>> original_june/master

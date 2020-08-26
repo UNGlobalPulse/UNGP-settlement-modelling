@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
+from random import randint
 from typing import List
-from enum import IntEnum
 
 from june.groups import Group, Subgroup, Supergroup
 from june.demography.geography import SuperAreas, Areas
@@ -19,11 +19,13 @@ class University(Group):
         n_students_max=None,
         n_years=5,
         ukprn=None,
+        super_area=None,
     ):
         self.coordinates = coordinates
         self.n_students_max = n_students_max
         self.n_years = n_years
         self.ukprn = ukprn
+        self.super_area = super_area
         super().__init__()
         self.subgroups = [Subgroup(self, i) for i in range(self.n_years + 1)]
 
@@ -42,7 +44,7 @@ class University(Group):
     def add(self, person, subgroup="student"):
         if subgroup == "student":
             if person.age not in age_to_years:
-                year = np.random.randint(0, len(self.subgroups))
+                year = randint(0, len(self.subgroups) - 1)
             else:
                 year = age_to_years[person.age]
             self.subgroups[year].append(person)
@@ -93,14 +95,15 @@ class Universities(Supergroup):
         coordinates = coordinates[distances_close]
         n_students = n_students[distances_close]
         ukprn_values = ukprn_values[distances_close]
-        universities = list()
-        for coord, n_stud, ukprn in zip(
-            coordinates, n_students, ukprn_values
+        universities = []
+        for coord, n_stud, ukprn, super_area in zip(
+            coordinates, n_students, ukprn_values, super_areas
         ):
             university = University(
                 coordinates=coord,
                 n_students_max=n_stud,
-                ukprn =ukprn
+                ukprn =ukprn,
+                super_area = super_area
             )
             universities.append(university)
         return cls(universities)

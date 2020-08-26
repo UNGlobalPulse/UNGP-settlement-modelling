@@ -26,12 +26,14 @@ class InteractiveGroup:
         self.has_infector = False
         self.size = group.size
         for i, subgroup in enumerate(group.subgroups):
+            if not subgroup.people:
+                continue
             subgroup_size = len(subgroup.people)
             subgroup_infected = [
                 person
                 for person in subgroup
-                if person.health_information is not None
-                and person.health_information.infection.transmission.probability > 0
+                if person.infection is not None
+                and person.infection.transmission.probability > 0
             ]
             sus_ids = [person.id for person in subgroup.people if person.susceptible]
             if sus_ids:
@@ -42,7 +44,7 @@ class InteractiveGroup:
             inf_ids = [person.id for person in subgroup_infected]
             if inf_ids:
                 tprob = sum(
-                    person.health_information.infection.transmission.probability
+                    person.infection.transmission.probability
                     for person in subgroup_infected
                 )
                 self.has_infector = True

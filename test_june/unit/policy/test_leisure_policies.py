@@ -18,7 +18,7 @@ from june.groups import (
 )
 from june.groups.leisure import leisure, Cinemas, Pubs, Cinema, Pub
 from june.infection import SymptomTag
-from june.infection.infection import InfectionSelector
+from june.infection.infection_selector import InfectionSelector
 from june.interaction import Interaction
 from june.policy import (
     Policy,
@@ -33,6 +33,7 @@ from june.world import World
 
 test_config = paths.configs_path / "tests/test_simulator_simple.yaml"
 
+
 class TestCloseLeisure:
     def test__close_leisure_venues(self, setup_policy_world):
         world, pupil, student, worker, sim = setup_policy_world
@@ -43,7 +44,9 @@ class TestCloseLeisure:
         leisure_instance = leisure.generate_leisure_for_config(
             world=world, config_filename=test_config
         )
-        leisure_instance.distribute_social_venues_to_households(world.households)
+        leisure_instance.distribute_social_venues_to_households(
+            world.households, super_areas=world.super_areas
+        )
         sim.activity_manager.leisure = leisure_instance
         sim.activity_manager.policies = policies
         sim.activity_manager.leisure.leisure_distributors["pubs"].weekend_boost = 5000
@@ -59,10 +62,9 @@ class TestCloseLeisure:
         assert worker in worker.leisure.people
         sim.clear_world()
         time_during_policy = datetime(2020, 3, 14)
-        leisure_policies = LeisurePolicies.get_active_policies(
-            policies=policies, date=time_during_policy
+        policies.leisure_policies.apply(
+            date=time_during_policy, leisure=leisure_instance
         )
-        leisure_policies.apply(date=time_during_policy, leisure=leisure_instance)
         assert list(leisure_instance.closed_venues) == ["pub"]
         sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
             10000, False
@@ -74,6 +76,7 @@ class TestCloseLeisure:
             worker in worker.leisure.people and worker.leisure.group.spec == "cinema"
         ) or worker in worker.residence.people
         sim.clear_world()
+
 
 class TestReduceLeisureProbabilities:
     def test__reduce_household_visits(self, setup_policy_world):
@@ -93,10 +96,7 @@ class TestReduceLeisureProbabilities:
         sim.activity_manager.policies = policies
         sim.activity_manager.leisure = leisure_instance
         sim.clear_world()
-        leisure_policies = LeisurePolicies.get_active_policies(
-            policies=policies, date=sim.timer.date
-        )
-        leisure_policies.apply(
+        policies.leisure_policies.apply(
             date=sim.timer.date, leisure=sim.activity_manager.leisure
         )
         sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
@@ -111,13 +111,17 @@ class TestReduceLeisureProbabilities:
         assert str(sim.timer.date.date()) == "2020-03-01"
         household = Household()
         household.area = super_area.areas[0]
-        leisure_instance.distribute_social_venues_to_households([household])
+        leisure_instance.distribute_social_venues_to_households(
+            [household], super_areas=world.super_areas
+        )
         person1 = Person.from_attributes(age=60, sex="m")
         person1.area = super_area.areas[0]
         household.add(person1)
         person2 = Person.from_attributes(age=80, sex="f")
         person2.area = super_area.areas[0]
-        sim.activity_manager.leisure.distribute_social_venues_to_households([household])
+        sim.activity_manager.leisure.distribute_social_venues_to_households(
+            [household], super_areas=world.super_areas
+        )
         household.add(person2)
         pubs1_visits_before = 0
         pubs2_visits_before = 0
@@ -139,10 +143,7 @@ class TestReduceLeisureProbabilities:
         # next day leisure policies are
         while str(sim.timer.date.date()) != "2020-03-02":
             next(sim.timer)
-        leisure_policies = LeisurePolicies.get_active_policies(
-            policies=policies, date=sim.timer.date
-        )
-        leisure_policies.apply(
+        policies.leisure_policies.apply(
             date=sim.timer.date, leisure=sim.activity_manager.leisure
         )
         sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
@@ -180,10 +181,7 @@ class TestReduceLeisureProbabilities:
         # end of policy
         while str(sim.timer.date.date()) != "2020-03-05":
             next(sim.timer)
-        leisure_policies = LeisurePolicies.get_active_policies(
-            policies=policies, date=sim.timer.date
-        )
-        leisure_policies.apply(
+        policies.leisure_policies.apply(
             date=sim.timer.date, leisure=sim.activity_manager.leisure
         )
         sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(

@@ -14,8 +14,7 @@ from june.groups import *
 from june.groups.leisure import *
 from june.demography import Person, Population
 from june.infection import Infection
-from june.infection import InfectionSelector
-from june.infection import infection as infect
+from june.infection.infection_selector import InfectionSelector
 from june.infection import trajectory_maker as tmaker
 from june.infection import transmission as trans
 from june.simulator import Simulator
@@ -33,6 +32,7 @@ def set_random_seed(seed=999):
 
     @nb.njit(cache=True)
     def set_seed_numba(seed):
+        random.seed(seed)
         return np.random.seed(seed)
 
     np.random.seed(seed)
@@ -86,7 +86,7 @@ def create_infection_constant(transmission, symptoms_constant):
 @pytest.fixture(name="interaction", scope="session")
 def create_interaction():
     interaction = Interaction.from_file()
-    interaction.selector = infect.InfectionSelector.from_file(
+    interaction.selector = InfectionSelector.from_file(
         transmission_config_path=constant_config
     )
     return interaction
@@ -124,11 +124,7 @@ def create_box_world():
 
 @pytest.fixture(name="selector", scope="session")
 def make_selector():
-    return InfectionSelector.from_file(
-        transmission_config_path=constant_config
-    )
-
-
+    return InfectionSelector.from_file(transmission_config_path=constant_config)
 
 
 @pytest.fixture(name="simulator_box", scope="session")
@@ -259,7 +255,7 @@ def setup_world(dummy_world, policy_simulator):
     for household in world.households:
         household.quarantine_starting_date = None
     for person in [pupil, student, worker]:
-        person.health_information = None
+        person.infection = None
         person.susceptibility = 1.0
         person.dead = False
         person.subgroups.medical_facility = None

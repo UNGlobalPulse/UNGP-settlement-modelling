@@ -1,8 +1,6 @@
-import logging, os
-from pathlib import Path
+import logging
 from itertools import count, chain
 from typing import List, Dict, Tuple, Optional
-from collections import defaultdict
 import pandas as pd
 import numpy as np
 from sklearn.neighbors import BallTree
@@ -58,9 +56,9 @@ class Area:
         self.care_home = None
         self.coordinates = coordinates
         self.super_area = super_area
-        self.people = list()
-        self.schools = list()
-        self.households = list()
+        self.people = []
+        self.schools = []
+        self.households = []
 
     def add(self, person: Person):
         self.people.append(person)
@@ -93,7 +91,7 @@ class Areas:
 
     def construct_ball_tree(self):
         coordinates = np.array([np.deg2rad(area.coordinates) for area in self])
-        ball_tree = BallTree(coordinates)
+        ball_tree = BallTree(coordinates, metric = 'haversine')
         return ball_tree
 
     def get_closest_areas(self, coordinates, k=1, return_distance=False):
@@ -106,18 +104,21 @@ class Areas:
             distances, indcs = self.ball_tree.query(
                 np.deg2rad(coordinates), return_distance=return_distance, k=k
             )
-            if coordinates.shape == (1,2):
+            if coordinates.shape == (1, 2):
                 areas = [self[idx] for idx in indcs[0]]
                 return areas, distances[0] * earth_radius
             else:
-                areas = [self[idx] for idx in indcs[:,0]]
-                return areas, distances[:,0] * earth_radius
+                areas = [self[idx] for idx in indcs[:, 0]]
+                return areas, distances[:, 0] * earth_radius
         else:
             indcs = self.ball_tree.query(
                 np.deg2rad(coordinates), return_distance=return_distance, k=k
             )
             areas = [self[idx] for idx in indcs[:, 0]]
             return areas
+
+    def get_closest_area(self, coordinates):
+        return self.get_closest_areas(coordinates, k=1, return_distance=False)[0]
 
 
 class SuperArea:
@@ -145,10 +146,10 @@ class SuperArea:
         self.id = next(self._id)
         self.name = name
         self.coordinates = coordinates
-        self.areas = areas or list()
-        self.workers = list()
-        self.companies = list()
-        self.groceries = list()
+        self.areas = areas or []
+        self.workers = []
+        self.companies = []
+        self.groceries = []
 
     def add_worker(self, person: Person):
         self.workers.append(person)
@@ -156,7 +157,7 @@ class SuperArea:
 
     @property
     def people(self):
-        return list(chain(*[area.people for area in self.areas]))
+        return list(chain.from_iterable(area.people for area in self.areas))
 
 
 class SuperAreas:
@@ -192,7 +193,7 @@ class SuperAreas:
         coordinates = np.array(
             [np.deg2rad(super_area.coordinates) for super_area in self]
         )
-        ball_tree = BallTree(coordinates)
+        ball_tree = BallTree(coordinates, metric = 'haversine')
         return ball_tree
 
     def get_closest_super_areas(self, coordinates, k=1, return_distance=False):
@@ -208,9 +209,9 @@ class SuperAreas:
                 k=k,
                 sort_results=True,
             )
-            indcs = list(chain(*indcs))
+            indcs = chain.from_iterable(indcs)
             super_areas = [self[idx] for idx in indcs]
-            distances = np.array(list(chain(*distances)))
+            distances = distances.flatten()
             return super_areas, distances * earth_radius
         else:
             indcs = self.ball_tree.query(
@@ -219,9 +220,12 @@ class SuperAreas:
                 k=k,
                 sort_results=True,
             )
-            indcs = list(chain(*indcs))
+            indcs = chain.from_iterable(indcs)
             super_areas = [self[idx] for idx in indcs]
             return super_areas
+
+    def get_closest_super_area(self, coordinates):
+        return self.get_closest_super_areas(coordinates, k=1, return_distance=False)[0]
 
 
 class Geography:

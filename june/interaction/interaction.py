@@ -1,10 +1,8 @@
 import numpy as np
 import yaml
 import numba as nb
+from random import random
 from typing import List
-from functools import partial
-from multiprocessing import get_context
-from multiprocessing import Pool, Process
 from june import paths
 from june.interaction.interactive_group import InteractiveGroup
 from itertools import chain
@@ -30,7 +28,7 @@ def get_contact_matrix(alpha, contacts, physical):
     return contacts * (1.0 + (alpha - 1.0) * physical)
 
 
-#@nb.jit(nopython=True)
+# @nb.jit(nopython=True)
 def compute_effective_transmission(
     subgroup_transmission_probabilities: np.array,
     susceptibles_group_idx: np.array,
@@ -68,11 +66,11 @@ def compute_effective_transmission(
     return 1.0 - np.exp(-poisson_exponent)
 
 
-#@nb.jit(nopython=True)
+# @nb.jit(nopython=True)
 def infect_susceptibles(effective_transmission_probability, susceptible_ids):
     infected_ids = []
     for id in susceptible_ids:
-        if np.random.rand() < effective_transmission_probability:
+        if random() < effective_transmission_probability:
             infected_ids.append(id)
     return infected_ids
 
@@ -86,10 +84,17 @@ def _get_contacts_in_school(
     ][_translate_school_subgroup(infecters_idx, school_years)]
     if susceptibles_idx == 0 and infecters_idx > 0:
         n_contacts /= len(school_years)
+    if (
+        _translate_school_subgroup(susceptibles_idx, school_years)
+        == _translate_school_subgroup(infecters_idx, school_years)
+        and susceptibles_idx != infecters_idx
+    ):
+        # If same age but different class room, no contacts
+        n_contacts = 0
     return n_contacts
 
 
-#@nb.jit(nopython=True)
+# @nb.jit(nopython=True)
 def _subgroup_to_subgroup_transmission(
     contact_matrix,
     subgroup_transmission_probabilities,
@@ -216,19 +221,32 @@ class Interaction:
         beta = self.beta[group.spec]
         school_years = group.school_years
         infected_ids = []
-        for i, subgroup_id in enumerate(group.subgroups_susceptible):
-            susceptible_ids = group.susceptible_ids[i]
-            infected_ids += self.time_step_for_subgroup(
+        if len(group.subgroups_susceptible) == 1:
+            infected_ids = self.time_step_for_subgroup(
                 contact_matrix=contact_matrix,
                 subgroup_transmission_probabilities=group.transmission_probabilities,
-                susceptible_ids=susceptible_ids,
+                susceptible_ids=group.susceptible_ids[0],
                 infector_subgroups=group.subgroups_infector,
                 infector_subgroup_sizes=group.infector_subgroup_sizes,
                 beta=beta,
                 delta_time=delta_time,
-                subgroup_idx=subgroup_id,
+                subgroup_idx=group.subgroups_susceptible[0],
                 school_years=school_years,
             )
+        else:
+            for i, subgroup_id in enumerate(group.subgroups_susceptible):
+                susceptible_ids = group.susceptible_ids[i]
+                infected_ids += self.time_step_for_subgroup(
+                    contact_matrix=contact_matrix,
+                    subgroup_transmission_probabilities=group.transmission_probabilities,
+                    susceptible_ids=susceptible_ids,
+                    infector_subgroups=group.subgroups_infector,
+                    infector_subgroup_sizes=group.infector_subgroup_sizes,
+                    beta=beta,
+                    delta_time=delta_time,
+                    subgroup_idx=subgroup_id,
+                    school_years=school_years,
+                )
         return infected_ids
 
     def time_step_for_subgroup(

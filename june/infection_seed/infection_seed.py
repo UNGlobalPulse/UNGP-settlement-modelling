@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-import random
+from random import shuffle
 import datetime
 from collections import Counter
 from june import paths
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from june.demography.geography import SuperAreas
-from june.infection.infection import InfectionSelector
+from june.infection.infection_selector import InfectionSelector
 from june.infection.health_index import HealthIndexGenerator
 
 default_n_cases_region_filename = paths.data_path / "input/seed/n_cases_region.csv"
@@ -181,7 +181,7 @@ class InfectionSeed:
         if age_profile is None:
             return np.random.choice(len(susceptibles), n_cases, replace=False)
         else:
-            random.shuffle(susceptibles)
+            shuffle(susceptibles)
             n_per_age_group = n_cases*np.array(list(self.age_profile.values()))
             choices = []
             for idx, age_group in enumerate(self.age_profile.keys()):
