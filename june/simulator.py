@@ -345,15 +345,8 @@ class Simulator:
             symptoms.append(person.infection.tag.value)
             n_secondary_infections.append(person.infection.number_of_infected)
             # Take actions on new symptoms
-<<<<<<< HEAD
-            medical_care_policies.apply(
-                person=person,
-                medical_facilities=self.medical_facilities,
-                days_from_start=self.timer.now,
-=======
             self.activity_manager.policies.medical_care_policies.apply(
-                person=person, medical_facilities=self.world.hospitals
->>>>>>> original_june/master
+                person=person, medical_facilities=self.medical_facilities
             )
             if new_status == "recovered":
                 self.recover(person)

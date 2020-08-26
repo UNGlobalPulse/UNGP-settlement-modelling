@@ -19,7 +19,7 @@ class PlayGroup(SocialVenue):
         old = 2
 
     def __init__(
-        self, age_group_limits: List[int] = [3, 7, 12, 17], max_size: int = 10
+        self, age_group_limits: List[int] = [3, 7, 12, 17], max_size: int = 10, 
     ):
         super().__init__()
         self.age_group_limits = age_group_limits
@@ -39,7 +39,7 @@ class PlayGroup(SocialVenue):
 
 class PlayGroups(SocialVenues):
     def __init__(self, play_groups: List[PlayGroup]):
-        super().__init__(play_groups)
+        super().__init__(play_groups, make_tree=False)
 
     @classmethod
     def for_areas(
@@ -61,7 +61,7 @@ class PlayGroups(SocialVenues):
             )
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
                 play_group = PlayGroup(
-                    age_group_limits=age_group_limits, max_size=max_size
+                    age_group_limits=age_group_limits, max_size=max_size, 
                 )
                 area.play_groups.append(play_group)
                 play_groups.append(play_group)

@@ -72,7 +72,7 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
             raise ValueError("Your world does not have care homes.")
         leisure_distributors[
             "care_home_visits"
-        ] = CareHomeVisitsDistributor.from_config(world.super_areas)
+        ] = CareHomeVisitsDistributor.from_config()
 
     if "pump_latrines" in list_of_leisure_groups:
         if not hasattr(world, "pump_latrines"):
