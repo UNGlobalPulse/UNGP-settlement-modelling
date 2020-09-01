@@ -62,7 +62,7 @@ def test__time_of_testing(selector, isolation):
 def test__send_to_isolation(selector, isolation):
     person = Person.from_attributes(sex="m", age=27)
     infect_person(person, selector, symptom_tag="mild")
-    person.health_information.time_of_testing = isolation._generate_time_of_testing(
+    person.infection.time_of_testing = isolation._generate_time_of_testing(
         person
     )
     isolation_units = IsolationUnits([IsolationUnit()])
@@ -70,12 +70,12 @@ def test__send_to_isolation(selector, isolation):
         isolation.apply(
             person, medical_facilities=[isolation_units], days_from_start=day
         )
-        if 0 < day < person.health_information.time_of_testing:
+        if 0 < day < person.infection.time_of_testing:
             assert person not in isolation_units[0].people
         elif (
-            person.health_information.time_of_testing
+            person.infection.time_of_testing
             < day
-            < person.health_information.time_of_testing + isolation.n_quarantine_days
+            < person.infection.time_of_testing + isolation.n_quarantine_days
         ):
 
             assert person in isolation_units[0].people
@@ -97,12 +97,12 @@ def test__isolation_compliance(selector):
             isolation.apply(
                 person, medical_facilities=[isolation_units], days_from_start=day
             )
-            if 0 < day < person.health_information.time_of_testing:
+            if 0 < day < person.infection.time_of_testing:
                 assert person not in isolation_units[0].people
             elif (
-                person.health_information.time_of_testing
+                person.infection.time_of_testing
                 < day
-                < person.health_information.time_of_testing
+                < person.infection.time_of_testing
                 + isolation.n_quarantine_days
             ):
                 if person in isolation_units[0].people:
