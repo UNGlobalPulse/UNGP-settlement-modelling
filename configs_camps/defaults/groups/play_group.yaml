@@ -1,14 +1,14 @@
 male_age_probabilities:
   0-3: 0.
-  3-7: 0.9
-  7-12: 0.7
-  12-17: 0.4
+  3-7: 1.7
+  7-12: 1.5
+  12-17: 1.2
   17-100: 0.
 female_age_probabilities:
   0-3: 0.
-  3-7: 0.9
-  7-12: 0.7
-  12-16: 0.4
+  3-7: 1.7
+  7-12: 1.5
+  12-16: 1.2
   17-100: 0.
-weekend_boost: 1.
+weekend_boost: 1.5
 drags_household_probability: 0.0

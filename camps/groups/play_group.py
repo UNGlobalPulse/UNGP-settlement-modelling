@@ -45,7 +45,7 @@ class PlayGroups(SocialVenues):
     def for_areas(
         cls,
         areas: List[CampArea],
-        venues_per_capita: float = 1 / 60,
+        venues_per_capita: float = 1 / 30,
         age_group_limits: List[int] = [3, 7, 12, 16],
         max_size: int = 10,
     ):
