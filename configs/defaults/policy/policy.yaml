@@ -32,11 +32,7 @@ shielding:
         min_age: 70
         compliance: 0.7
         start_time: 2020-03-24
-<<<<<<< HEAD
-        end_time: 2020-06-01
-=======
         end_time: 2020-08-01
->>>>>>> original_june/master
 
 
 close_companies:
@@ -103,8 +99,6 @@ close_companies:
         avoid_work_probability: 0.20
         furlough_probability: 0.34
         key_probability: 0.22
-<<<<<<< HEAD
-=======
     10:
         start_time: 2020-08-07
         end_time: 2020-08-12
@@ -120,7 +114,6 @@ close_companies:
         avoid_work_probability: 0.18
         furlough_probability: 0.34
         key_probability: 0.22
->>>>>>> original_june/master
 
 social_distancing:
     1: 
@@ -156,136 +149,6 @@ social_distancing:
             school: 0.75
             household: 1.0
             university: 0.75
-<<<<<<< HEAD
-
-mask_wearing:
-    1: 
-        start_time: 2020-03-27
-        end_time: 2020-04-24
-        compliance: 0.09 # overall mask wearing compliance (YouGov)
-        beta_factor: 0.5 # overall beta reducion if mask wearing
-        mask_probabilities: # given a mask is work, probability of where it is worn
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    2: 
-        start_time: 2020-04-24
-        end_time: 2020-05-21
-        compliance: 0.17
-        beta_factor: 0.5
-        mask_probabilities:
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    3: 
-        start_time: 2020-05-21
-        end_time: 2020-06-16
-        compliance: 0.23
-        beta_factor: 0.5
-        mask_probabilities: 
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    4: 
-        start_time: 2020-06-16
-        end_time: 2020-06-25
-        compliance: 0.29
-        beta_factor: 0.5
-        mask_probabilities: 
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    5: 
-        start_time: 2020-06-25
-        end_time: 2020-07-12
-        compliance: 0.35
-        beta_factor: 0.5
-        mask_probabilities: 
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    6: 
-        start_time: 2020-07-12
-        end_time: 2020-07-26
-        compliance: 0.48
-        beta_factor: 0.5
-        mask_probabilities: 
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-    7: 
-        start_time: 2020-07-26
-        end_time: 2020-07-31
-        compliance: 0.63
-        beta_factor: 0.5
-        mask_probabilities: 
-            box: 1.
-            pub: 0.
-            grocery: 0.5
-            cinema: 0.
-            commute_unit: 1.
-            commute_city_unit: 1.
-            hospital: 0.
-            care_home: 0.5
-            company: 0.5
-            school: 0.
-            household: 0.
-            university: 0.5
-=======
     3:
         start_time: 2020-07-04 
         end_time: 2020-12-01
@@ -505,7 +368,6 @@ mask_wearing:
             household: 0.
             university: 0.5
 
->>>>>>> original_june/master
 
 close_leisure_venue:
     start_time: 2020-03-21
@@ -531,18 +393,10 @@ change_leisure_probability:
 
 close_schools:
     start_time: 2020-03-20
-<<<<<<< HEAD
-    end_time: 2020-07-04 #TODO: end time? - this needs to be fixed as schools were partially opening before this
-=======
     end_time: 2020-09-01 
->>>>>>> original_june/master
     years_to_close: all
     full_closure: False
 
 close_universities:
     start_time: 2020-03-20
-<<<<<<< HEAD
-    end_time: 2020-10-01
-=======
     end_time: 2021-10-15
->>>>>>> original_june/master
