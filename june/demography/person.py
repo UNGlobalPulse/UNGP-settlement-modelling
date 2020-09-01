@@ -1,5 +1,7 @@
 from itertools import count
 from random import choice
+from enum import IntEnum, Enum
+import struct
 from recordclass import dataobject
 import numpy as np
 

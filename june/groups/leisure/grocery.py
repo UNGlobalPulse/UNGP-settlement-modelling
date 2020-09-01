@@ -22,6 +22,5 @@ class Groceries(SocialVenues):
     social_venue_class = Grocery
     default_coordinates_filename = default_groceries_coordinates_filename
 
-
 class GroceryDistributor(SocialVenueDistributor):
     default_config_filename = default_config_filename

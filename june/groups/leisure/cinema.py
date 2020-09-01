@@ -22,6 +22,5 @@ class Cinemas(SocialVenues):
     social_venue_class = Cinema
     default_coordinates_filename = default_cinemas_coordinates_filename
 
-
 class CinemaDistributor(SocialVenueDistributor):
     default_config_filename = default_config_filename
