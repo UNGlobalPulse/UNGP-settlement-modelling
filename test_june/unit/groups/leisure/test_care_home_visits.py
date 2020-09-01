@@ -73,7 +73,11 @@ def make_leisure(world_visits):
     leisure.distribute_social_venues_to_households(
         world_visits.households, super_areas=world_visits.super_areas
     )
+<<<<<<< HEAD
     leisure.generate_leisure_probabilities_for_timestep(0.1, True)
+=======
+    leisure.generate_leisure_probabilities_for_timestep(0.1, True, False)
+>>>>>>> original_june/master
     return leisure
 
 

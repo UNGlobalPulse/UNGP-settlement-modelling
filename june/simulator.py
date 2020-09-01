@@ -17,7 +17,7 @@ from june.infection.symptom_tag import SymptomTag
 from june.infection import InfectionSelector
 from june.infection_seed import InfectionSeed
 from june.interaction import Interaction, InteractiveGroup
-from june.logger.logger import Logger
+from june.logger import Logger
 from june.policy import Policies, MedicalCarePolicies, InteractionPolicies
 from june.time import Timer
 from june.world import World
@@ -40,7 +40,6 @@ class Simulator:
         infection_seed: Optional["InfectionSeed"] = None,
         save_path: str = "results",
         checkpoint_dates: List[datetime.date] = None,
-        light_logger: bool = False,
     ):
         """
         Class to run an epidemic spread simulation on the world.
@@ -57,7 +56,6 @@ class Simulator:
         self.interaction = interaction
         self.infection_selector = infection_selector
         self.infection_seed = infection_seed
-        self.light_logger = light_logger
         self.timer = timer
         if checkpoint_dates is None:
             self.checkpoint_dates = ()
@@ -208,7 +206,11 @@ class Simulator:
             checkpoint_data["infected_ids"], checkpoint_data["infection_list"]
         ):
             person = simulator.world.people[infected_id - first_person_id]
+<<<<<<< HEAD
             person.infection = infection  
+=======
+            person.infection = infection
+>>>>>>> original_june/master
             person.susceptibility = 0.0
         # restore timer
         checkpoint_timer = checkpoint_data["timer"]
@@ -301,6 +303,14 @@ class Simulator:
         person.infection = None
         cemetery = world.cemeteries.get_nearest(person)
         cemetery.add(person)
+<<<<<<< HEAD
+=======
+        if person.residence.group.spec == "household":
+            household = person.residence.group
+            person.residence.residents = tuple(
+                mate for mate in household.residents if mate != person
+            )
+>>>>>>> original_june/master
         person.subgroups = Activities(None, None, None, None, None, None, None)
 
     @staticmethod
@@ -330,9 +340,16 @@ class Simulator:
         duration:
             duration of time step
         """
+<<<<<<< HEAD
         ids = []
         symptoms = []
         n_secondary_infections = []
+=======
+        super_area_infections = {
+            super_area.name: {"ids": [], "symptoms": [], "n_secondary_infections": []}
+            for super_area in self.world.super_areas
+        }
+>>>>>>> original_june/master
         for person in self.world.people.infected:
             previous_tag = person.infection.tag
             new_status = person.infection.update_health_status(time, duration)
@@ -341,21 +358,31 @@ class Simulator:
                 and person.infection.tag == SymptomTag.mild
             ):
                 person.residence.group.quarantine_starting_date = time
+<<<<<<< HEAD
             ids.append(person.id)
             symptoms.append(person.infection.tag.value)
             n_secondary_infections.append(person.infection.number_of_infected)
             # Take actions on new symptoms
             self.activity_manager.policies.medical_care_policies.apply(
                 person=person, medical_facilities=self.medical_facilities
+=======
+            super_area_dict = super_area_infections[person.area.super_area.name]
+            super_area_dict["ids"].append(person.id)
+            super_area_dict["symptoms"].append(person.infection.tag.value)
+            super_area_dict["n_secondary_infections"].append(
+                person.infection.number_of_infected
+            )
+            # Take actions on new symptoms
+            self.activity_manager.policies.medical_care_policies.apply(
+                person=person, medical_facilities=self.world.hospitals
+>>>>>>> original_june/master
             )
             if new_status == "recovered":
                 self.recover(person)
             elif new_status == "dead":
                 self.bury_the_dead(self.world, person)
         if self.logger is not None:
-            self.logger.log_infected(
-                self.timer.date, ids, symptoms, n_secondary_infections
-            )
+            self.logger.log_infected(self.timer.date, super_area_infections)
 
     def do_timestep(self):
         """
@@ -404,9 +431,16 @@ class Simulator:
                     )
                     if new_infected_ids:
                         n_infected = len(new_infected_ids)
+                        super_area_new_infected = [
+                            self.world.people[
+                                idx - first_person_id
+                            ].area.super_area.name
+                            for idx in new_infected_ids
+                        ]
                         if self.logger is not None:
                             self.logger.accumulate_infection_location(
-                                group.spec, n_infected
+                                location=group.spec + f"_{group.id}",
+                                super_areas_infection=super_area_new_infected,
                             )
                         # assign blame of infections
                         tprob_norm = sum(int_group.transmission_probabilities)
@@ -451,15 +485,13 @@ class Simulator:
         )
         self.clear_world()
         if self.logger:
-            self.logger.log_population(
-                self.world.people, light_logger=self.light_logger
-            )
-
+            self.logger.log_population(self.world.people, rank=0)
             self.logger.log_parameters(
                 interaction=self.interaction,
                 infection_seed=self.infection_seed,
                 infection_selector=self.infection_selector,
                 activity_manager=self.activity_manager,
+                rank=0,
             )
 
             if self.world.hospitals is not None:

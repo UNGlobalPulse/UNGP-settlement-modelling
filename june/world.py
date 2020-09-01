@@ -142,11 +142,7 @@ class World:
                 person.mode_of_transport = commute_gen.weighted_random_choice()
 
         # CommuteCity
-        self.commutecities = CommuteCities()
-        self.commutecities.from_file()
-        self.commutecities.init_non_london()
-        # Crucial that London is initialise second, after non-London
-        self.commutecities.init_london()
+        self.commutecities = CommuteCities.for_super_areas(self.super_areas)
 
         self.commutecity_distributor = CommuteCityDistributor(
             self.commutecities.members, self.super_areas.members
@@ -244,3 +240,7 @@ def generate_world_from_geography(
     world.cemeteries = Cemeteries()
     return world
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> original_june/master

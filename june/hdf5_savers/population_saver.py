@@ -20,6 +20,10 @@ spec_mapper = {
     "pub": "pubs",
     "grocery": "groceries",
     "cinema": "cinemas",
+<<<<<<< HEAD
+=======
+    "commute_city": "commutecities",
+>>>>>>> original_june/master
 }
 
 

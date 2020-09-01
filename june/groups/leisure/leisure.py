@@ -73,6 +73,7 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
         leisure_distributors[
             "care_home_visits"
         ] = CareHomeVisitsDistributor.from_config()
+<<<<<<< HEAD
 
     if "pump_latrines" in list_of_leisure_groups:
         if not hasattr(world, "pump_latrines"):
@@ -100,6 +101,8 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
         leisure_distributors[
             "female_communals"
         ] = FemaleCommunalDistributor.from_config(world.female_communals)
+=======
+>>>>>>> original_june/master
     if "household_visits" in list_of_leisure_groups:
         if not hasattr(world, "households"):
             raise ValueError("Your world does not have households.")
@@ -189,7 +192,13 @@ class Leisure:
                     person.residence.group
                 )
 
+<<<<<<< HEAD
     def get_leisure_probability_for_age_and_sex(self, age, sex, delta_time, is_weekend):
+=======
+    def get_leisure_probability_for_age_and_sex(
+        self, age, sex, delta_time, is_weekend, working_hours
+    ):
+>>>>>>> original_june/master
         """
         Computes the probabilities of going to different leisure activities,
         and dragging the household with the person that does the activity.
@@ -198,17 +207,19 @@ class Leisure:
         drags_household_probabilities = []
         activities = []
         for activity, distributor in self.leisure_distributors.items():
+            if (
+                activity == "household_visits" and working_hours
+            ) or distributor.spec in self.closed_venues:
+                # we do not have household visits during working hours as most households by then.
+                continue
             drags_household_probabilities.append(
                 distributor.drags_household_probability
             )
-            if distributor.spec in self.closed_venues:
-                poisson_parameters.append(0.0)
-            else:
-                poisson_parameters.append(
-                    distributor.get_poisson_parameter(
-                        sex=sex, age=age, is_weekend=is_weekend
-                    )
+            poisson_parameters.append(
+                distributor.get_poisson_parameter(
+                    sex=sex, age=age, is_weekend=is_weekend
                 )
+            )
             activities.append(activity)
         total_poisson_parameter = sum(poisson_parameters)
         does_activity_probability = 1.0 - np.exp(-delta_time * total_poisson_parameter)
@@ -317,16 +328,30 @@ class Leisure:
             person.subgroups.leisure = subgroup
             return subgroup
 
+<<<<<<< HEAD
     def generate_leisure_probabilities_for_timestep(self, delta_time, is_weekend):
+=======
+    def generate_leisure_probabilities_for_timestep(
+        self, delta_time: float, working_hours: bool, is_weekend: bool
+    ):
+>>>>>>> original_june/master
         men_probs = [
             self.get_leisure_probability_for_age_and_sex(
-                age, "m", delta_time, is_weekend
+                age=age,
+                sex="m",
+                delta_time=delta_time,
+                is_weekend=is_weekend,
+                working_hours=working_hours,
             )
             for age in range(0, 100)
         ]
         women_probs = [
             self.get_leisure_probability_for_age_and_sex(
-                age, "f", delta_time, is_weekend
+                age=age,
+                sex="f",
+                delta_time=delta_time,
+                is_weekend=is_weekend,
+                working_hours=working_hours,
             )
             for age in range(0, 100)
         ]
