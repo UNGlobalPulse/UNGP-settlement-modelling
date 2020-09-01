@@ -406,7 +406,9 @@ class ReadLogger:
 
         return time_series
 
-    def get_location_infections_timeseries(self, start_date=None, end_date=None,):
+    def get_location_infections_timeseries(
+        self, start_date=None, end_date=None,
+    ):
         """
         Get a data frame timeseries with the number of infection happening at each type of place, within the given time
         period
@@ -428,10 +430,12 @@ class ReadLogger:
         all_counts = selected_dates.sum().counts
         unique_locations = set(all_locations)
 
-        time_series = pd.DataFrame(0, index=selected_dates.index, columns=unique_locations)
+        time_series = pd.DataFrame(
+            0, index=selected_dates.index, columns=unique_locations
+        )
         for ts, row in selected_dates.iterrows():
-            for location,count in zip(row["location"],row["counts"]):
-                time_series.loc[ts,location] = count
+            for location, count in zip(row["location"], row["counts"]):
+                time_series.loc[ts, location] = count
 
         time_series["total"] = time_series.sum(axis=1)
 
@@ -591,14 +595,20 @@ class ReadLogger:
         / "input/geography/area_super_area_region.csv",
     ):
         super_area_region = pd.read_csv(super_area_region_path)
+        super_area_region = super_area_region.loc[:, ~super_area_region.columns.str.contains('^Unnamed')]
         super_area_region = super_area_region.drop(columns="area").drop_duplicates()
         super_area_region.set_index("super_area", inplace=True)
         return super_area_region.loc[super_areas]["region"].values
 
-    def run_summary(self,):
+    def run_summary(
+        self,
+        super_area_region_path=paths.data_path
+        / "input/geography/area_super_area_region.csv",
+    ):
         super_area_df = self.super_area_summary()
         super_area_df["region"] = self.super_areas_to_region(
-            super_area_df["super_area"].values
+            super_area_df["super_area"].values,
+            super_area_region_path=super_area_region_path,
         )
         self.load_infection_location()
         flat_locations = self.locations_df[["location_id", "super_area"]].apply(
