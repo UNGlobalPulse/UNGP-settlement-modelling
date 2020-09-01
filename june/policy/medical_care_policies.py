@@ -21,17 +21,17 @@ class MedicalCarePolicy(Policy):
 class MedicalCarePolicies(PolicyCollection):
     policy_type = "medical_care"
 
-    def apply(self, person: Person, medical_facilities):
+    def apply(self, person: Person, medical_facilities, days_from_start:float):
         """
         Applies medical care policies. Hospitalisation takes preference over all.
         """
         hospitalisation_policies = [policy for policy in self.policies if isinstance(policy, Hospitalisation)]
         for policy in hospitalisation_policies:
-            activates = policy.apply(person, medical_facilities)
+            activates = policy.apply(person, medical_facilities, days_from_start)
             if activates:
                 return
         for policy in [policy for policy in self.policies if policy not in hospitalisation_policies]:
-            activates = policy.apply(person, medical_facilities)
+            activates = policy.apply(person, medical_facilities, days_from_start)
             if activates:
                 return 
 
@@ -41,7 +41,7 @@ class Hospitalisation(MedicalCarePolicy):
     Hospitalisation policy. When applied to a sick person, allocates that person to a hospital, if the symptoms are severe
     enough. When the person recovers, releases the person from the hospital.
     """
-    def apply(self, person: Person, medical_facilities: List[MedicalFacilities]):
+    def apply(self, person: Person, medical_facilities: List[MedicalFacilities], days_from_start):
         hospitals = [
             medical_facility
             for medical_facility in medical_facilities

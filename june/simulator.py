@@ -353,7 +353,7 @@ class Simulator:
             )
             # Take actions on new symptoms
             self.activity_manager.policies.medical_care_policies.apply(
-                person=person, medical_facilities=self.medical_facilities
+                person=person, medical_facilities=self.medical_facilities, days_from_start=time
             )
             if new_status == "recovered":
                 self.recover(person)

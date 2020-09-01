@@ -197,20 +197,14 @@ def load_commute_hubs_from_hdf5(file_path: str):
     cu.members = commute_units_list
     return ch, cu
 
-<<<<<<< HEAD
-=======
 
->>>>>>> original_june/master
 def restore_commute_properties_from_hdf5(world: World, file_path: str):
     # restore commute
     first_person_id = world.people[0].id
     first_hub_id = world.commutehubs[0].id
     # commute
     for city in world.commutecities:
-<<<<<<< HEAD
-=======
         people_ids = city.people
->>>>>>> original_june/master
         commute_hubs = [
             world.commutehubs[idx - first_hub_id] for idx in city.commutehubs
         ]
@@ -219,12 +213,9 @@ def restore_commute_properties_from_hdf5(world: World, file_path: str):
             world.people[idx - first_person_id] for idx in city.commute_internal
         ]
         city.commute_internal = commute_internal_people
-<<<<<<< HEAD
-=======
 
     for hub in world.commutehubs:
         commute_through_people = [
             world.people[id - first_person_id] for id in hub.commute_through
         ]
         hub.commute_through = commute_through_people
->>>>>>> original_june/master

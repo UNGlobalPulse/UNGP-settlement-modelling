@@ -50,7 +50,7 @@ class Hospital(Group, MedicalFacility):
         n_icu_beds: int,
         super_area: str = None,
         coordinates: Optional[Tuple[float, float]] = None,
-        trust_code: str = None,
+        trust_code: str = 'dummy',
     ):
         """
         Create a Hospital given its description.
