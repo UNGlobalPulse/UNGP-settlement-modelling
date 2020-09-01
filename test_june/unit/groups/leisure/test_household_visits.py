@@ -12,12 +12,7 @@ from june.groups.leisure import Pub
 @fixture(name="visits_distributor")
 def make_dist(world_visits):
     visits_distributor = HouseholdVisitsDistributor(
-<<<<<<< HEAD
-        male_age_probabilities={"0-100": 0.5},
-        female_age_probabilities={"0-100": 0.5},
-=======
         male_age_probabilities={"0-100": 0.5}, female_age_probabilities={"0-100": 0.5},
->>>>>>> original_june/master
     )
     visits_distributor.link_households_to_households(world_visits.super_areas)
     return visits_distributor
