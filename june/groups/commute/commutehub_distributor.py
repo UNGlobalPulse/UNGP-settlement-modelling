@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-
-=======
 import logging
->>>>>>> original_june/master
 import csv
 import numpy as np
 import pandas as pd

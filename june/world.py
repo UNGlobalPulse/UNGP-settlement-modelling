@@ -240,7 +240,4 @@ def generate_world_from_geography(
     world.cemeteries = Cemeteries()
     return world
 
-<<<<<<< HEAD
-=======
 
->>>>>>> original_june/master

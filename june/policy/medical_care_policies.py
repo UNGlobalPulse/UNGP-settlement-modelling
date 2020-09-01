@@ -1,9 +1,6 @@
 import datetime
-<<<<<<< HEAD
 from typing import List
-=======
 
->>>>>>> original_june/master
 from .policy import Policy, Policies, PolicyCollection
 from june.groups import Hospitals, Hospital, MedicalFacilities, MedicalFacility
 from june.demography import Person
@@ -44,17 +41,12 @@ class Hospitalisation(MedicalCarePolicy):
     Hospitalisation policy. When applied to a sick person, allocates that person to a hospital, if the symptoms are severe
     enough. When the person recovers, releases the person from the hospital.
     """
-<<<<<<< HEAD
     def apply(self, person: Person, medical_facilities: List[MedicalFacilities]):
         hospitals = [
             medical_facility
             for medical_facility in medical_facilities
             if isinstance(medical_facility, Hospitals)
         ][0]
-=======
-
-    def apply(self, person: Person, hospitals: Hospitals):
->>>>>>> original_june/master
         if person.recovered:
             if person.medical_facility is not None:
                 person.medical_facility.group.release_as_patient(person)

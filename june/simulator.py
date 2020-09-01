@@ -206,11 +206,7 @@ class Simulator:
             checkpoint_data["infected_ids"], checkpoint_data["infection_list"]
         ):
             person = simulator.world.people[infected_id - first_person_id]
-<<<<<<< HEAD
-            person.infection = infection  
-=======
             person.infection = infection
->>>>>>> original_june/master
             person.susceptibility = 0.0
         # restore timer
         checkpoint_timer = checkpoint_data["timer"]
@@ -303,14 +299,11 @@ class Simulator:
         person.infection = None
         cemetery = world.cemeteries.get_nearest(person)
         cemetery.add(person)
-<<<<<<< HEAD
-=======
         if person.residence.group.spec == "household":
             household = person.residence.group
             person.residence.residents = tuple(
                 mate for mate in household.residents if mate != person
             )
->>>>>>> original_june/master
         person.subgroups = Activities(None, None, None, None, None, None, None)
 
     @staticmethod
@@ -340,16 +333,10 @@ class Simulator:
         duration:
             duration of time step
         """
-<<<<<<< HEAD
-        ids = []
-        symptoms = []
-        n_secondary_infections = []
-=======
         super_area_infections = {
             super_area.name: {"ids": [], "symptoms": [], "n_secondary_infections": []}
             for super_area in self.world.super_areas
         }
->>>>>>> original_june/master
         for person in self.world.people.infected:
             previous_tag = person.infection.tag
             new_status = person.infection.update_health_status(time, duration)
@@ -358,14 +345,6 @@ class Simulator:
                 and person.infection.tag == SymptomTag.mild
             ):
                 person.residence.group.quarantine_starting_date = time
-<<<<<<< HEAD
-            ids.append(person.id)
-            symptoms.append(person.infection.tag.value)
-            n_secondary_infections.append(person.infection.number_of_infected)
-            # Take actions on new symptoms
-            self.activity_manager.policies.medical_care_policies.apply(
-                person=person, medical_facilities=self.medical_facilities
-=======
             super_area_dict = super_area_infections[person.area.super_area.name]
             super_area_dict["ids"].append(person.id)
             super_area_dict["symptoms"].append(person.infection.tag.value)
@@ -374,8 +353,7 @@ class Simulator:
             )
             # Take actions on new symptoms
             self.activity_manager.policies.medical_care_policies.apply(
-                person=person, medical_facilities=self.world.hospitals
->>>>>>> original_june/master
+                person=person, medical_facilities=self.medical_facilities
             )
             if new_status == "recovered":
                 self.recover(person)

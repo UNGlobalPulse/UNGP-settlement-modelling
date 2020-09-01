@@ -296,13 +296,8 @@ class Logger:
         self.infection_location = []
         self.super_areas_infection = []
 
-<<<<<<< HEAD
-    def unpack_dict(self,hdf5_obj,data,base_path,depth=0,max_depth=5):
-        if depth>max_depth:
-=======
     def unpack_dict(self, hdf5_obj, data, base_path, depth=0, max_depth=5):
         if depth > max_depth:
->>>>>>> original_june/master
             return None
         for key, val in data.items():
             dset_path = f"{base_path}/{key}"
@@ -333,45 +328,6 @@ class Logger:
         infection_seed: "InfectionSeed" = None,
         infection_selector: "InfectionSelector" = None,
         activity_manager: "ActivityManager" = None,
-<<<<<<< HEAD
-    ):
-        with h5py.File(self.file_path, "a", libver="latest") as f:
-            params = f.require_group("parameters")
-
-            # interaction params
-            if interaction is not None:
-                for key, data in interaction.beta.items():
-                    beta_path = f"parameters/beta/{key}"
-                    f.create_dataset(beta_path, data=data)
-
-                f.create_dataset(
-                    "parameters/alpha_physical", data=interaction.alpha_physical
-                )
-
-                for key, data in interaction.contact_matrices.items():
-                    dset_path = f"parameters/contact_matrices/{key}"
-                    f.create_dataset(dset_path, data=data)
-
-            if infection_selector is not None:
-                f.create_dataset(
-                    "parameters/asymptomatic_ratio",
-                    data=infection_selector.health_index_generator.asymptomatic_ratio,
-                )  #
-
-            if infection_seed is not None:
-                f.create_dataset(
-                    "parameters/seed_strength", data=infection_seed.seed_strength
-                )
-
-            # policies
-            if activity_manager is not None:
-                if activity_manager.policies:
-                    policy_types = defaultdict(int)
-                    for pol in activity_manager.policies.policies:
-                        policy_types[
-                            pol.get_spec()
-                        ] += 1  # How many of each type of policy?
-=======
         rank: int = 0,
     ):
         if rank == 0:
@@ -402,7 +358,6 @@ class Logger:
                     f.create_dataset(
                         "parameters/seed_strength", data=infection_seed.seed_strength
                     )
->>>>>>> original_june/master
 
                 # policies
                 if activity_manager is not None:
@@ -413,19 +368,6 @@ class Logger:
                                 pol.get_spec()
                             ] += 1  # How many of each type of policy?
 
-<<<<<<< HEAD
-                        if n_instances > 1:
-                            for i in range(1, n_instances + 1):
-                                policy_path = f"parameters/policies/{pol_spec}/{i}"
-                                # Loop through until we find a path that doesn't exist, then make it
-                                if policy_path not in f:
-                                    break
-                        else:
-                            i = None
-                            policy_path = f"parameters/policies/{pol_spec}"
-
-                        self.unpack_dict(f, pol.__dict__, policy_path, depth=0)
-=======
                         for pol in activity_manager.policies.policies:
                             pol_spec = pol.get_spec()
                             n_instances = policy_types[pol_spec]
@@ -441,4 +383,4 @@ class Logger:
                                 policy_path = f"parameters/policies/{pol_spec}"
 
                             self.unpack_dict(f, pol.__dict__, policy_path, depth=0)
->>>>>>> original_june/master
+

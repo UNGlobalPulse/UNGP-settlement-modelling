@@ -13,15 +13,7 @@ from june import paths
 
 class ReadLogger:
     def __init__(
-<<<<<<< HEAD
-        self,
-        output_path: str = "results",
-        output_file_name: str = "logger.hdf5",
-        light_logger: bool = False,
-        load_real: bool = True,
-=======
         self, output_path: str = "results", output_file_name: str = "logger.hdf5",
->>>>>>> original_june/master
     ):
         """
         Read hdf5 file saved by the logger, and produce useful data frames
@@ -304,13 +296,7 @@ class ReadLogger:
         )
         random_trajectories = self.infections_df.loc[mask]
         random_trajectories = random_trajectories.apply(pd.Series.explode)
-<<<<<<< HEAD
-        random_ids = sample(
-            list(random_trajectories.infected_id.unique()), n_people
-        )
-=======
         random_ids = sample(list(random_trajectories.infected_id.unique()), n_people)
->>>>>>> original_june/master
         return [
             random_trajectories[random_trajectories["infected_id"] == random_id]
             for random_id in random_ids

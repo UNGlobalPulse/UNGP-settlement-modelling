@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> original_june/master
 import numpy as np
 import pandas as pd
 from scipy import spatial

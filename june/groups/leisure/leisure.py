@@ -73,7 +73,6 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
         leisure_distributors[
             "care_home_visits"
         ] = CareHomeVisitsDistributor.from_config()
-<<<<<<< HEAD
 
     if "pump_latrines" in list_of_leisure_groups:
         if not hasattr(world, "pump_latrines"):
@@ -101,8 +100,7 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
         leisure_distributors[
             "female_communals"
         ] = FemaleCommunalDistributor.from_config(world.female_communals)
-=======
->>>>>>> original_june/master
+
     if "household_visits" in list_of_leisure_groups:
         if not hasattr(world, "households"):
             raise ValueError("Your world does not have households.")
@@ -192,13 +190,9 @@ class Leisure:
                     person.residence.group
                 )
 
-<<<<<<< HEAD
-    def get_leisure_probability_for_age_and_sex(self, age, sex, delta_time, is_weekend):
-=======
     def get_leisure_probability_for_age_and_sex(
         self, age, sex, delta_time, is_weekend, working_hours
     ):
->>>>>>> original_june/master
         """
         Computes the probabilities of going to different leisure activities,
         and dragging the household with the person that does the activity.
@@ -328,13 +322,9 @@ class Leisure:
             person.subgroups.leisure = subgroup
             return subgroup
 
-<<<<<<< HEAD
-    def generate_leisure_probabilities_for_timestep(self, delta_time, is_weekend):
-=======
     def generate_leisure_probabilities_for_timestep(
         self, delta_time: float, working_hours: bool, is_weekend: bool
     ):
->>>>>>> original_june/master
         men_probs = [
             self.get_leisure_probability_for_age_and_sex(
                 age=age,
