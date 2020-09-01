@@ -1,4 +1,5 @@
 import numpy as np
+from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
@@ -19,11 +20,11 @@ from june.demography.demography import (
 from june.paths import data_path, configs_path
 from june.infection import Infection, HealthIndexGenerator
 from june.infection_seed import InfectionSeed
-from june.infection.infection import InfectionSelector
+from june.infection import InfectionSelector
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals
 from june.distributors import HospitalDistributor
-from june.world import generate_world_from_hdf5
+from june.hdf5_savers import generate_world_from_hdf5
 from june.groups import Cemeteries
 from june.policy import Policy, Policies
 from june.logger.read_logger import ReadLogger
@@ -116,6 +117,8 @@ hospitals = Hospitals.from_file(
     filename=camp_data_path / "input/hospitals/hospitals.csv"
 )
 world.hospitals = hospitals
+for hospital in world.hospitals:
+    hospital.super_area = world.super_areas.members[0]
 hospital_distributor = HospitalDistributor(
     hospitals, medic_min_age=20, patients_per_medic=10
 )
@@ -262,7 +265,7 @@ leisure_instance.leisure_distributors[
 ] = FemaleCommunalDistributor.from_config(female_communals=world.female_communals)
 
 # associate social activities to shelters
-leisure_instance.distribute_social_venues_to_households(world.shelters)
+leisure_instance.distribute_social_venues_to_households(world.shelters, world.super_areas)
 
 # ==================================================================================#
 
@@ -285,3 +288,9 @@ simulator.timer.reset()
 simulator.run()
 
 # ==================================================================================#
+read = ReadLogger()
+summary = read.run_summary(
+    super_area_region_path=camp_data_path 
+    / 'input/geography/area_super_area_region.csv'
+)
+summary.to_csv(Path(args.save_path) / 'summary.csv')
