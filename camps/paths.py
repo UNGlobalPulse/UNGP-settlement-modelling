@@ -89,7 +89,5 @@ def path_for_name(name: str) -> Path:
     return path
 
 
-data_path = path_for_name("data")
-configs_path = path_for_name("configs")
 camp_data_path = path_for_name("camp_data")
 camp_configs_path = path_for_name("configs_camps")

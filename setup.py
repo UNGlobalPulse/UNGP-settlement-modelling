@@ -16,10 +16,10 @@ with open(join(this_dir, "requirements.txt")) as f:
     requirements = f.read().split("\n")
 
 setup(
-        name="june",
+        name="camps",
         version="0.1.0",
-        description="The most amazing covid simulation",
-        url="https://github.com/idas-durham/june",
+        description="Operational response simulation tool forepidemics within settlements",
+        url="https://github.com/JosephPB/june",
         long_description=long_description,
         author="IDAS-Durham",
         author_email='arnauq@protonmail.com',
