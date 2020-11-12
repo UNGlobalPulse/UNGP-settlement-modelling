@@ -42,10 +42,12 @@ jobs:
     - name: Get camp data
       run: bash get_camp_data.sh
 
-    - name: Test with pytest
-      run: |
-        run_june_tests.py
-        pytest test_camps
+    - name: JUNE tests
+      run: run_june_tests.py
+
+    - name: camps tests
+      run: pytest test_camps
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
