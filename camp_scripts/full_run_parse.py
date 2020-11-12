@@ -111,11 +111,7 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t",
-    "--isolation_testing",
-    help="Mean testing time",
-    required=False,
-    default=3,
+    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3,
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -267,12 +263,8 @@ if args.learning_centers:
     print(
         "Learning center beta ratio set to: {}".format(args.learning_center_beta_ratio)
     )
-    print(
-        "Learning center shifts set to: {}".format(args.learning_center_shifts)
-    )
-    print(
-        "Extra learning centers is set to: {}".format(args.extra_learning_centers)
-    )
+    print("Learning center shifts set to: {}".format(args.learning_center_shifts))
+    print("Extra learning centers is set to: {}".format(args.extra_learning_centers))
 
 print("Plag group beta ratio set to: {}".format(args.play_group_beta_ratio))
 print("Save path set to: {}".format(args.save_path))
@@ -281,8 +273,8 @@ print("Save path set to: {}".format(args.save_path))
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
-#world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+# world = generate_empty_world({"super_area": ["CXB-219-C"]})
+# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 world = generate_empty_world()
 
 # populate empty world
@@ -301,22 +293,21 @@ world.hospitals = hospitals
 hospital_distributor = HospitalDistributor(
     hospitals, medic_min_age=20, patients_per_medic=10
 )
-hospital_distributor.assign_closest_hospitals_to_super_areas(
-    world.super_areas
-)
+hospital_distributor.assign_closest_hospitals_to_super_areas(world.super_areas)
 world.isolation_units = IsolationUnits([IsolationUnit(area=world.areas[0])])
 
 hospital_distributor.distribute_medics_from_world(world.people)
 
 if args.learning_centers:
-    world.learning_centers = LearningCenters.for_areas(world.areas, n_shifts=int(args.learning_center_shifts))
+    world.learning_centers = LearningCenters.for_areas(
+        world.areas, n_shifts=int(args.learning_center_shifts)
+    )
     learning_center_distributor = LearningCenterDistributor.from_file(
         learning_centers=world.learning_centers
     )
     learning_center_distributor.distribute_kids_to_learning_centers(world.areas)
     learning_center_distributor.distribute_teachers_to_learning_centers(world.areas)
 
-    
     if args.extra_learning_centers:
         # add extra learning centers based on enrollment
         enrolled = []
@@ -326,17 +317,21 @@ if args.learning_centers:
             total = 0
             for i in range(4):
                 total += len(learning_center.ids_per_shift[i])
-            enrolled.append(total) 
+            enrolled.append(total)
             learning_centers.append(learning_center)
         learning_centers = np.array(learning_centers)
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-args.extra_learning_centers:]
+        top_k = learning_centers_sorted[-args.extra_learning_centers :]
         for learning_center in top_k:
-            extra_lc = LearningCenter(coordinates=learning_center.super_area.coordinates)
+            extra_lc = LearningCenter(
+                coordinates=learning_center.super_area.coordinates
+            )
             world.learning_centers.members.append(extra_lc)
-        world.learning_centers = LearningCenters(world.learning_centers.members, n_shifts=4)
+        world.learning_centers = LearningCenters(
+            world.learning_centers.members, n_shifts=4
+        )
 
         # clear and redistirbute kids to learning centers
         for learning_center in world.learning_centers:
@@ -423,7 +418,7 @@ else:
         camp_configs_path / "defaults/policy/home_care_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
-    
+
 
 # ============================================================================#
 
@@ -442,7 +437,8 @@ interaction = Interaction.from_file(
 
 if args.child_susceptibility:
     interaction = Interaction.from_file(
-        config_filename=camp_configs_path / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
+        config_filename=camp_configs_path
+        / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
         population=world.people,
     )
 else:
@@ -455,12 +451,16 @@ else:
 if args.household_beta:
     interaction.beta["household"] = float(args.household_beta)
     interaction.beta["hospital"] = float(args.household_beta) * 0.1
-    interaction.beta['shelter'] = float(args.household_beta)
+    interaction.beta["shelter"] = float(args.household_beta)
 
 if args.outdoor_beta_ratio:
-    interaction.beta['play_group'] = interaction.beta['household']*float(args.outdoor_beta_ratio)
-    interaction.beta['pump_latrine'] = interaction.beta['household']*float(args.outdoor_beta_ratio)
-    
+    interaction.beta["play_group"] = interaction.beta["household"] * float(
+        args.outdoor_beta_ratio
+    )
+    interaction.beta["pump_latrine"] = interaction.beta["household"] * float(
+        args.outdoor_beta_ratio
+    )
+
 if args.indoor_beta_ratio:
     interaction.beta["communal"] = interaction.beta["household"] * float(
         args.indoor_beta_ratio
@@ -507,13 +507,13 @@ print("Detected cases = ", sum(cases_detected.values()))
 
 super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
 super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
-infection_seed = InfectionSeed(
-    world=world, infection_selector=selector, 
-)
+infection_seed = InfectionSeed(world=world, infection_selector=selector,)
 for region in world.regions:
     if region.name in cases_detected.keys():
-        infection_seed.unleash_virus(n_cases=2*cases_detected[region.name],
-                population=Population(region.people))
+        infection_seed.unleash_virus(
+            n_cases=2 * cases_detected[region.name],
+            population=Population(region.people),
+        )
 # Add some extra random cases
 infection_seed.unleash_virus(n_cases=44, population=world.people)
 
@@ -533,9 +533,7 @@ leisure.leisure_distributors["play_groups"] = PlayGroupDistributor.from_config(
 )
 leisure.leisure_distributors[
     "distribution_centers"
-] = DistributionCenterDistributor.from_config(
-    world.distribution_centers
-)
+] = DistributionCenterDistributor.from_config(world.distribution_centers)
 leisure.leisure_distributors["communals"] = CommunalDistributor.from_config(
     world.communals
 )
@@ -550,9 +548,7 @@ leisure.leisure_distributors["e_vouchers"] = EVoucherDistributor.from_config(
 )
 leisure.leisure_distributors[
     "n_f_distribution_centers"
-] = NFDistributionCenterDistributor.from_config(
-    world.n_f_distribution_centers
-)
+] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
 leisure.leisure_distributors[
     "shelters_visits"
 ] = SheltersVisitsDistributor.from_config()
@@ -567,9 +563,7 @@ leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
 # =================================== simulator ===============================#
 
 # records
-record = Record(
-    record_path=args.save_path, record_static_data=True
-)
+record = Record(record_path=args.save_path, record_static_data=True)
 record.static_data(world=world)
 
 
@@ -596,10 +590,8 @@ simulator.run()
 
 read = RecordReader(args.save_path)
 
-infections_df = read.get_table_with_extras('infections',
-                                           'infected_ids')
+infections_df = read.get_table_with_extras("infections", "infected_ids")
 
-locations_df = infections_df.groupby(['location_specs', 
-                                'timestamp']).size()
+locations_df = infections_df.groupby(["location_specs", "timestamp"]).size()
 
-locations_df.to_csv(args.save_path + '/locations.csv')
+locations_df.to_csv(args.save_path + "/locations.csv")
