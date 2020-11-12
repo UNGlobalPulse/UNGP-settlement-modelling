@@ -84,12 +84,12 @@ class CampHouseholdDistributor:
                 2: 0.11,
                 3: 0.15,
                 4: 0.18,
-                5: 0.17,
+                5: 0.16,
                 6: 0.13,
                 7: 0.08,
                 8: 0.07,
                 9: 0.03,
-                10: 0.01,
+                10: 0.02,
             }
         self.household_size_generator = stats.rv_discrete(
             values=[
@@ -170,7 +170,6 @@ class CampHouseholdDistributor:
         n_women = len([person for age in women_by_age for person in women_by_age[age]])
         assert n_men + n_women + len(kids) == len(area.people)
         # put one adult per household
-        households_with_adults = []
         for household in households_with_space:
             sex = random_sex()
             age = random_age(age_min=self.adult_min_age, age_max=self.adult_max_age)
@@ -180,14 +179,13 @@ class CampHouseholdDistributor:
             household.add(person, subgroup_type=household.SubgroupType.adults)
             if household.size == household.max_size:
                 households_with_space.remove(household)
-            households_with_adults.append(household)
 
         # distribute kids
         counter = 0
         while True:
             if not kids:
                 break
-            if households_with_space:  # households_with_adults:
+            if households_with_space:
                 index = counter % len(households_with_space)
                 household = households_with_space[index]
             else:
