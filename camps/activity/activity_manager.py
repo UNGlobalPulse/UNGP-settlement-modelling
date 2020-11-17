@@ -45,6 +45,6 @@ class CampActivityManager(ActivityManager):
         except AttributeError:
             return subgroup
 
-    def do_timestep(self):
-        super().do_timestep()
+    def do_timestep(self, regional_compliance = None):
+        ret = super().do_timestep(regional_compliance=regional_compliance)
         self.activate_next_shift()
