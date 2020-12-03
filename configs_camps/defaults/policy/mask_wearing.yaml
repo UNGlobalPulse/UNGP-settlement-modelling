@@ -1,7 +1,7 @@
 # needs more thinking
 social_distancing:
-    start_time: 2021-03-16
-    end_time: 2021-07-04
+    start_time: 9999-01-01
+    end_time: 9999-01-02
     beta_factors:
         communal: 0.5
         female_communal: 0.5
@@ -37,12 +37,12 @@ quarantine:
     n_days_household: 7 # for the housemates
     compliance: 0.3
     household_compliance: 0.2
-    start_time: 1000-03-16 
-    end_time: 9999-03-23
+    start_time: 1000-01-01 
+    end_time: 9999-01-01
 
 close_leisure_venue:
     start_time: 1000-01-01
-    end_time: 2021-01-01
+    end_time: 9999-01-01
     venues_to_close: ['n_f_distribution_center', 'female_communal']
 
 change_leisure_probability:
@@ -77,7 +77,7 @@ change_leisure_probability:
 
     2:
         start_time: 2020-04-15
-        end_time: 2021-01-01
+        end_time: 9999-01-01
         leisure_activities_probabilities:
             communals:
                 men:
@@ -101,7 +101,7 @@ change_leisure_probability:
 
 mask_wearing:
     start_time: 2020-03-27
-    end_time: 2020-04-24
+    end_time: 9999-01-01
     compliance: 0.1 
     beta_factor: 0.5 # overall beta reducion if mask wearing
     mask_probabilities: # given a mask is work, probability of where it is worn
