@@ -23,7 +23,7 @@ setup(
         long_description=long_description,
         author="IDAS-Durham",
         author_email='arnauq@protonmail.com',
-        license="MIT license",
+        license="GPL 3 license",
         install_requires=requirements,
         packages = find_packages(exclude=["docs"]),
 )
