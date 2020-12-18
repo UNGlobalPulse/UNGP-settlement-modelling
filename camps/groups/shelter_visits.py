@@ -16,8 +16,7 @@ default_config_filename = camp_configs_path / "defaults/groups/shelter_visits.ya
 class SheltersVisitsDistributor(SocialVenueDistributor):
     def __init__(
         self,
-        male_age_probabilities: dict = None,
-        female_age_probabilities: dict = None,
+        poisson_parameters=None,
         neighbours_to_consider=None,
         maximum_distance=None,
         weekend_boost: float = 2.0,
@@ -25,8 +24,7 @@ class SheltersVisitsDistributor(SocialVenueDistributor):
     ):
         super().__init__(
             social_venues=None,
-            male_age_probabilities=male_age_probabilities,
-            female_age_probabilities=female_age_probabilities,
+            poisson_parameters=poisson_parameters,
             neighbours_to_consider=neighbours_to_consider,
             maximum_distance=maximum_distance,
             weekend_boost=weekend_boost,
@@ -73,24 +71,3 @@ class SheltersVisitsDistributor(SocialVenueDistributor):
             return ()
         return household.shelters_to_visit
 
-    def get_poisson_parameter(self, sex, age, is_weekend: bool = False):
-        """
-        Poisson parameter (lambda) of a person going to one social venue according to their
-        age and sex and the distribution of visitors in the venue.
-
-        Parameters
-        ----------
-        person
-            an instance of Person
-        delta_t
-            interval of time in units of days
-        is_weekend
-            whether it is a weekend or not
-        """
-        if sex == "m":
-            probability = self.male_probabilities[age]
-        else:
-            probability = self.female_probabilities[age]
-        if is_weekend:
-            probability = probability * self.weekend_boost
-        return probability

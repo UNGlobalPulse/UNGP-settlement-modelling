@@ -13,6 +13,7 @@ from camps.geography import CampArea
 
 default_config_filename = camp_configs_path / "defaults/groups/play_group.yaml"
 
+
 class PlayGroup(SocialVenue):
     class SubgroupType(IntEnum):
         young = 0
@@ -20,12 +21,15 @@ class PlayGroup(SocialVenue):
         old = 2
 
     def __init__(
-        self, age_group_limits: List[int] = [3, 7, 12, 17], max_size: int = 10, area = None
+        self,
+        age_group_limits: List[int] = [3, 7, 12, 17],
+        max_size: int = 10,
+        area=None,
     ):
         super().__init__()
         self.age_group_limits = age_group_limits
         self.min_age = age_group_limits[0]
-        self.max_age = age_group_limits[-1]-1
+        self.max_age = age_group_limits[-1] - 1
         self.max_size = max_size
         self.area = area
 
@@ -75,27 +79,7 @@ class PlayGroups(SocialVenues):
 
 
 class PlayGroupDistributor(SocialVenueDistributor):
-    def __init__(
-            self,
-            play_groups: PlayGroups,
-            male_age_probabilities: Optional[Dict] = None,
-            female_age_probabilities: Optional[Dict] = None,
-            weekend_boost: float = 1.,
-            drags_household_probability = 0.
-        ):
-        super().__init__(
-            social_venues=play_groups,
-            male_age_probabilities=male_age_probabilities,
-            female_age_probabilities=female_age_probabilities,
-            weekend_boost=weekend_boost,
-            drags_household_probability=drags_household_probability
-        )
-
-    @classmethod
-    def from_config(cls, play_groups, config_filename: str = default_config_filename):
-        with open(config_filename) as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        return cls(play_groups, **config)
+    default_config_filename = default_config_filename
 
     def get_social_venue_for_person(self, person):
         """

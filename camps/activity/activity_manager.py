@@ -20,7 +20,7 @@ class CampActivityManager(ActivityManager):
         super().__init__(*args, **kwargs)
 
     def activate_next_shift(self,):
-        for super_group in self.active_groups:
+        for super_group in self.active_super_groups:
             if "visits" in super_group:
                 continue
             super_group_instance = getattr(self.world, super_group)
@@ -45,6 +45,7 @@ class CampActivityManager(ActivityManager):
         except AttributeError:
             return subgroup
 
-    def do_timestep(self, regional_compliance = None):
-        ret = super().do_timestep(regional_compliance=regional_compliance)
+    def do_timestep(self):
+        ret = super().do_timestep()
         self.activate_next_shift()
+        return ret

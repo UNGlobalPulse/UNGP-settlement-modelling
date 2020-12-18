@@ -525,7 +525,7 @@ print("Infected people in seed = ", len(world.people.infected))
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
 leisure.leisure_distributors = {}
 leisure.leisure_distributors["pump_latrines"] = PumpLatrineDistributor.from_config(
-    pump_latrines=world.pump_latrines
+    world.pump_latrines
 )
 leisure.leisure_distributors["play_groups"] = PlayGroupDistributor.from_config(
     world.play_groups

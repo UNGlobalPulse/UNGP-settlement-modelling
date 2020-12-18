@@ -1,7 +1,8 @@
-female_age_probabilities:
-  0-100: 0.222
-male_age_probabilities:
-  0-100: 0.
+poisson_parameters:
+  female:
+    0-100: 0.222
+  male:
+    0-100: 0.
 neighbours_to_consider: 5
 maximum_distance: 1000
 weekend_boost: 1.0

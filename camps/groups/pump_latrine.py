@@ -11,8 +11,9 @@ from june.groups import Household
 
 default_config_filename = camp_configs_path / "defaults/groups/pump_latrine.yaml"
 
+
 class PumpLatrine(SocialVenue):
-    def __init__(self, max_size=np.inf, area = None):
+    def __init__(self, max_size=np.inf, area=None):
         self.max_size = max_size
         super().__init__()
         self.area = area
@@ -21,12 +22,16 @@ class PumpLatrine(SocialVenue):
     def coordinates(self):
         return self.area.coordinates
 
+
 class PumpLatrines(SocialVenues):
+    social_venue_class = PumpLatrine
     def __init__(self, pump_latrines: List[PumpLatrine]):
         super().__init__(pump_latrines, make_tree=False)
 
     @classmethod
-    def for_areas(cls, areas: List[Area], venues_per_capita=1/(100+35/2), max_size=np.inf):
+    def for_areas(
+        cls, areas: List[Area], venues_per_capita=1 / (100 + 35 / 2), max_size=np.inf
+    ):
         pump_latrines = []
         for area in areas:
             area_population = len(area.people)
@@ -36,32 +41,9 @@ class PumpLatrines(SocialVenues):
                 pump_latrines.append(pump_latrine)
         return cls(pump_latrines)
 
-class PumpLatrineDistributor(SocialVenueDistributor):
-    def __init__(
-            self,
-            pump_latrines: PumpLatrines,
-            male_age_probabilities: dict = None,
-            female_age_probabilities: dict = None,
-            neighbours_to_consider=5,
-            maximum_distance=5,
-            weekend_boost: float = 1.0,
-            drags_household_probability = 0.
-    ):
-        super().__init__(
-            social_venues=pump_latrines,
-            male_age_probabilities=male_age_probabilities,
-            female_age_probabilities=female_age_probabilities,
-            neighbours_to_consider=neighbours_to_consider,
-            maximum_distance=maximum_distance,
-            weekend_boost=weekend_boost,
-            drags_household_probability=drags_household_probability
-        )
 
-    @classmethod
-    def from_config(cls, pump_latrines, config_filename: str = default_config_filename):
-        with open(config_filename) as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        return cls(pump_latrines, **config)
+class PumpLatrineDistributor(SocialVenueDistributor):
+    default_config_filename = default_config_filename
 
     def get_social_venue_for_person(self, person):
         """

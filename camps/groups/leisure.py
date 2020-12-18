@@ -77,7 +77,8 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
     if "residence_visits" in list_of_leisure_groups:
         raise NotImplementedError
 
-    return Leisure(leisure_distributors)
+    return Leisure(leisure_distributors, regions=world.regions)
+
 
 def generate_leisure_for_config(world, config_filename):
     """
@@ -89,6 +90,6 @@ def generate_leisure_for_config(world, config_filename):
     """
     with open(config_filename) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
-    list_of_leisure_groups = config['activity_to_super_groups']['leisure']
+    list_of_leisure_groups = config["activity_to_super_groups"]["leisure"]
     leisure_instance = generate_leisure_for_world(list_of_leisure_groups, world)
     return leisure_instance
