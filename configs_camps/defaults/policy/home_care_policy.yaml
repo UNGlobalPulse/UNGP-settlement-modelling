@@ -20,18 +20,6 @@ severe_symptoms_stay_home:
   start_time: 1000-01-01
   end_time: 9999-01-01
 
-susceptibility:
-    1:
-        start_time: 1000-01-01
-        end_time: 9999-01-01
-        age_group: 0-9
-        susceptibility: 1.0
-    2:
-        start_time: 1000-01-01
-        end_time: 9999-01-01
-        age_group: 10-18
-        susceptibility: 1.0
-
 quarantine:
   n_days: 7 # for the symptomatic person
   n_days_household: 7 # for the housemates
@@ -49,7 +37,7 @@ change_leisure_probability:
     1:
         start_time: 1000-01-01
         end_time: 2020-04-15
-        leisure_activities_probabilities:
+        leisure_poisson_parameters:
             communals:
                 men: 
                     0-100: 0.584
@@ -78,7 +66,7 @@ change_leisure_probability:
     2:
         start_time: 2020-04-15
         end_time: 2021-01-01
-        leisure_activities_probabilities:
+        leisure_poisson_parameters:
             communals:
                 men:
                     0-100: 1.07

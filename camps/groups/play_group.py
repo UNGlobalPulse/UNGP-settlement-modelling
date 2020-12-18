@@ -4,7 +4,7 @@ import yaml
 from typing import List, Optional, Dict
 from enum import IntEnum
 
-from june.groups.group import Group, Supergroup
+from june.groups import Group, Supergroup
 from june.geography import Area
 from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVenueError
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor

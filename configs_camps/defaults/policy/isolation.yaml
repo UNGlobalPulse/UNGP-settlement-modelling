@@ -45,7 +45,7 @@ change_leisure_probability:
     1:
         start_time: 1000-01-01
         end_time: 2020-04-15
-        leisure_activities_probabilities:
+        leisure_poisson_parameters:
             communals:
                 men: 
                     0-100: 0.584
@@ -74,7 +74,7 @@ change_leisure_probability:
     2:
         start_time: 2020-04-15
         end_time: 2021-01-01
-        leisure_activities_probabilities:
+        leisure_poisson_parameters:
             communals:
                 men:
                     0-100: 1.07

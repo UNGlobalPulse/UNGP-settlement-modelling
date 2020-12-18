@@ -63,7 +63,7 @@ parser.add_argument(
     "--comorbidities",
     help="True to include comorbidities",
     required=False,
-    default="True",
+    default="False",
 )
 parser.add_argument(
     "-p",
@@ -383,12 +383,11 @@ if args.comorbidities:
         camp_configs_path / "defaults/comorbidities.yaml",
         camp_data_path / "input/demography/uk_male_comorbidities.csv",
         camp_data_path / "input/demography/uk_female_comorbidities.csv",
-        asymptomatic_ratio=0.2,
     )
 
 
 else:
-    health_index_generator = HealthIndexGenerator.from_file(asymptomatic_ratio=0.2)
+    health_index_generator = HealthIndexGenerator.from_file()
 
 # ============================================================================#
 
@@ -425,7 +424,7 @@ else:
 # =================================== infection ===============================#
 
 
-selector = InfectionSelector.from_file(
+selector = InfectionSelector(
     health_index_generator=health_index_generator,
     transmission_config_path=transmission_config_path,
 )

@@ -1,6 +1,6 @@
 alpha_physical: 4. # double UK alpha
 
-beta:
+betas:
   communal: 1.0
   female_communal: 1.0
   religious: 1.0
