@@ -73,21 +73,24 @@ parser.add_argument(
     default="ContactInteraction_med_low_low_low.yaml",
 )
 parser.add_argument(
-    "-hb", "--household_beta", help="Household beta", required=False, default=False
+    "-hb", "--household_beta",
+    help="Household beta",
+    required=False,
+    default=0.2
 )
 parser.add_argument(
     "-ih",
     "--indoor_beta_ratio",
     help="Indoor/household beta ratio scaling",
     required=False,
-    default=False,
+    default=0.55,
 )
 parser.add_argument(
     "-oh",
     "--outdoor_beta_ratio",
     help="Outdoor/household beta ratio scaling",
     required=False,
-    default=False,
+    default=0.05,
 )
 parser.add_argument(
     "-inf",
@@ -215,8 +218,13 @@ else:
 
 if args.extra_learning_centers == "True":
     args.extra_learning_centers = True
-else:
+elif args.extra_learning_centers == "False":
     args.extra_learning_centers = False
+
+if args.learning_center_shifts == "True":
+    args.learning_center_shifts = True
+elif args.learning_center_shifts == "False":
+    args.learning_center_shifts = False
 
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
