@@ -221,9 +221,7 @@ if args.extra_learning_centers == "True":
 elif args.extra_learning_centers == "False":
     args.extra_learning_centers = False
 
-if args.learning_center_shifts == "True":
-    args.learning_center_shifts = True
-elif args.learning_center_shifts == "False":
+if args.learning_center_shifts == "False":
     args.learning_center_shifts = False
 
 if args.infectiousness_path == "nature":
