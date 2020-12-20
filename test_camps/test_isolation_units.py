@@ -15,7 +15,9 @@ from camps.policy import Isolation
 
 @pytest.fixture(name="selector")
 def make_selector():
-    selector_file = paths.configs_path / "defaults/transmission/TransmissionConstant.yaml"
+    selector_file = (
+        paths.configs_path / "defaults/transmission/TransmissionConstant.yaml"
+    )
     return InfectionSelector.from_file(transmission_config_path=selector_file)
 
 
@@ -62,9 +64,7 @@ def test__time_of_testing(selector, isolation):
 def test__send_to_isolation(selector, isolation):
     person = Person.from_attributes(sex="m", age=27)
     infect_person(person, selector, symptom_tag="mild")
-    person.infection.time_of_testing = isolation._generate_time_of_testing(
-        person
-    )
+    person.infection.time_of_testing = isolation._generate_time_of_testing(person)
     isolation_units = IsolationUnits([IsolationUnit(area=None)])
     for day in range(0, 100):
         isolation.apply(
@@ -102,8 +102,7 @@ def test__isolation_compliance(selector):
             elif (
                 person.infection.time_of_testing
                 < day
-                < person.infection.time_of_testing
-                + isolation.n_quarantine_days
+                < person.infection.time_of_testing + isolation.n_quarantine_days
             ):
                 if person in isolation_units[0].people:
                     go_isolation.add(person.id)
@@ -111,6 +110,7 @@ def test__isolation_compliance(selector):
                 assert person not in isolation_units[0].people
             isolation_units[0].clear()
     assert np.isclose(len(go_isolation), 500, rtol=0.1)
+
 
 def test__hospitalisation_takes_preference(selector):
     isolation = Isolation(
