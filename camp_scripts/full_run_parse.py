@@ -76,7 +76,7 @@ parser.add_argument(
     "-hb", "--household_beta",
     help="Household beta",
     required=False,
-    default=0.2
+    default=0.25
 )
 parser.add_argument(
     "-ih",
