@@ -216,9 +216,7 @@ if args.learning_centers == "True":
 else:
     args.learning_centers = False
 
-if args.extra_learning_centers == "True":
-    args.extra_learning_centers = True
-elif args.extra_learning_centers == "False":
+if args.extra_learning_centers == "False":
     args.extra_learning_centers = False
 
 if args.learning_center_shifts == "False":
