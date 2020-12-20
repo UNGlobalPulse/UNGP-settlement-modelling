@@ -63,7 +63,7 @@ parser.add_argument(
     "--comorbidities",
     help="True to include comorbidities",
     required=False,
-    default="False",
+    default="True",
 )
 parser.add_argument(
     "-p",
@@ -275,8 +275,8 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 #world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-world = generate_empty_world({"region": ["CXB-219"]})
-#world = generate_empty_world()
+#world = generate_empty_world({"region": ["CXB-219"]})
+world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -449,48 +449,48 @@ else:
 
 
 if args.household_beta:
-    interaction.beta["household"] = float(args.household_beta)
-    interaction.beta["hospital"] = float(args.household_beta) * 0.1
-    interaction.beta["shelter"] = float(args.household_beta)
+    interaction.betas["household"] = float(args.household_beta)
+    interaction.betas["hospital"] = float(args.household_beta) * 0.1
+    interaction.betas["shelter"] = float(args.household_beta)
 
 if args.outdoor_beta_ratio:
-    interaction.beta["play_group"] = interaction.beta["household"] * float(
+    interaction.betas["play_group"] = interaction.betas["household"] * float(
         args.outdoor_beta_ratio
     )
-    interaction.beta["pump_latrine"] = interaction.beta["household"] * float(
+    interaction.betas["pump_latrine"] = interaction.betas["household"] * float(
         args.outdoor_beta_ratio
     )
 
 if args.indoor_beta_ratio:
-    interaction.beta["communal"] = interaction.beta["household"] * float(
+    interaction.betas["communal"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["female_communal"] = interaction.beta["household"] * float(
+    interaction.betas["female_communal"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["religious"] = interaction.beta["household"] * float(
+    interaction.betas["religious"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["distribution_center"] = interaction.beta["household"] * float(
+    interaction.betas["distribution_center"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["n_f_distribution_center"] = interaction.beta["household"] * float(
+    interaction.betas["n_f_distribution_center"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["e_voucher"] = interaction.beta["household"] * float(
+    interaction.betas["e_voucher"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.beta["learning_center"] = interaction.beta["household"] * float(
+    interaction.betas["learning_center"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
 
 if args.learning_centers and args.learning_center_beta_ratio:
-    interaction.beta["learning_center"] = interaction.beta["household"] * float(
+    interaction.betas["learning_center"] = interaction.betas["household"] * float(
         args.learning_center_beta_ratio
     )
 
 if args.play_group_beta_ratio:
-    interaction.beta["play_group"] = interaction.beta["household"] * float(
+    interaction.betas["play_group"] = interaction.betas["household"] * float(
         args.play_group_beta_ratio
     )
 
