@@ -1,0 +1,11 @@
+do "python3 create_scripts.py [--option]"
+
+can run with ONE option from:
+ --named-grid [name] (eg. "isolation", "mask_wearing" see named_grids.py)
+ --pkl [path/to/grid.pkl] # grid.pkl should be essentially a pickled json...
+ --json [path/to/grid.json]
+
+follow the instructions on screen.
+
+you will need to edit the "script" variable in
+ make_submission_scripts.py to match your system.
