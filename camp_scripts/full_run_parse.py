@@ -220,7 +220,7 @@ if args.extra_learning_centers == "False":
     args.extra_learning_centers = False
 
 if args.learning_center_shifts == "False":
-    args.learning_center_shifts = False
+    args.learning_center_shifts = 4
 
 if args.learning_center_beta_ratio == "False":
     args.learning_center_beta_ratio = False
