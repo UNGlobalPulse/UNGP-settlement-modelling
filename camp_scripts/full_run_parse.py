@@ -8,6 +8,8 @@ import sys
 import argparse
 from pathlib import Path
 
+from collections import defaultdict
+
 from june.geography import Geography
 from june.demography.demography import (
     load_age_and_sex_generators_for_bins,
@@ -276,6 +278,9 @@ if args.learning_centers:
 print("Plag group beta ratio set to: {}".format(args.play_group_beta_ratio))
 print("Save path set to: {}".format(args.save_path))
 
+print("\n", args.__dict__, "\n")
+time.sleep(10)
+
 # =============== world creation =========================#
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
@@ -331,11 +336,12 @@ if args.learning_centers:
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-args.extra_learning_centers :]
+        top_k = learning_centers_sorted[-int(args.extra_learning_centers) :]
         for learning_center in top_k:
             extra_lc = LearningCenter(
                 coordinates=learning_center.super_area.coordinates
             )
+            extra_lc.area = learning_center.area
             world.learning_centers.members.append(extra_lc)
         world.learning_centers = LearningCenters(
             world.learning_centers.members, n_shifts=4
