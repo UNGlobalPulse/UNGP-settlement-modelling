@@ -222,6 +222,9 @@ if args.extra_learning_centers == "False":
 if args.learning_center_shifts == "False":
     args.learning_center_shifts = False
 
+if args.learning_center_beta_ratio == "False":
+    args.learning_center_beta_ratio = False
+
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
 elif args.infectiousness_path == "correction_nature":
