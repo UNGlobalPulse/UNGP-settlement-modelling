@@ -1,75 +1,72 @@
 ![Python package](https://github.com/IDAS-Durham/JUNE/workflows/Python%20package/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/idas-durham/june/branch/master/graph/badge.svg?token=6TKUHtWxJZ)](https://codecov.io/gh/idas-durham/june)
 
-# Policy simulation tool based on multi-agent epidemic modelling within settlements
+# Operational intervention simulation tool based on multi-agent epidemic modelling within settlements
 
-This repo is a fork of the JUNE simulation tool originally designed for modelling the spread of COVID-19 in the UK. The model is named after [June Almeida](https://en.wikipedia.org/wiki/June_Almeida). June was the female Scottish virologist that first identified the coronavirus group of viruses. 
+This repo contains the relevant code for our individual-based simualtion for epidemics within refugee and internally displaced person (IDP) settlements. See our paper for more details on the model. Our model is based on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modeling framework originally applied to simulating the spread of COVID-19 in the UK. 
 
-We focus on Cox's Bazar Kutupalong-Batukhali Expansion Site located in Banghladesh. The relevant sections of the camp under analysis can be found in the `camp_data/inputs/geography` folder (see Data section below).
+The model presented here is designed to be generalizable to any settlement, however, we focus on Kutupalong-Batukhali Expansion Site, part of the refugee settlement in Cox's Bazar, Banghladesh.
 
-# Contributing
-
-Issues are being created and will serve as initial sources of jobs to be done.
-
-Please create a new brach and, when done, submit a pull request and assign a reviewer. There are also tests which must pass before merging into master, you can add new ones in the ``test_camps`` folder. 
-
-With new code additions and alterations, please write tests to ensure future consistency.
-
-All contributions to the codebase which are specific to camps should be in the ``camps/`` folder to make it easier to merge with the main repository. For changes that concern general functionality that can be applied to other countries, please consider submitting a Pul Request to the [JUNE repo](https://github.com/IDAS-Durham/JUNE)
+If you wish to adapt this to your own setting, we encourage you to do so. If you need any assistance please do get in touch with us (see Contact section below)
 
 # Setup
 
-
-### 1. 
-Clone the repo, (FIX to right URL on release)
-```
-git clone https://github.com/JosephPB/JUNE 
-```
-and install Python3 header files. In Ubuntu and variants, this is the ``python3-dev`` package. You will also need an up-to-date gcc or intel compiler installed.
-
-
-### 2. 
-
-To use the package, the only requirement is to have [JUNE](https://github.com/IDAS-Durham/JUNE) installed. We currently support June 1.0
+Clone the repo:
 
 ```
-pip install june==1.0
+git clone https://github.com/UNGlobalPulse/UNGP-settlement-modelling 
 ```
-and then you can install this repo  by doing
+
+and install the necessary packages:
 ```
 pip install -e .
 ```
 
-if there are any issues, please report them to the issues page of this repo.
+# Data
 
-### 3. 
-Get the data
+Your code will now be ready to go, however, in order to run the simulation you will need the relevant data. Two folders are required to be created in order to run this simulation.
 
-If you just want to use the code, and do not plan on contributing more data to it, then simply download June's data folder,
+The first is the data for the base JUNE model. In the home directory run:
 
 ```
 get_june_data.sh
 ```
 
-and the camps' data folder
+This will create a data folder in `<HOME>/data/`
 
-```
-bash get_camp_data.sh
-```
+You need a second folder with the data for your particular adaptation (in our case, the Cox's Bazar refugee settlement). This should be in `<HOME>/camp_data/`
 
-Otherwise, if you want to contribute with data, follow the instructions on the Data section.
-
-# Tests
-
-Run the tests with
-
-```
-pytest test_camps
-```
+The data we use to run the simualtion is all derived from open-source datasets, details of which can be found in our paper. Given the sensitivity of this project we are not open-sourcing this data, however, please get in contact with us if you would like to know more about data access (see Contact section below). 
 
 
 # Quickstart
 
-Refer to ``Notebooks/quickstart camp.ipynb``
+In order to introduce the user to our codebase we have created a walkthrough Notebook:
+
+```
+Notebooks/quickstart camp.ipynb
+```
+
+# Contributing
+
+# Tests
+
+Run the tests with:
+
+```
+cd test_camps
+pytest
+```
+
+# License
+
+Epidemiological modeling is a sensitive topic and it is important that models being used to influence public health decision making are able to be reviewed and proped by the community. In the interest of scientific openness and advancement we made this code available under the GPL v3 License.
+
+This code relies on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modelling framework which is licensed under GLP v3.
+
+# Contact
+
+For questions regarding this project please contact: joseph[at]unglobalpulse.org
+
 
 
