@@ -1,6 +1,3 @@
-![Python package](https://github.com/IDAS-Durham/JUNE/workflows/Python%20package/badge.svg?branch=master)
-[![codecov](https://codecov.io/gh/idas-durham/june/branch/master/graph/badge.svg?token=6TKUHtWxJZ)](https://codecov.io/gh/idas-durham/june)
-
 # Operational response simulation tool for epidemics within refugee and IDP settlements
 
 This repo contains the relevant code for our individual-based simualtion for epidemics within refugee and internally displaced person (IDP) settlements. See our paper for more details on the model. Our model is based on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modeling framework originally applied to simulating the spread of COVID-19 in the UK. 
@@ -20,6 +17,7 @@ git clone https://github.com/UNGlobalPulse/UNGP-settlement-modelling
 and install the necessary packages:
 
 ```
+cd UNGP-settlement-modelling
 pip install -e .
 ```
 
@@ -65,7 +63,7 @@ pytest
 
 Epidemiological modeling is a sensitive topic and it is important that models being used to influence public health decision making are able to be reviewed and proped by the community. In the interest of scientific openness and advancement we made this code available under the GPL v3 License.
 
-This code relies on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modelling framework which is licensed under GLP v3.
+This code relies on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modelling framework which is licensed under GPL v3.
 
 # Contact
 
