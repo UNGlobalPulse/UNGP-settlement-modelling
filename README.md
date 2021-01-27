@@ -1,7 +1,7 @@
 ![Python package](https://github.com/IDAS-Durham/JUNE/workflows/Python%20package/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/idas-durham/june/branch/master/graph/badge.svg?token=6TKUHtWxJZ)](https://codecov.io/gh/idas-durham/june)
 
-# Operational intervention simulation tool based on multi-agent epidemic modelling within settlements
+# Operational response simulation tool for epidemics within refugee and IDP settlements
 
 This repo contains the relevant code for our individual-based simualtion for epidemics within refugee and internally displaced person (IDP) settlements. See our paper for more details on the model. Our model is based on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modeling framework originally applied to simulating the spread of COVID-19 in the UK. 
 
@@ -18,6 +18,7 @@ git clone https://github.com/UNGlobalPulse/UNGP-settlement-modelling
 ```
 
 and install the necessary packages:
+
 ```
 pip install -e .
 ```
@@ -48,6 +49,8 @@ Notebooks/quickstart camp.ipynb
 ```
 
 # Contributing
+
+Contributions to this project are welcome. Please fork the repository and submit Pull Requests with detailed descriptions of your changes. Please consider whether this change is more appropriate to this repository or the [JUNE](https://github.com/IDAS-Durham/JUNE) repository.
 
 # Tests
 
