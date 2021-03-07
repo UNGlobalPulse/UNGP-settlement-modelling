@@ -36,8 +36,8 @@ from june.demography.demography import (
 )
 from june.paths import data_path, configs_path
 from june.infection import Infection, HealthIndexGenerator
-from june.infection_seed import InfectionSeed
-from june.infection import InfectionSelector
+from june.infection_seed import InfectionSeed, InfectionSeeds
+from june.infection import InfectionSelector, InfectionSelectors
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
 from june.distributors import HospitalDistributor
@@ -91,10 +91,7 @@ parser.add_argument(
     default="ContactInteraction_med_low_low_low.yaml",
 )
 parser.add_argument(
-    "-hb", "--household_beta",
-    help="Household beta",
-    required=False,
-    default=0.25
+    "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
     "-ih",
@@ -132,7 +129,11 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3,
+    "-t",
+    "--isolation_testing",
+    help="Mean testing time",
+    required=False,
+    default=3,
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -302,9 +303,9 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 world = generate_empty_world({"region": ["CXB-219"]})
-#world = generate_empty_world()
+# world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -503,9 +504,9 @@ if args.indoor_beta_ratio:
     interaction.betas["distribution_center"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.betas["n_f_distribution_center"] = interaction.betas["household"] * float(
-        args.indoor_beta_ratio
-    )
+    interaction.betas["n_f_distribution_center"] = interaction.betas[
+        "household"
+    ] * float(args.indoor_beta_ratio)
     interaction.betas["e_voucher"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
@@ -536,7 +537,9 @@ print("Detected cases = ", sum(cases_detected.values()))
 
 super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
 super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
-infection_seed = InfectionSeed(world=world, infection_selector=selector,)
+infection_seed = InfectionSeed(
+    world=world, infection_selector=selector
+)
 for region in world.regions:
     if region.name in cases_detected.keys():
         infection_seed.unleash_virus(
@@ -555,29 +558,29 @@ print("Infected people in seed = ", len(world.people.infected))
 # =================================== leisure config ===============================#
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
 leisure.leisure_distributors = {}
-leisure.leisure_distributors["pump_latrines"] = PumpLatrineDistributor.from_config(
+leisure.leisure_distributors["pump_latrine"] = PumpLatrineDistributor.from_config(
     world.pump_latrines
 )
-leisure.leisure_distributors["play_groups"] = PlayGroupDistributor.from_config(
+leisure.leisure_distributors["play_group"] = PlayGroupDistributor.from_config(
     world.play_groups
 )
 leisure.leisure_distributors[
-    "distribution_centers"
+    "distribution_center"
 ] = DistributionCenterDistributor.from_config(world.distribution_centers)
-leisure.leisure_distributors["communals"] = CommunalDistributor.from_config(
+leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
 leisure.leisure_distributors[
     "female_communals"
 ] = FemaleCommunalDistributor.from_config(world.female_communals)
-leisure.leisure_distributors["religiouss"] = ReligiousDistributor.from_config(
+leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
 )
-leisure.leisure_distributors["e_vouchers"] = EVoucherDistributor.from_config(
+leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
     world.e_vouchers
 )
 leisure.leisure_distributors[
-    "n_f_distribution_centers"
+    "n_f_distribution_center"
 ] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
 leisure.leisure_distributors[
     "shelters_visits"
@@ -604,7 +607,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    infection_selector=selector,
+    infection_selectors=InfectionSelectors([selector]),
     record=record,
 )
 

@@ -53,7 +53,7 @@ class PlayGroup(SocialVenue):
     def coordinates(self):
         return self.area.coordinates
 
-    def get_leisure_subgroup(self, person: "Person"):
+    def get_leisure_subgroup(self, person, subgroup_type, to_send_abroad):
         if person.age >= self.min_age and person.age <= self.max_age:
             subgroup_idx = (
                 np.searchsorted(self.age_group_limits, person.age, side="right") - 1

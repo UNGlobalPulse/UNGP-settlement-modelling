@@ -19,6 +19,7 @@ from enum import IntEnum
 from random import randint
 
 from june.groups import Group, Supergroup, Households, Household
+from june.groups.group.interactive import InteractiveGroup
 from june.geography import Areas
 
 
@@ -70,7 +71,10 @@ class Shelter(Household):
     def get_leisure_subgroup(self, person, subgroup_type, to_send_abroad):
         self.being_visited = True
         self.make_household_residents_stay_home(to_send_abroad=to_send_abroad)
-        return self[self._get_leisure_subgroup_for_person(person=person)]
+        return self[randint(0,1)]
+
+    def get_interactive_group(self, people_from_abroad=None):
+        return InteractiveGroup(self, people_from_abroad=people_from_abroad)
 
 
 class Shelters(Supergroup):
