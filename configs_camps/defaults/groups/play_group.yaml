@@ -1,15 +1,43 @@
-poisson_parameters:
-  male:
-    0-3: 0.
-    3-7: 6.91
-    7-12: 5.69
-    12-17: 4.83
-    17-100: 0.
-  female:
-    0-3: 0.
-    3-7: 6.91
-    7-12: 5.69
-    12-16: 4.83
-    17-100: 0.
-weekend_boost: 1.0
-drags_household_probability: 0.0
+# Assume people go twice a week to community centers, any day equally likely (weekdays and weekends)
+times_per_week:
+  weekday:
+    male:
+      0-3: 0.
+      3-7: 12
+      7-12: 11
+      12-17: 10
+      17-100: 0.
+    female:
+      0-3: 0.
+      3-7: 12
+      7-12: 11
+      12-16: 10
+      17-100: 0.
+  weekend:
+    male:
+      0-3: 0.
+      3-7: 6
+      7-12: 5
+      12-17: 4
+      17-100: 0.
+    female:
+      0-3: 0.
+      3-7: 6
+      7-12: 5
+      12-17: 4
+      17-100: 0.
+hours_per_day:
+  weekday:
+    male:
+      0-100: 2
+    female:
+      0-100: 2
+  weekend:
+    male:
+      0-100: 2
+    female:
+      0-100: 2
+drags_household_probability: 0
+neighbours_to_consider: 5
+maximum_distance: 1000
+

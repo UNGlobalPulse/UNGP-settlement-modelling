@@ -303,8 +303,8 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 #world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-#world = generate_empty_world({"region": ["CXB-219"]})
-world = generate_empty_world()
+world = generate_empty_world({"region": ["CXB-219"]})
+#world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -542,9 +542,10 @@ for region in world.regions:
         infection_seed.unleash_virus(
             n_cases=2 * cases_detected[region.name],
             population=Population(region.people),
+            time=0,
         )
 # Add some extra random cases
-infection_seed.unleash_virus(n_cases=44, population=world.people)
+infection_seed.unleash_virus(n_cases=44, population=world.people, time=0)
 
 print("Infected people in seed = ", len(world.people.infected))
 

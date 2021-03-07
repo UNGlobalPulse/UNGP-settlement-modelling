@@ -57,7 +57,7 @@ class CampGeography(Geography):
 
     @classmethod
     def _create_areas(
-        cls, area_coords: pd.DataFrame, super_area: pd.DataFrame
+        cls, area_coords: pd.DataFrame, super_area: pd.DataFrame, socioeconomic_indices = None,
     ) -> List[Area]:
         """
         Applies the _create_area function throught the area_coords dataframe.
