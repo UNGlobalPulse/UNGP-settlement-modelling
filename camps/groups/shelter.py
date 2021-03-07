@@ -67,13 +67,11 @@ class Shelter(Household):
     def coordinates(self):
         return self.area.coordinates
 
-    def get_leisure_subgroup(self, person):
-        if self.n_families == 0:
-            return None
-        elif self.n_families == 1:
-            return self[0]
-        else:
-            return self[randint(0,1)]
+    def get_leisure_subgroup(self, person, subgroup_type, to_send_abroad):
+        self.being_visited = True
+        self.make_household_residents_stay_home(to_send_abroad=to_send_abroad)
+        return self[self._get_leisure_subgroup_for_person(person=person)]
+
 
 class Shelters(Supergroup):
     def __init__(self, shelters):
