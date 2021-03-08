@@ -48,14 +48,3 @@ def test__shelter_links(visits_world):
             assert np.isclose(i, j, rtol=0.11)
 
 
-def test__shelter_get_candidates(camps_world):
-    shelter_visits_distributor = SheltersVisitsDistributor.from_config()
-    for i in range(50):
-        shelter = camps_world.shelters[i]
-        possible_venues = shelter_visits_distributor.get_possible_venues_for_household(
-            shelter
-        )
-        if shelter.shelters_to_visit is None:
-            assert possible_venues == ()
-        else:
-            assert possible_venues == shelter.shelters_to_visit
