@@ -45,7 +45,7 @@ change_leisure_probability:
 
           religiouss:
             both_sexes:
-              0-100: 0.34
+              0-100: 0.32
 
           e_vouchers:
             both_sexes:
@@ -53,7 +53,7 @@ change_leisure_probability:
 
           distribution_centers:
             both_sexes:
-              0-100: 0.5
+              0-100: 0.66
 
     2:
         start_time: 2020-04-15
@@ -66,14 +66,10 @@ change_leisure_probability:
             female:
               0-100: 0.5
 
-          religiouss:
-            both_sexes:
-              0-100: 0.34
-
           e_vouchers:
             both_sexes:
               0-100: 0.5
 
           distribution_centers:
             both_sexes:
-              0-100: 0.5
+              0-100: 0.66

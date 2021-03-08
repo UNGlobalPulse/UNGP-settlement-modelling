@@ -1,27 +1,27 @@
 times_per_week:
   weekday:
     male:
-      0-65: 2.0
-      65-100: 1.4
+      0-65: 3.33
+      65-100: 2.06
     female:
-      0-65: 2.0
-      65-100: 1.4
+      0-65: 3.33
+      65-100: 2.06
   weekend:
     male:
-      0-65: 1.0
-      65-100: 0.6
+      0-65: 1.3
+      65-100: 0.83
     female:
-      0-65: 1.0
-      65-100: 0.6
+      0-65: 1.3
+      65-100: 0.83
 hours_per_day:
   weekday:
     male:
-      0-100: 2
+      0-100: 8
     female:
-      0-100: 2
+      0-100: 8
   weekend:
     male:
-      0-100: 2
+      0-100: 8
     female:
-      0-100: 2
+      0-100: 8
 drags_household_probability: 0

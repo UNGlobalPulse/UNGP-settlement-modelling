@@ -15,6 +15,8 @@ See the GNU General Public License for more details.
 """
 
 import numpy as np
+import random
+import numba as nb
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
@@ -71,6 +73,21 @@ from camps.groups import EVouchers, EVoucherDistributor
 from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 
+def set_random_seed(seed=999):
+    """
+    Sets global seeds for testing in numpy, random, and numbaized numpy.
+    """
+    @nb.njit(cache=True)
+    def set_seed_numba(seed):
+        random.seed(seed)
+        return np.random.seed(seed)
+
+    np.random.seed(seed)
+    set_seed_numba(seed)
+    random.seed(seed)
+    return
+
+set_random_seed(0)
 
 # =============== Argparse =========================#
 
@@ -305,7 +322,7 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 # world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 world = generate_empty_world({"region": ["CXB-219"]})
-# world = generate_empty_world()
+#world = generate_empty_world()
 
 # populate empty world
 populate_world(world)

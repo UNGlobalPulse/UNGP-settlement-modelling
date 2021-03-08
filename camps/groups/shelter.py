@@ -50,7 +50,7 @@ class Shelter(Household):
             assert self.n_households == 2
             raise ValueError("Shelter full!")
         # add to residents
-        self.residents = tuple((*self.residents, person))
+        self.residents = tuple((*self.residents, *household.people))
 
     @property
     def families(self):
