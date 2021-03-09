@@ -1,11 +1,32 @@
-poisson_parameters:
-  male:
-    0-18: 0.008
-    19-100: 0.074
-  female:
-    7-18: 0.001
-    19-100: 0.024
+# men go 0.1 times per week if < 18 and 0.25 otherwise
+# women go 0.0 times per week if < 18 and 0.08 otherwise
+times_per_week:
+  weekday:
+    male:
+      0-18: 0.013
+      18-100: 0.123
+    female:
+      7-18: 0.0016
+      18-100: 0.04
+  weekend:
+    male:
+      0-18: 0.0053
+      18-100: 0.0493
+    female:
+      7-18: 0.0006
+      18-100: 0.016
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
 neighbours_to_consider: 5
 maximum_distance: 1000
-weekend_boost: 1.0
-drags_household_probability: 0.0
+

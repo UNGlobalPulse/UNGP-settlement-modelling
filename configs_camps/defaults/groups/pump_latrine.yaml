@@ -1,9 +1,27 @@
-poisson_parameters:
-  male:
-    0-100 : 6.91
-  female:
-    0-100 : 6.91
+# twice per day
+times_per_week:
+  weekday:
+    male:
+      0-100: 11.5
+    female:
+      0-100: 11.5
+  weekend:
+    male:
+      0-100: 4.6
+    female:
+      0-100: 4.6
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
 neighbours_to_consider: 2
 maximum_distance: 1000
-weekend_boost: 1.0
-drags_household_probability: 0.0
+

@@ -1,5 +1,18 @@
 # Operational response simulation tool for epidemics within refugee and IDP settlements
 
+
+# This repo uses the private version of June, install it with 
+
+```
+pip install git+https://github.com/IDAS-Durham/JUNE-private.git 
+```
+or with ssh
+
+```
+pip install git+ssh://git@github.com/IDAS-Durham/JUNE-private.git
+```
+
+
 This repo contains the relevant code for our individual-based simualtion for epidemics within refugee and internally displaced person (IDP) settlements. See our [paper](https://www.medrxiv.org/content/10.1101/2021.01.27.21250611v1) for more details on the model. Our model is based on the [JUNE](https://github.com/IDAS-Durham/JUNE) epidemic modeling framework originally applied to simulating the spread of COVID-19 in the UK. 
 
 The model presented here is designed to be generalizable to any settlement, however, we focus on Kutupalong-Batukhali Expansion Site, part of the refugee settlement in Cox's Bazar, Banghladesh.
