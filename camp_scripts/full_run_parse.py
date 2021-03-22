@@ -111,6 +111,9 @@ parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
+    "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
+)
+parser.add_argument(
     "-ih",
     "--indoor_beta_ratio",
     help="Indoor/household beta ratio scaling",
@@ -236,6 +239,11 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
+
+if args.vaccines == "True":
+    args.vaccines = True
+else:
+    args.vaccines = False
 
 if args.isolation_units == "True":
     args.isolation_units = True
@@ -460,7 +468,7 @@ elif args.mask_wearing:
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
 
-elif args.vaccine:
+elif args.vaccines:
     policies = Policies.from_file(
         camp_configs_path / "defaults/policy/vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
