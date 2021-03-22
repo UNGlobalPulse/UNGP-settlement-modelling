@@ -1,0 +1,105 @@
+# needs more thinking
+social_distancing:
+        start_time: 2021-03-16
+        end_time: 2021-07-04 
+        beta_factors:
+          communal: 0.5
+          female_communal: 0.5
+          religious: 0.5
+          distribution_center: 0.5
+          pump_latrine: 0.5
+          hospital: 0.5
+          household: 0.5
+          shelter: 0.5
+
+hospitalisation:
+  start_time: 1000-01-01
+  end_time: 9999-01-01
+
+severe_symptoms_stay_home:
+  start_time: 1000-01-01
+  end_time: 9999-01-01
+
+quarantine:
+  n_days: 7 # for the symptomatic person
+  n_days_household: 7 # for the housemates
+  compliance: 0.3
+  household_compliance: 0.2
+  start_time: 1000-03-16 
+  end_time: 9999-03-23 
+
+vaccine_distribution:
+    # Oxford/AstraZeneca
+    1:
+        start_time: 2020-08-24 # 3 months after start of simulation
+        end_time: 2020-09-24 # 1 month of vaccine distirbution 
+        group_by: 'age'
+        group_type: '60-100'
+        group_coverage: 0.5
+        first_dose_efficacy: 0.4 # assumption
+        second_dose_efficacy: 0.60 # Lancet UK SD/SD
+        second_dose_compliance: 0.95 # assumption
+        mean_time_delay: 36 # roughly from Lancet trials
+        std_time_delay: 10 # roughly from Lancet trials
+        effective_after_first_dose: 12 # Taken as Pfizer - unknown
+        effective_after_second_dose: 14 # Lancet trials
+    2:
+        start_time: 2020-09-24 # 4 months after start of simulation
+        end_time: 2020-10-24 # 1 month of vaccine distirbution 
+        group_by: 'age'
+        group_type: '0-18'
+        group_coverage: 0.5
+        first_dose_efficacy: 0.4 # assumption
+        second_dose_efficacy: 0.60 # Lancet UK SD/SD
+        second_dose_compliance: 0.95 # assumption
+        mean_time_delay: 36 # roughly from Lancet trials
+        std_time_delay: 10 # roughly from Lancet trials
+        effective_after_first_dose: 12 # Taken as Pfizer - unknown
+        effective_after_second_dose: 14 # Lancet trials
+
+
+close_leisure_venue:
+    start_time: 1000-01-01
+    end_time: 2021-01-01
+    venues_to_close: ['n_f_distribution_center', 'female_communal']
+
+change_leisure_probability:
+    1:
+        start_time: 1000-01-01
+        end_time: 2020-04-15
+        activity_reductions:
+
+          communals:
+            both_sexes:
+              0-100: 0.5
+
+          religiouss:
+            both_sexes:
+              0-100: 0.32
+
+          e_vouchers:
+            both_sexes:
+              0-100: 0.5
+
+          distribution_centers:
+            both_sexes:
+              0-100: 0.66
+
+    2:
+        start_time: 2020-04-15
+        end_time: 2021-01-01
+        activity_reductions:
+
+          communals:
+            male:
+              0-100: 1.0
+            female:
+              0-100: 0.5
+
+          e_vouchers:
+            both_sexes:
+              0-100: 0.5
+
+          distribution_centers:
+            both_sexes:
+              0-100: 0.66
