@@ -460,6 +460,12 @@ elif args.mask_wearing:
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
 
+elif args.vaccine:
+    policies = Policies.from_file(
+        camp_configs_path / "defaults/policy/vaccine.yaml",
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
+
 else:
     policies = Policies.from_file(
         camp_configs_path / "defaults/policy/home_care_policy.yaml",
