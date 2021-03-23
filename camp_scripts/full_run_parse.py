@@ -114,6 +114,9 @@ parser.add_argument(
     "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
 )
 parser.add_argument(
+    "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
+)
+parser.add_argument(
     "-ih",
     "--indoor_beta_ratio",
     help="Indoor/household beta ratio scaling",
@@ -244,6 +247,11 @@ if args.vaccines == "True":
     args.vaccines = True
 else:
     args.vaccines = False
+
+if args.no_visits == "True":
+    args.no_visits = True
+else:
+    args.no_visits = False
 
 if args.isolation_units == "True":
     args.isolation_units = True
@@ -400,7 +408,9 @@ if args.learning_centers:
 
     CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
-
+if args.no_visits:
+    CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
+    
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
 world.play_groups = PlayGroups.for_areas(world.areas)
 world.distribution_centers = DistributionCenters.for_areas(world.areas)
