@@ -31,7 +31,7 @@ quarantine:
 vaccine_distribution:
     # Oxford/AstraZeneca
     1:
-        start_time: 2020-05-24 # 3 months after start of simulation
+        start_time: 2020-08-24 # 3 months after start of simulation
         end_time: 2020-09-24 # 1 month of vaccine distirbution 
         group_by: 'age'
         group_type: '60-100'
