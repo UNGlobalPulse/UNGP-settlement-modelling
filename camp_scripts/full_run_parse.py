@@ -623,12 +623,13 @@ leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
 leisure.leisure_distributors[
     "n_f_distribution_center"
 ] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
-leisure.leisure_distributors[
-    "shelters_visits"
-] = SheltersVisitsDistributor.from_config()
-leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
-    world.super_areas
-)
+if not args.no_visits:
+    leisure.leisure_distributors[
+        "shelters_visits"
+    ] = SheltersVisitsDistributor.from_config()
+    leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
+        world.super_areas
+    )
 # associate social activities to shelters
 leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
 
