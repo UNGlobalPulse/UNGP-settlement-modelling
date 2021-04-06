@@ -31,7 +31,7 @@ quarantine:
 vaccine_distribution:
     # Oxford/AstraZeneca
     1:
-        start_time: 2020-08-24 # 3 months after start of simulation
+        start_time: 2020-06-24 # 1 months after start of simulation
         end_time: 2020-09-24 # 1 month of vaccine distirbution 
         group_by: 'age'
         group_type: '60-100'
@@ -44,7 +44,7 @@ vaccine_distribution:
         effective_after_first_dose: 12 # Taken as Pfizer - unknown
         effective_after_second_dose: 14 # Lancet trials
     2:
-        start_time: 2020-09-24 # 4 months after start of simulation
+        start_time: 2020-06-24 # 1 months after start of simulation
         end_time: 2020-10-24 # 1 month of vaccine distirbution 
         group_by: 'age'
         group_type: '0-18'
