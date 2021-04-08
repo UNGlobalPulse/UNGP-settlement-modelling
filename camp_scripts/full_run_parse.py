@@ -335,9 +335,9 @@ time.sleep(10)
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
-# world = generate_empty_world({"super_area": ["CXB-219-C"]})
-# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-# world = generate_empty_world({"region": ["CXB-219"]})
+#world = generate_empty_world({"super_area": ["CXB-219-C"]})
+#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+#world = generate_empty_world({"region": ["CXB-219"]})
 world = generate_empty_world()
 
 # populate empty world
@@ -490,7 +490,6 @@ else:
         base_policy_modules=("june.policy", "camps.policy"),
     )
 
-
 # ============================================================================#
 
 # =================================== infection ===============================#
@@ -612,7 +611,7 @@ leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
 leisure.leisure_distributors[
-    "female_communals"
+    "female_communal"
 ] = FemaleCommunalDistributor.from_config(world.female_communals)
 leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
