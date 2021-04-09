@@ -111,6 +111,12 @@ parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
+    "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
+)
+parser.add_argument(
+    "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
+)
+parser.add_argument(
     "-ih",
     "--indoor_beta_ratio",
     help="Indoor/household beta ratio scaling",
@@ -237,6 +243,16 @@ if args.child_susceptibility == "True":
 else:
     args.child_susceptibility = False
 
+if args.vaccines == "True":
+    args.vaccines = True
+else:
+    args.vaccines = False
+
+if args.no_visits == "True":
+    args.no_visits = True
+else:
+    args.no_visits = False
+
 if args.isolation_units == "True":
     args.isolation_units = True
 else:
@@ -319,8 +335,8 @@ time.sleep(10)
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
-# world = generate_empty_world({"super_area": ["CXB-219-C"]})
-# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+#world = generate_empty_world({"super_area": ["CXB-219-C"]})
+#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 #world = generate_empty_world({"region": ["CXB-219"]})
 world = generate_empty_world()
 
@@ -392,7 +408,9 @@ if args.learning_centers:
 
     CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
-
+if args.no_visits:
+    CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
+    
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
 world.play_groups = PlayGroups.for_areas(world.areas)
 world.distribution_centers = DistributionCenters.for_areas(world.areas)
@@ -460,12 +478,17 @@ elif args.mask_wearing:
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
 
+elif args.vaccines:
+    policies = Policies.from_file(
+        camp_configs_path / "defaults/policy/vaccine.yaml",
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
+
 else:
     policies = Policies.from_file(
         camp_configs_path / "defaults/policy/home_care_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
-
 
 # ============================================================================#
 
@@ -588,7 +611,7 @@ leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
 leisure.leisure_distributors[
-    "female_communals"
+    "female_communal"
 ] = FemaleCommunalDistributor.from_config(world.female_communals)
 leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
@@ -599,12 +622,13 @@ leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
 leisure.leisure_distributors[
     "n_f_distribution_center"
 ] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
-leisure.leisure_distributors[
-    "shelters_visits"
-] = SheltersVisitsDistributor.from_config()
-leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
-    world.super_areas
-)
+if not args.no_visits:
+    leisure.leisure_distributors[
+        "shelters_visits"
+    ] = SheltersVisitsDistributor.from_config()
+    leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
+        world.super_areas
+    )
 # associate social activities to shelters
 leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
 

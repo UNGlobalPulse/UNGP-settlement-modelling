@@ -28,6 +28,36 @@ quarantine:
   start_time: 1000-03-16 
   end_time: 9999-03-23 
 
+vaccine_distribution:
+    # Oxford/AstraZeneca
+    1:
+        start_time: 2020-06-24 # 1 months after start of simulation
+        end_time: 2020-09-24 # 1 month of vaccine distirbution 
+        group_by: 'age'
+        group_type: '60-100'
+        group_coverage: 0.5
+        first_dose_efficacy: 0.4 # assumption
+        second_dose_efficacy: 0.60 # Lancet UK SD/SD
+        second_dose_compliance: 0.95 # assumption
+        mean_time_delay: 36 # roughly from Lancet trials
+        std_time_delay: 10 # roughly from Lancet trials
+        effective_after_first_dose: 12 # Taken as Pfizer - unknown
+        effective_after_second_dose: 14 # Lancet trials
+    2:
+        start_time: 2020-06-24 # 1 months after start of simulation
+        end_time: 2020-10-24 # 1 month of vaccine distirbution 
+        group_by: 'age'
+        group_type: '0-18'
+        group_coverage: 0.5
+        first_dose_efficacy: 0.4 # assumption
+        second_dose_efficacy: 0.60 # Lancet UK SD/SD
+        second_dose_compliance: 0.95 # assumption
+        mean_time_delay: 36 # roughly from Lancet trials
+        std_time_delay: 10 # roughly from Lancet trials
+        effective_after_first_dose: 12 # Taken as Pfizer - unknown
+        effective_after_second_dose: 14 # Lancet trials
+
+
 close_leisure_venue:
     start_time: 1000-01-01
     end_time: 2021-01-01

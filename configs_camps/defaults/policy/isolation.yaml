@@ -47,19 +47,19 @@ change_leisure_probability:
         end_time: 2020-04-15
         activity_reductions:
 
-          communals:
+          communal:
             both_sexes:
               0-100: 0.5
 
-          religiouss:
+          religious:
             both_sexes:
               0-100: 0.34
 
-          e_vouchers:
+          e_voucher:
             both_sexes:
               0-100: 0.5
 
-          distribution_centers:
+          distribution_center:
             both_sexes:
               0-100: 0.5
 
@@ -67,20 +67,20 @@ change_leisure_probability:
         start_time: 2020-04-15
         end_time: 2021-01-01
         activity_reductions:
-          communals:
+          communal:
             male:
               0-100: 1.0
             female:
               0-100: 0.5
 
-          religiouss:
+          religious:
             both_sexes:
               0-100: 0.34
 
-          e_vouchers:
+          e_voucher:
             both_sexes:
               0-100: 0.5
 
-          distribution_centers:
+          distribution_center:
             both_sexes:
               0-100: 0.5
