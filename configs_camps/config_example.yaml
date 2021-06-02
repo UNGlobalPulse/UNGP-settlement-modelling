@@ -4,11 +4,11 @@ activity_to_super_groups:
   primary_activity: ['learning_centers']
   leisure: ['distribution_centers', 'communals', 'female_communals', 'pump_latrines', 'religiouss', 'play_groups', 'e_vouchers', 'n_f_distribution_centers', 'shelters_visits'] 
   residence: ['shelters']
-  medical_facility: ['hospitals', 'isolation_units']
+  medical_facility: ['hospitals']
 
 time:
   initial_day: '2020-05-24'
-  total_days: 200
+  total_days: 120
   step_duration: 
       weekday:
           0: 2 

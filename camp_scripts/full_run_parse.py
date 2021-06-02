@@ -111,6 +111,9 @@ parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
+    "-nnv", "--no_vaccines", help="Implement no vaccine policies", required=False, default="False"
+)
+parser.add_argument(
     "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
 )
 parser.add_argument(
@@ -242,7 +245,10 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
-
+if args.no_vaccines == "True":
+    args.no_vaccines = True
+else:
+    args.no_vaccines = False
 if args.vaccines == "True":
     args.vaccines = True
 else:
@@ -336,9 +342,9 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
 #world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 #world = generate_empty_world({"region": ["CXB-219"]})
-world = generate_empty_world()
+#world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -478,9 +484,15 @@ elif args.mask_wearing:
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
 
+elif args.no_vaccines:
+    policies = Policies.from_file(
+        camp_configs_path / "vaccine_tests/no_vaccine.yaml",
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
+
 elif args.vaccines:
     policies = Policies.from_file(
-        camp_configs_path / "defaults/policy/vaccine.yaml",
+        camp_configs_path / "vaccine_tests/vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
 
