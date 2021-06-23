@@ -20,7 +20,6 @@ import numba as nb
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
-import seaborn as sns
 from datetime import datetime
 import sys
 import argparse
@@ -37,9 +36,9 @@ from june.demography.demography import (
     generate_comorbidity,
 )
 from june.paths import data_path, configs_path
-from june.infection import Infection, HealthIndexGenerator
-from june.infection_seed import InfectionSeed, InfectionSeeds
-from june.infection import InfectionSelector, InfectionSelectors
+from june.epidemiology.epidemiology import Epidemiology
+from june.epidemiology.infection import Infection, HealthIndexGenerator, InfectionSelector, InfectionSelectors, SusceptibilitySetter
+from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
 from june.distributors import HospitalDistributor
@@ -98,7 +97,7 @@ parser.add_argument(
     "--comorbidities",
     help="True to include comorbidities",
     required=False,
-    default="True",
+    default="False",
 )
 parser.add_argument(
     "-p",
@@ -513,21 +512,13 @@ selector = InfectionSelector(
 )
 
 interaction = Interaction.from_file(
-    config_filename=camp_configs_path / "defaults/interaction/" / args.parameters,
-    population=world.people,
+    config_filename=camp_configs_path
+    / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
 )
-
 if args.child_susceptibility:
-    interaction = Interaction.from_file(
-        config_filename=camp_configs_path
-        / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
-        population=world.people,
-    )
+    susceptibility_setter = SusceptibilitySetter() # by default kids have 0.5
 else:
-    interaction = Interaction.from_file(
-        config_filename=camp_configs_path / "defaults/interaction/" / args.parameters,
-        population=world.people,
-    )
+    susceptibility_setter = SusceptibilitySetter(None) 
 
 
 if args.household_beta:
@@ -604,6 +595,8 @@ infection_seed.unleash_virus(n_cases=44, population=world.people, time=0)
 
 print("Infected people in seed = ", len(world.people.infected))
 
+infection_selectors = InfectionSelectors([selector])
+epidemiology = Epidemiology(infection_selectors = infection_selectors, susceptibility_setter=susceptibility_setter)
 
 # ==================================================================================#
 
@@ -660,7 +653,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    infection_selectors=InfectionSelectors([selector]),
+    epidemiology = epidemiology,
     record=record,
 )
 
