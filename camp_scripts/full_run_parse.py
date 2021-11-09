@@ -562,7 +562,7 @@ if not args.start_week:
     
 else:
     infection_seed = InfectionSeed(world=world, infection_selector=selector,)
-    infection_seed.unleash_virus(n_cases=10, population=world.people)
+    infection_seed.unleash_virus(n_cases=100, population=world.people)
 
 print("Infected people in seed = ", len(world.people.infected))
 
