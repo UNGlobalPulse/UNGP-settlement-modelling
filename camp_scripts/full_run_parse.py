@@ -111,6 +111,13 @@ parser.add_argument(
     default=0.05,
 )
 parser.add_argument(
+    "-sw",
+    "--start_week",
+    help="Starting week for infection outbreak - assume 5 people infected over start_week",
+    required=False,
+    default=False,
+)
+parser.add_argument(
     "-inf",
     "--infectiousness_path",
     help="path to infectiousness parameter file",
@@ -268,6 +275,7 @@ print("Comorbidities set to: {}".format(args.comorbidities))
 print("Parameters path set to: {}".format(args.parameters))
 print("Indoor beta ratio is set to: {}".format(args.indoor_beta_ratio))
 print("Outdoor beta ratio set to: {}".format(args.outdoor_beta_ratio))
+print("Start week set to: {}".format(args.start_week))
 print("Infectiousness path set to: {}".format(args.infectiousness_path))
 print("Child susceptibility change set to: {}".format(args.child_susceptibility))
 
@@ -298,7 +306,12 @@ print("\n", args.__dict__, "\n")
 time.sleep(10)
 
 # =============== world creation =========================#
-CONFIG_PATH = camp_configs_path / "config_example.yaml"
+if not args.start_week:
+    CONFIG_PATH = camp_configs_path / "config_example.yaml"
+else:
+    CONFIG_PATH = camp_configs_path / "config_example_{}.yaml".format(int(args.start_week))
+    
+print ("Using CONFIG_PATH {}".format(CONFIG_PATH))
 
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
@@ -523,28 +536,33 @@ if args.play_group_beta_ratio:
         args.play_group_beta_ratio
     )
 
-cases_detected = {
-    "CXB-202": 3,
-    "CXB-204": 6,
-    "CXB-208": 8,
-    "CXB-203": 1,
-    "CXB-207": 2,
-    "CXB-213": 2,
-}  # By the 24th May
+if not args.start_week:
+    cases_detected = {
+        "CXB-202": 3,
+        "CXB-204": 6,
+        "CXB-208": 8,
+        "CXB-203": 1,
+        "CXB-207": 2,
+        "CXB-213": 2,
+    }  # By the 24th May
 
-print("Detected cases = ", sum(cases_detected.values()))
+    print("Detected cases = ", sum(cases_detected.values()))
 
-super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
-super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
-infection_seed = InfectionSeed(world=world, infection_selector=selector,)
-for region in world.regions:
-    if region.name in cases_detected.keys():
-        infection_seed.unleash_virus(
-            n_cases=2 * cases_detected[region.name],
-            population=Population(region.people),
-        )
-# Add some extra random cases
-infection_seed.unleash_virus(n_cases=44, population=world.people)
+    super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
+    super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
+    infection_seed = InfectionSeed(world=world, infection_selector=selector,)
+    for region in world.regions:
+        if region.name in cases_detected.keys():
+            infection_seed.unleash_virus(
+                n_cases=2 * cases_detected[region.name],
+                population=Population(region.people),
+            )
+    # Add some extra random cases
+    infection_seed.unleash_virus(n_cases=44, population=world.people)
+    
+else:
+    infection_seed = InfectionSeed(world=world, infection_selector=selector,)
+    infection_seed.unleash_virus(n_cases=10, population=world.people)
 
 print("Infected people in seed = ", len(world.people.infected))
 

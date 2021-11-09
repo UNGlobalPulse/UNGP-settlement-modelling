@@ -33,7 +33,7 @@ usage_output = ( # Taken directly from output when a "bad" arg is given to the f
     """
     [-h] [-c COMORBIDITIES] [-p PARAMETERS]
     [-hb HOUSEHOLD_BETA] [-ih INDOOR_BETA_RATIO]
-    [-oh OUTDOOR_BETA_RATIO] [-inf INFECTIOUSNESS_PATH]
+    [-oh OUTDOOR_BETA_RATIO] [-sw START_WEEK] [-inf INFECTIOUSNESS_PATH]
     [-cs CHILD_SUSCEPTIBILITY] [-u ISOLATION_UNITS]
     [-t ISOLATION_TESTING] [-i ISOLATION_TIME]
     [-ic ISOLATION_COMPLIANCE] [-m MASK_WEARING]
@@ -182,7 +182,7 @@ class ClusterRunner:
                 + f"#SBATCH -p cosma\n"
                 + f"#SBATCH -A durham #durham #e.g. dp004\n"
                 + f"#SBATCH --exclusive\n"
-                + f"#SBATCH -t 12:00:00\n"
+                + f"#SBATCH -t 48:00:00\n"
 
                 + f"module purge\n"
                 + f"#load the modules used to build your program.\n"
@@ -192,7 +192,8 @@ class ClusterRunner:
                 + f"module load openmpi/3.0.1\n"
                 + f"module load gnu-parallel/20181122\n"
                 + f"#venv\n"
-                + f"source /cosma5/data/durham/dc-sedg2/cpmodelling/cpenv/bin/activate\n"
+                + f"source /cosma/home/durham/gnvq71/campmodelling/UNGP-settlement-modelling/campmodelling/bin/activate\n"
+                + f"cd /cosma/home/durham/gnvq71/campmodelling/UNGP-settlement-modelling/\n"
 
                 + f"COMMAND_ARR=({command_arr}) \n"
                 + "parallel --lb ::: \"${COMMAND_ARR[@]}\""
