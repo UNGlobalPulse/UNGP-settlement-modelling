@@ -101,6 +101,6 @@ For questions regarding this project please contact: joseph[at]unglobalpulse.org
 # TODO
 
 - Synthesise testing data such that pytest can be run on GitHub Actions for better CI workflow
-
+- Update `camp_scripts/full_run_parse.py` for new version update
 
 
