@@ -35,7 +35,7 @@ and install the necessary packages:
 pip install -e .
 ```
 
-**Note:** This repo uses the latest public version of JUNE. If you want to use the latest version of JUNE-Private, install this with:
+**Note:** This repo uses june v1.1.2 If you want to use the latest version of JUNE-Private, install this with:
 
 ```
 pip install git+https://github.com/IDAS-Durham/JUNE-private.git 
