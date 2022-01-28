@@ -55,9 +55,14 @@ change_leisure_probability:
             both_sexes:
               0-100: 0.66
 
+          shelter_visit:
+            female:
+              0-100: 0.5
+
+
     2:
         start_time: 2020-04-15
-        end_time: 2021-01-01
+        end_time: 9999-01-01
         activity_reductions:
 
           communal:
@@ -72,4 +77,8 @@ change_leisure_probability:
 
           distribution_center:
             both_sexes:
-              0-100: 0.66
+              0-100: 0.5
+
+          shelter_visit:
+            female:
+              0-100: 0.5
