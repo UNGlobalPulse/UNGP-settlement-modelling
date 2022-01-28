@@ -1,20 +1,22 @@
-# men go 0.1 times per week if < 18 and 0.25 otherwise
-# women go 0.0 times per week if < 18 and 0.08 otherwise
+# Assume same weightings as distribution centre
+# Twice per month
+# 80% compliance
+
 times_per_week:
   weekday:
     male:
-      0-18: 0.013
-      18-100: 0.123
+      0-18: 0.0859
+      18-100: 0.884
     female:
-      7-18: 0.0016
-      18-100: 0.04
+      0-18: 0.260
+      18-100: 0.0109
   weekend:
     male:
-      0-18: 0.0053
-      18-100: 0.0493
+      0-18: 0.0344
+      18-100: 0.354
     female:
-      7-18: 0.0006
-      18-100: 0.016
+      7-18: 0.104
+      18-100: 0.00436
 hours_per_day:
   weekday:
     male:

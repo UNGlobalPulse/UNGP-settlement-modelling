@@ -1,18 +1,21 @@
+# <65 visit on average once per day >65 half the regularity
+# Assume 80% compliance
+
 times_per_week:
   weekday:
     male:
-      0-65: 3.33
-      65-100: 2.06
+      0-65: 4.00
+      65-100: 2.00
     female:
-      0-65: 3.33
-      65-100: 2.06
+      0-65: 4.00
+      65-100: 2.00
   weekend:
     male:
-      0-65: 1.3
-      65-100: 0.83
+      0-65: 1.60
+      65-100: 0.80
     female:
-      0-65: 1.3
-      65-100: 0.83
+      0-65: 1.60
+      65-100: 0.80
 hours_per_day:
   weekday:
     male:

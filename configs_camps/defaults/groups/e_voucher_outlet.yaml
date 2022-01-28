@@ -1,19 +1,22 @@
-# once a month 
+# twice per month
+# Assume same breakdown of weightings as distribution centre attendance
+# 88% of people collect aid from here
+
 times_per_week:
   weekday:
     male:
-      0-18: 0.025
-      18-100: 0.22
+      0-18: 0.0945
+      18-100: 0.972
     female:
-      7-18: 0.003
-      18-100: 0.07
+      7-18: 0.287
+      18-100: 0.0120
   weekend:
     male:
-      0-18: 0.01
-      18-100: 0.088
+      0-18: 0.0378
+      18-100: 0.389
     female:
-      7-18: 0.0013
-      18-100: 0.028
+      0-18: 0.115
+      18-100: 0.00480
 hours_per_day:
   weekday:
     male:

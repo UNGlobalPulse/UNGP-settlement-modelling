@@ -1,16 +1,15 @@
-# this includes distirbution centres of all types and therefore we set the max distance to be arbitrarily large
 # Once per week 50 % compliance
 times_per_week:
   weekday:
     male:
       0-100: 0.0
     female:
-      0-100: 0.37
+      0-100: 0.357
   weekend:
     male:
       0-100: 0.0
     female:
-      0-100: 0.15
+      0-100: 0.143
 hours_per_day:
   weekday:
     male:
