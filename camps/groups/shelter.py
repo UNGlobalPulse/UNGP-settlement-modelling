@@ -17,6 +17,7 @@ See the GNU General Public License for more details.
 import numpy as np
 from enum import IntEnum
 from random import randint
+from typing import List, Optional
 
 from june.groups import Group, Supergroup, Households, Household
 from june.groups.group.interactive import InteractiveGroup
@@ -26,12 +27,50 @@ from june.geography import Areas
 class Shelter(Household):
     __slots__ = "shelters_to_visit"
     class SubgroupType(IntEnum):
-        household_1 = 1
-        household_2 = 2
+        household_1 = 0
+        household_2 = 1
 
-    def __init__(self, area=None):
+    class kids():
+        def __init__(
+            self,        
+        ):
+
+            self.persons = []
+
+        def add_person(self, person):
+            self.persons.append(person)
+
+        @property
+        def people(self):
+            return self.persons
+
+    class adults():
+        def __init__(
+            self,        
+        ):
+        
+            self.persons = []
+
+        def add_person(self, person):
+            self.persons.append(person)
+
+        @property
+        def people(self):
+            return self.persons
+        
+    def __init__(
+        self, 
+        age_group_limits: List[int] = [0, 18, 100],
+        area=None,
+    ):
         super().__init__(type="shelter", area=area)
         self.shelters_to_visit = None
+        self.age_group_limits = age_group_limits
+        self.min_age = age_group_limits[0]
+        self.max_age = age_group_limits[-1] - 1
+
+        self.kids = self.kids()
+        self.adults = self.adults()
 
     def add(self, household: Household):
         if not isinstance(household, Household):
@@ -40,15 +79,29 @@ class Shelter(Household):
             raise ValueError("Adding an empty household to a shelter is not supported.")
         if len(self.subgroups[0].people) == 0:
             for person in household.people:
+
                 self.subgroups[0].append(person)
                 setattr(person.subgroups, "residence", self[0])
+
         elif len(self.subgroups[1].people) == 0:
             for person in household.people:
+
                 self.subgroups[1].append(person)
                 setattr(person.subgroups, "residence", self[1])
+
         else:
             assert self.n_households == 2
             raise ValueError("Shelter full!")
+
+        if len(household.people) != 0:
+            for person in household.people:
+                subgroup_type = self._get_leisure_subgroup_for_person(person)
+                if subgroup_type == "kids":
+                    self.kids.add_person(person)
+                if subgroup_type == "adults":
+                    self.adults.add_person(person)
+                
+                
         # add to residents
         self.residents = tuple((*self.residents, *household.people))
 
@@ -68,10 +121,32 @@ class Shelter(Household):
     def coordinates(self):
         return self.area.coordinates
 
+    #@property
+    #def kids(self):
+    #    return self.kids
+
+    #@property
+    #def adults(self):
+    #    return self.adults
+
+    def _get_leisure_subgroup_for_person(self, person):
+        if person.age >= self.min_age and person.age <= self.max_age:
+            subgroup_idx = (
+                np.searchsorted(self.age_group_limits, person.age, side="right") - 1
+            )
+        else:
+            return
+        if subgroup_idx == 0:
+            subgroup = "kids"
+        elif subgroup_idx == 1:
+            subgroup = "adults"
+        return subgroup
+
+
     def get_leisure_subgroup(self, person, subgroup_type, to_send_abroad):
         self.being_visited = True
         self.make_household_residents_stay_home(to_send_abroad=to_send_abroad)
-        return self[randint(0,1)]
+        return self[randint(0,1)] #Placeholder
 
     def get_interactive_group(self, people_from_abroad=None):
         return InteractiveGroup(self, people_from_abroad=people_from_abroad)

@@ -14,6 +14,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 """
 
+import yaml
 import numpy as np
 import pandas as pd
 from typing import Optional
@@ -52,6 +53,14 @@ area_residents_families = (
 area_residents_families_df = pd.read_csv(area_residents_families)
 area_residents_families_df.set_index("area", inplace=True)
 
+area_household_structure = (
+    camp_data_path / "input/households/household_structure.yaml"
+)
+
+def read_yaml(config_filename):
+    with open(config_filename) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    return config
 
 def generate_empty_world(filter_key: Optional[dict]=None):
     geo = CampGeography.from_file(
@@ -125,7 +134,14 @@ def distribute_people_to_households(world: CampWorld):
     """
     Distributes the people in the world to households by using the CampHouseholdDistributor.
     """
-    household_distributor = CampHouseholdDistributor(max_household_size=12)
+    config = read_yaml(area_household_structure) #Add an assert to check sum to 1? TODO
+    household_distributor = CampHouseholdDistributor(
+        max_household_size=12,
+        household_size_distribution=config["area"]["coarse"]["household_size"],
+        partner_age_gap_distribution=config["area"]["coarse"]["partner_age_gap"],
+        motherchild_age_gap_distribution=config["area"]["coarse"]["motherchild_age_gap"],
+        chance_single_parent=config["area"]["coarse"]["chance_single_parent"]
+    )
     households_total = []
     for area in world.areas:
         area_data = area_residents_families_df.loc[area.name]
@@ -133,7 +149,7 @@ def distribute_people_to_households(world: CampWorld):
         n_residents = int(area_data["residents"])
         n_families_adapted = int(np.round(len(area.people) / n_residents * n_families))
         area.households = household_distributor.distribute_people_to_households(
-            area=area, n_families=n_families_adapted,
+            area=area, n_families=n_families_adapted
         )
         households_total += area.households
     world.households = Households(households_total)

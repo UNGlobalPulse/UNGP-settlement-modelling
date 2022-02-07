@@ -19,6 +19,7 @@ import pandas as pd
 import yaml
 from typing import List, Optional
 from june.geography import Areas
+from enum import IntEnum
 
 from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVenueError
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor
@@ -31,7 +32,38 @@ default_config_filename = camp_configs_path / "defaults/groups/distribution_cent
 
 
 class DistributionCenter(SocialVenue):
-    max_size = np.inf
+    class SubgroupType(IntEnum):
+        kids = 0
+        adults = 1
+
+    def __init__(
+        self,
+        age_group_limits: List[int] = [0, 18, 100],
+        max_size = np.inf,
+        area=None,
+    ):
+        super().__init__()
+        self.age_group_limits = age_group_limits
+        self.min_age = age_group_limits[0]
+        self.max_age = age_group_limits[-1] - 1
+        self.max_size = max_size
+
+    def get_leisure_subgroup(self, person, subgroup_type=None, to_send_abroad=None):
+        if person.age >= self.min_age and person.age <= self.max_age:
+            subgroup_idx = (
+                np.searchsorted(self.age_group_limits, person.age, side="right") - 1
+            )
+            return self.subgroups[subgroup_idx]
+        else:
+            return
+
+    @property
+    def kids(self):
+        return self.subgroups[self.SubgroupType.kids]
+
+    @property
+    def adults(self):
+        return self.subgroups[self.SubgroupType.adults]
 
 
 class DistributionCenters(SocialVenues):

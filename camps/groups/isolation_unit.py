@@ -18,11 +18,25 @@ from typing import List
 from june.groups import Group, Supergroup
 from june.demography import Person
 from june.groups.hospital import MedicalFacility, MedicalFacilities
+from enum import IntEnum
+import numpy as np
 
 
 class IsolationUnit(Group, MedicalFacility):
-    def __init__(self, area):
+    class SubgroupType(IntEnum):
+        kids = 0
+        adults = 1
+
+    def __init__(
+        self, 
+        area,
+        age_group_limits: List[int] = [0, 18, 100],
+    ):
+
         super().__init__()
+        self.age_group_limits = age_group_limits
+        self.min_age = age_group_limits[0]
+        self.max_age = age_group_limits[-1] - 1
         self.area = area
 
     @property
@@ -31,6 +45,23 @@ class IsolationUnit(Group, MedicalFacility):
     
     def add(self, person: Person):
         super().add(person=person, activity="medical_facility", subgroup_type=0)
+
+    def get_leisure_subgroup(self, person, subgroup_type=None, to_send_abroad=None):
+        if person.age >= self.min_age and person.age <= self.max_age:
+            subgroup_idx = (
+                np.searchsorted(self.age_group_limits, person.age, side="right") - 1
+            )
+            return self.subgroups[subgroup_idx]
+        else:
+            return
+
+    @property
+    def kids(self):
+        return self.subgroups[self.SubgroupType.kids]
+
+    @property
+    def adults(self):
+        return self.subgroups[self.SubgroupType.adults]
 
 
 class IsolationUnits(Supergroup, MedicalFacilities):
