@@ -22,30 +22,36 @@ betas:
 contact_matrices:
   communal:
     contacts: [[7.,4.5],[4.,8.]]
+    contacts_err: [[2.65, 2.12],[2.0, 2.83]]
     proportion_physical: [[0.12]]
     characteristic_time: 1
   female_communal:
-    contacts: [[7.,4.5],[4.,8.]] # assume same for both
+    contacts: [[7.,4.5],[4.0,8.]] # assume same for both
     proportion_physical: [[0.12]]
     characteristic_time: 1
   religious:
     contacts: [[5.0, 9.0], [2.0, 10.0]]
+    contacts_err: [[2.24, 3.0  ],[1.41, 3.16]]
     proportion_physical: [[0.12]]
     characteristic_time: 1
   distribution_center:
     contacts: [[5.0, 9.0], [2.0, 11.0]]
+    contacts_err: [[2.24, 3.0], [1.41, 3.32]]
     proportion_physical: [[0.12]]
     characteristic_time: 1
   pump_latrine:
     contacts: [[4.0, 3.0], [3.0, 5.0]]
+    contacts_err: [[2.0, 1.73],[1.73, 2.24]]
     proportion_physical: [[0.02]]
     characteristic_time: 0.5
   n_f_distribution_center:
     contacts: [[5.0, 9.0], [2.0, 11.0]]
+    contacts_err: [[2.24, 3.0], [1.41, 3.32]]
     proportion_physical: [[0.12]]
     characteristic_time: 1
   e_voucher:
     contacts: [[1.0, 6.0], [1.0, 9.0]]
+    contacts_err: [[1.0, 2.45],[1.0, 3.0]]
     proportion_physical: [[0.12]]
     characteristic_time: 1
   hospital:
@@ -61,9 +67,10 @@ contact_matrices:
     proportion_physical: [[0.8, 0.3], [0.8, 0.3]]
     characteristic_time: 12
   learning_center:
-    contacts: [[5,15],[0.5,5]]
+    contacts: [[10,2],[5, 3.5]]
+    contacts_err: [[3.16, 1.41], [2.24, 1.87]]
     proportion_physical: [[0.12,0.12],[0.12,0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.5
   isolation_unit:
     contacts: [[0,0], [0,0]]
     proportion_physical: [[0,0], [0,0]]

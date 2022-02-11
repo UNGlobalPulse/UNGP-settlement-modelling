@@ -93,16 +93,20 @@ class CampHouseholdDistributor:
         kid_max_age=16,
         adult_min_age=17,
         adult_max_age=99,
+        young_adult_max_age=45,
         max_household_size=8,
         household_size_distribution=None,
         partner_age_gap_distribution=None,
         motherchild_age_gap_distribution=None,
+        chance_unaccompanied_childen=None,
+        min_age_gap_between_childen=None,
         chance_single_parent=None,
         ignore_orphans: bool = False,
     ):
         self.kid_max_age = kid_max_age
         self.adult_min_age = adult_min_age
         self.adult_max_age = adult_max_age
+        self.young_adult_max_age = young_adult_max_age
         self.max_household_size = max_household_size
         self.ignore_orphans = ignore_orphans
 
@@ -151,6 +155,17 @@ class CampHouseholdDistributor:
             self.chance_single_parent = {"m": 1.0, "f": .2}
         else:
             self.chance_single_parent = chance_single_parent
+
+        if chance_unaccompanied_childen is None:
+            self.chance_unaccompanied_childen = 0.01
+        else:
+            self.chance_unaccompanied_childen = chance_unaccompanied_childen
+
+        if min_age_gap_between_childen is None:
+            self.min_age_gap_between_childen = 1
+        else:
+            self.min_age_gap_between_childen = min_age_gap_between_childen
+    
         
 
     def _create_people_dicts(self, area: Area):
@@ -230,89 +245,177 @@ class CampHouseholdDistributor:
             for i in range(n_families)
         ]
 
-        #self.partner_age_gap_generator.rvs(size=1)
-        #self.motherchild_age_gap_generator.rvs(size=1)
-
-
-
+        Singles_Houses = []
+        Unaccompanied_Childen_Houses = [] 
         households_with_space = households.copy()
+
         kids_by_age, men_by_age, women_by_age = self._create_people_dicts(area)
 
         n_kids = len([person for age in kids_by_age for person in kids_by_age[age]])
         n_men = len([person for age in men_by_age for person in men_by_age[age]])
         n_women = len([person for age in women_by_age for person in women_by_age[age]])
         assert n_men + n_women + n_kids == len(area.people)
+        print(f"Distributing {len(area.people)} people to {area.name}")
         
-        # put one adult per household
+        # put one adult per household to start
         for household in households_with_space:
             sex = random_sex()
-            age = random_age(age_min=self.adult_min_age, age_max=self.adult_max_age)
+            age = random_age(age_min=self.adult_min_age, age_max=self.young_adult_max_age)
             person = self.get_closest_person_of_age(men_by_age, women_by_age, age, sex)
             if person is None:
                 break
             household.add(person, subgroup_type=household.SubgroupType.adults)
 
+            #House now full?
+            if household.size == household.max_size:
+                households_with_space.remove(household)
+
+        # Do we add a spouce? 
+        for household in households_with_space:
+            if len(household.people) != 1:
+                continue
+            #Person already at house
+            adult_a = household.people[0]
+            adult_a_sex = adult_a.sex
+            adult_a_age = adult_a.age
+
             rand = np.random.uniform(low=0, high=1)
-            if rand < self.chance_single_parent[sex]:
+            if rand < self.chance_single_parent[adult_a_sex]:
                 #Single Parent
-                pass
+                Singles_Houses.append(household)
             else:
                 #Add spouse
                 age_gap = self.partner_age_gap_generator.rvs(size=1)
-                if person.sex == "m":
+                if adult_a_sex == "m":
                     age_gap *= -1
-                elif person.sex == "f":
+                elif adult_a_sex == "f":
                     age_gap *= 1
-                person = self.get_closest_person_of_age(men_by_age, women_by_age, person.age+age_gap, oposite_sex(person.sex))
-
+                person = self.get_closest_person_of_age(men_by_age, women_by_age, adult_a_age+age_gap, oposite_sex(adult_a_sex))
                 if person is not None:
                     household.add(person, subgroup_type=household.SubgroupType.adults)
      
+            #House now full?
             if household.size == household.max_size:
                 households_with_space.remove(household)
+        print("Young adults done")
+
+        households_with_space_NoAdults = [household for household in households_with_space if len(household.adults.people) == 0]
 
         # distribute kids
         counter = 0
         while True:
-            if households_with_space:
-                index = counter % len(households_with_space)
-                household = households_with_space[index]
-            else:
-                index = np.random.randint(len(households))
-                household = households[index]
-
-            for p in household.people:
-                if p.sex == "f" and p.age > self.adult_min_age:
-                    age = max(0, p.age - self.motherchild_age_gap_generator.rvs(size=1))
-                elif p.sex == "m" and p.age > self.adult_min_age:
-                    age = max(0, p.age - self.motherchild_age_gap_generator.rvs(size=1) - self.partner_age_gap_generator.rvs(size=1) )
-                else:
-                    age = random_age(age_min=0, age_max=self.kid_max_age)
-
-            kid = self.get_closest_child_of_age(kids_by_age, age)
-            if kid == None:
+            if not kids_by_age:
                 break
+   
+            rand = np.random.uniform(low=0, high=1)
+            if rand < self.chance_unaccompanied_childen:
+                kids_alone = True
+            else:
+                kids_alone = False
+
+            if kids_alone == False:
+                if households_with_space:
+                    index = counter % len(households_with_space)
+                    household = households_with_space[index]
+                else:
+                    index = np.random.randint(len(households))
+                    household = households[index]
+            if kids_alone == True:
+                if households_with_space_NoAdults:
+                    index = np.random.randint(0, len(households_with_space_NoAdults))
+                    household = households_with_space_NoAdults[index]
+                else:
+                    index = np.random.randint(len(households))
+                    household = households[index]
+                    kids_alone = False #Can't promise this household is free from kids.
+
+
+            NKids = len(household.kids.people)
+            NAdults = len(household.adults.people)
+            #If a family not orphans need a minimum age gap for next kid
+            if NKids != 0 and NAdults != 0:
+                age_kid = min([kid_i.age for kid_i in household.kids.people]) - self.min_age_gap_between_childen
+
+            if NAdults == 1 and NKids == 0:
+                adult_a_sex = household.adults.people[0].sex
+                adult_a_age = household.adults.people[0].age
+                if adult_a_sex == "f":
+                    age_kid = adult_a_age - self.motherchild_age_gap_generator.rvs(size=1)
+                elif adult_a_sex == "m":
+                    #Need a dead(?) mother so generate the appropiate age gap
+                    couple_age_gap = self.partner_age_gap_generator.rvs(size=1) 
+                    mother_age_gap = self.motherchild_age_gap_generator.rvs(size=1)
+                    age_kid = adult_a_age - ( couple_age_gap + mother_age_gap)
+
+            if NAdults == 2 and NKids == 0:
+                adult_a_sex = household.adults.people[0].sex
+                if adult_a_sex == "f":
+                    mother = household.adults.people[0]
+                    father = household.adults.people[1]
+                elif adult_a_sex == "m":
+                    mother = household.adults.people[1]
+                    father = household.adults.people[0]
+                couple_age_gap = father.age - mother.age
+                age_kid = mother.age - self.motherchild_age_gap_generator.rvs(size=1)
+
+            if NAdults != 0: #Are adults
+                kid = self.get_closest_child_of_age(kids_by_age, age_kid)
+            else: #Orphans
+                kids_alone = True
+                age_kid = random_age(age_min=0, age_max=self.adult_min_age)
+                kid = self.get_closest_child_of_age(kids_by_age, age_kid)
+
             household.add(kid, subgroup_type=household.SubgroupType.kids)
             if household.size == household.max_size:
                 households_with_space.remove(household)
-            counter += 1
+                if kids_alone == True: #Sometimes this causes error?! TODO
+                    households_with_space_NoAdults.remove(household)
 
+            if kids_alone == True and household not in Unaccompanied_Childen_Houses:
+                #Children only house?
+                Unaccompanied_Childen_Houses.append(household)
+
+            counter += 1
+        print("Kids done")
+
+        #Get all the houses we haven't set
+        households_with_space_NotSpecial = [household for household in households_with_space if household.id not in Singles_Houses and household.id not in Unaccompanied_Childen_Houses ]
+    
         # put other adults trying to mix sex and match age.
         counter = 0
         while True:
             if not men_by_age and not women_by_age:
                 break
-            if households_with_space:  # empty_households:
-                index = counter % len(households_with_space)
-                household = households_with_space[index]
+            if households_with_space_NotSpecial:
+                index = counter % len(households_with_space_NotSpecial)
+                household = households_with_space_NotSpecial[index]                
             else:
                 idx = np.random.randint(0, len(households))
                 household = households[idx]
-            person = None
-            for person in household.people:
-                if person.age >= self.adult_min_age: #Get an adult
-                    break
-            if person is None: #If there is no adult
+                if household in Singles_Houses or household in Unaccompanied_Childen_Houses:
+                    continue
+
+            NKids = len(household.kids.people)
+            NAdults = len(household.adults.people)
+            if NAdults > 0: #If there is an adult already try to preference adding parents!
+                idx = np.random.randint(0, len(household.adults.people))
+                rand_adult = household.adults.people[idx]
+
+                sex = random_sex()
+                #Generate the appropiate age gaps
+                couple_age_gap = self.partner_age_gap_generator.rvs(size=1) 
+                mother_age_gap = self.motherchild_age_gap_generator.rvs(size=1)
+                if sex == "m":
+                    age_gap = couple_age_gap + mother_age_gap
+                elif sex == "f":
+                    age_gap = mother_age_gap
+                parent = self.get_closest_person_of_age(men_by_age, women_by_age, rand_adult.age+age_gap, sex)
+                if parent is None:
+                    raise ValueError
+                else:
+                    household.add(parent, subgroup_type=household.SubgroupType.adults)
+
+            else: #If there is no adult
                 sex = random_sex()
                 age = np.random.randint(self.adult_min_age, self.adult_max_age)
                 person = self.get_closest_person_of_age(
@@ -321,24 +424,15 @@ class CampHouseholdDistributor:
                 if person is None:
                     raise ValueError
                 household.add(person, subgroup_type=household.SubgroupType.adults)
-            else: #If there is an adult
-                age_gap = self.partner_age_gap_generator.rvs(size=1)
-                if person.sex == "m":
-                    age_gap *= -1
-                elif person.sex == "f":
-                    age_gap *= 1
-                target = self.get_closest_person_of_age(men_by_age, women_by_age, person.age+age_gap, oposite_sex(person.sex))
 
-                #target = self.get_closest_person_of_age(
-                #    men_by_age, women_by_age, person.age, person.sex
-                #)
-                if target is None:
-                    raise ValueError
-                else:
-                    household.add(target, subgroup_type=household.SubgroupType.adults)
+            #If we're trying to maintain household sizes still
             if household.size == household.max_size:
                 households_with_space.remove(household)
+                households_with_space_NotSpecial.remove(household)
+
             counter += 1
+        print("All adults done")
+        print("")
 
         # check everyone has a house
         people_in_households = len(
