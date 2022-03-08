@@ -30,7 +30,7 @@ class IsolationUnit(Group, MedicalFacility):
     def __init__(
         self, 
         area,
-        age_group_limits: List[int] = [0, 18, 100],
+        age_group_limits: List[int] = [0, 17, 100],
     ):
 
         super().__init__()

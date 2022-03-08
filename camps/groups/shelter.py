@@ -30,37 +30,37 @@ class Shelter(Household):
         household_1 = 0
         household_2 = 1
 
-    class kids():
-        def __init__(
-            self,        
-        ):
+    # class kids():
+    #     def __init__(
+    #         self,        
+    #     ):
 
-            self.persons = []
+    #         self.persons = []
 
-        def add_person(self, person):
-            self.persons.append(person)
+    #     def add_person(self, person):
+    #         self.persons.append(person)
 
-        @property
-        def people(self):
-            return self.persons
+    #     @property
+    #     def people(self):
+    #         return self.persons
 
-    class adults():
-        def __init__(
-            self,        
-        ):
+    # class adults():
+    #     def __init__(
+    #         self,        
+    #     ):
         
-            self.persons = []
+    #         self.persons = []
 
-        def add_person(self, person):
-            self.persons.append(person)
+    #     def add_person(self, person):
+    #         self.persons.append(person)
 
-        @property
-        def people(self):
-            return self.persons
+    #     @property
+    #     def people(self):
+    #         return self.persons
         
     def __init__(
         self, 
-        age_group_limits: List[int] = [0, 18, 100],
+        age_group_limits: List[int] = [0, 17, 100],
         area=None,
     ):
         super().__init__(type="shelter", area=area)
@@ -69,8 +69,8 @@ class Shelter(Household):
         self.min_age = age_group_limits[0]
         self.max_age = age_group_limits[-1] - 1
 
-        self.kids = self.kids()
-        self.adults = self.adults()
+        #self.kids = self.kids()
+        #self.adults = self.adults()
 
     def add(self, household: Household):
         if not isinstance(household, Household):
@@ -93,13 +93,13 @@ class Shelter(Household):
             assert self.n_households == 2
             raise ValueError("Shelter full!")
 
-        if len(household.people) != 0:
-            for person in household.people:
-                subgroup_type = self._get_leisure_subgroup_for_person(person)
-                if subgroup_type == "kids":
-                    self.kids.add_person(person)
-                if subgroup_type == "adults":
-                    self.adults.add_person(person)
+        # if len(household.people) != 0:
+        #     for person in household.people:
+        #         subgroup_type = self._get_leisure_subgroup_for_person(person)
+        #         if subgroup_type == "kids":
+        #             self.kids.add_person(person)
+        #         if subgroup_type == "adults":
+        #             self.adults.add_person(person)
                 
                 
         # add to residents

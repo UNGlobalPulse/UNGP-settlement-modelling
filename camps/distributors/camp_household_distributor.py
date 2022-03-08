@@ -91,7 +91,7 @@ class HouseholdError(BaseException):
 class CampHouseholdDistributor:
     def __init__(
         self,
-        kid_max_age=16,
+        kid_max_age=17,
         adult_min_age=17,
         adult_max_age=99,
         young_adult_max_age=45,
@@ -230,7 +230,7 @@ class CampHouseholdDistributor:
             return pick[idx]
 
         def intersection(list_A, list_B, permute=True):
-            Intersection = np.array(list(set(list_A) and set(list_B)))
+            Intersection = np.array(list(set(list_A) & set(list_B)))
             if permute:
                 return list(Intersection[np.random.permutation(len(Intersection))])
             else:

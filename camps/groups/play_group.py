@@ -31,36 +31,55 @@ default_config_filename = camp_configs_path / "defaults/groups/play_group.yaml"
 
 
 class PlayGroup(SocialVenue):
-    class SubgroupType(IntEnum):
-        young = 0
-        mid = 1
-        old = 2
-
     def __init__(
         self,
-        age_group_limits: List[int] = [3, 7, 12, 17],
-        max_size: int = 10,
+        max_size = np.inf,
         area=None,
     ):
         super().__init__()
-        self.age_group_limits = age_group_limits
-        self.min_age = age_group_limits[0]
-        self.max_age = age_group_limits[-1] - 1
         self.max_size = max_size
-        self.area = area
+        self.area = area   
+        self.coordinates = self.get_coordinates    
 
-    @property
-    def coordinates(self):
-        return self.area.coordinates
+        # if self.subgroup_type == "Age":
+        #     self.age_group_limits = self.subgroup_bins
+        #     self.min_age = self.age_group_limits[0]
+        #     self.max_age = self.age_group_limits[-1] - 1
 
-    def get_leisure_subgroup(self, person, subgroup_type=None, to_send_abroad=None):
-        if person.age >= self.min_age and person.age <= self.max_age:
-            subgroup_idx = (
-                np.searchsorted(self.age_group_limits, person.age, side="right") - 1
-            )
-            return self.subgroups[subgroup_idx]
-        else:
-            return
+    # @property
+    # def SubgroupType(self):
+    #     return IntEnum("SubgroupType", self.subgroup_labels)
+
+    # class SubgroupType(IntEnum):
+    #     young = 0
+    #     mid = 1
+    #     old = 2
+
+    # def __init__(
+    #     self,
+    #     age_group_limits: List[int] = [3, 7, 12, 17],
+    #     max_size: int = 10,
+    #     area=None,
+    # ):
+    #     super().__init__()
+    #     self.age_group_limits = age_group_limits
+    #     self.min_age = age_group_limits[0]
+    #     self.max_age = age_group_limits[-1] - 1
+    #     self.max_size = max_size
+    #     self.area = area
+
+    # @property
+    # def coordinates(self):
+    #     return self.area.coordinates
+
+    # def get_leisure_subgroup(self, person, subgroup_type=None, to_send_abroad=None):
+    #     if person.age >= self.min_age and person.age <= self.max_age:
+    #         subgroup_idx = (
+    #             np.searchsorted(self.age_group_limits, person.age, side="right") - 1
+    #         )
+    #         return self.subgroups[subgroup_idx]
+    #     else:
+    #         return
 
 
 class PlayGroups(SocialVenues):
@@ -72,10 +91,13 @@ class PlayGroups(SocialVenues):
         cls,
         areas: List[CampArea],
         venues_per_capita: float = 1 / 20,
-        age_group_limits: List[int] = [3, 7, 12, 16],
         max_size: int = 10,
     ):
         play_groups = []
+
+        #Make a dummy to get the age bins
+        age_group_limits = PlayGroup().subgroup_bins
+
         for area in areas:
             area_population = len(
                 [
@@ -86,9 +108,7 @@ class PlayGroups(SocialVenues):
                 ]
             )
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                play_group = PlayGroup(
-                    age_group_limits=age_group_limits, max_size=max_size, area=area
-                )
+                play_group = PlayGroup( max_size=max_size, area=area )
                 area.play_groups.append(play_group)
                 play_groups.append(play_group)
         return cls(play_groups=play_groups)

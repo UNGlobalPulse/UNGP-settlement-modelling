@@ -26,3 +26,5 @@ dist/
 *.dat
 *.svg
 camp_data/
+**/tester_*.ipynb
+Notebooks/results/**
