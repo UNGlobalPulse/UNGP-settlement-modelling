@@ -20,6 +20,7 @@ from typing import List, Tuple, Dict
 import numpy as np
 import pandas as pd
 import random
+from sqlalchemy import true
 import yaml
 from scipy import stats
 
@@ -206,20 +207,32 @@ class LearningCenterDistributor:
         Distribute teachers from closest area to the learning center. There is only
         one teacher per learning center currently
         """
+        area_k_max = 5
         for learning_center in self.learning_centers.members:
             # Find closest area to learning center
             area = areas.get_closest_areas(
-                coordinates=learning_center.coordinates, k=1, return_distance=False
-            )[0]
-            # get someone in working age
-            old_people = [
-                person
-                for person in area.people
-                if person.age >= self.teacher_min_age
-                and person.primary_activity is None
-            ]
+                coordinates=learning_center.coordinates, k=area_k_max, return_distance=False
+            )
+            area_k = 0
+            while True:
+                # get someone in working age
+                old_people = [
+                    person
+                    for person in area[area_k].people
+                    if person.age >= self.teacher_min_age
+                    and person.primary_activity is None
+                ]
+                if len(old_people) > 0:
+                    break
+
+                if len(old_people) == 0:
+                    area_k += 1
+                    if area_k > area_k_max:
+                        break
+
             teacher = random.choice(old_people)
             # add the teacher to all shifts in the school
+
             for shift in range(self.n_shifts):
                 learning_center.add(
                     person=teacher,

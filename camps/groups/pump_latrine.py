@@ -42,7 +42,7 @@ class PumpLatrine(SocialVenue):
         self.coordinates = self.get_coordinates   
 
 class PumpLatrines(SocialVenues):
-    social_venue_class = PumpLatrine
+    venue_class = PumpLatrine
 
     def __init__(self, pump_latrines: List[PumpLatrine]):
         super().__init__(pump_latrines, make_tree=False)
@@ -59,7 +59,7 @@ class PumpLatrines(SocialVenues):
         for area in areas:
             area_population = len(area.people)
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                pump_latrine = PumpLatrine(
+                pump_latrine = cls.venue_class(
                     max_size, 
                     area=area)
                 area.pump_latrines.append(pump_latrine)

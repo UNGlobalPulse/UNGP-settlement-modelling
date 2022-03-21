@@ -4,11 +4,11 @@ activity_to_super_groups:
   primary_activity: ['learning_centers']
   leisure: ['distribution_centers', 'communals', 'female_communals', 'pump_latrines', 'religiouss', 'play_groups', 'e_vouchers', 'n_f_distribution_centers', 'shelters_visits'] 
   residence: ['shelters']
-  medical_facility: ['hospitals']
+  medical_facility: ["isolation_units", 'hospitals']
 
 time:
   initial_day: '2020-05-24'
-  total_days: 70
+  total_days: 3
   step_duration: 
       weekday:
           0: 2 
@@ -26,10 +26,10 @@ time:
           5: 13
   step_activities:
       weekday:
-          0: ['medical_facility', 'residence']
-          1: ['medical_facility', 'leisure', 'residence'] 
-          2: ['medical_facility', 'leisure', 'residence'] 
-          3: ['medical_facility', 'leisure', 'residence'] 
+          0: ['medical_facility', 'primary_activity', 'residence']
+          1: ['medical_facility', 'primary_activity', 'leisure', 'residence'] 
+          2: ['medical_facility', 'primary_activity', 'leisure', 'residence'] 
+          3: ['medical_facility', 'primary_activity', 'leisure', 'residence'] 
           4: ['medical_facility', 'leisure', 'residence'] 
           5: ['medical_facility', 'residence']
       weekend:

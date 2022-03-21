@@ -25,6 +25,9 @@ from camps import paths
 from june.groups import Group, Supergroup
 from june.demography import Person
 
+import logging
+logger = logging.getLogger("learning_centers")
+
 default_learning_centers_coordinates_path = (
     paths.camp_data_path / "input/activities/learning_center.csv"
 )
@@ -36,12 +39,8 @@ class LearningCenter(Group):
     One learning center is equivalent to one room that kids go to during weekdays in 
     different shifts. There are two subgroups, students and teachers
     """
-    class SubgroupType(IntEnum):
-        teachers = 0
-        students = 1
-
     def __init__(
-        self, coordinates: Tuple[float, float], n_pupils_max: int = 35,
+        self, coordinates: Tuple[float, float] = (None,None), n_pupils_max: int = 35,
     ):
         """
         Parameters
@@ -59,7 +58,7 @@ class LearningCenter(Group):
         self.ids_per_shift = collections.defaultdict(list)
         self.area = None
 
-    def add(self, person: Person, shift: int, subgroup_type=SubgroupType.students):
+    def add(self, person: Person, shift: int, subgroup_type):
         """
         Add a person to the learning center
 
@@ -86,7 +85,7 @@ class LearningCenter(Group):
         return len(self.teachers)
 
     @property
-    def teachers(self):
+    def teachers(self):              
         return self.subgroups[self.SubgroupType.teachers]
 
     @property
@@ -99,9 +98,11 @@ class LearningCenter(Group):
 
 
 class LearningCenters(Supergroup):
+    venue_class = LearningCenter
+    
     def __init__(
         self,
-        learning_centers: List[LearningCenter],
+        learning_centers: List[venue_class],
         learning_centers_tree: bool = True,
         n_shifts: int = 4,
     ):
@@ -131,6 +132,8 @@ class LearningCenters(Supergroup):
     ):
         with open(config_path) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
+
+        logger.info(f"There are {len(learning_centers)} learning center(s)")
         return cls(learning_centers, **config)
 
     @classmethod
@@ -143,6 +146,7 @@ class LearningCenters(Supergroup):
         **kwargs
     ):
         learning_centers_df = pd.read_csv(coordinates_path)
+        logger.info(f"There are {len(learning_centers_df)} learning center(s)")
         coordinates = learning_centers_df.loc[:, ["latitude", "longitude"]].values
         return cls.from_coordinates(
             coordinates, max_size, areas, max_distance_to_area=max_distance_to_area,**kwargs
@@ -180,7 +184,8 @@ class LearningCenters(Supergroup):
             coordinates = coordinates[distances_close]
         learning_centers = list()
         for coord in coordinates:
-            lc = LearningCenter(coordinates=coord)
+            lc = cls.venue_class()   
+            lc.coordinates = coord         
             if areas is not None:
                 lc.area = areas.get_closest_area(coordinates=coord)
             learning_centers.append(lc)

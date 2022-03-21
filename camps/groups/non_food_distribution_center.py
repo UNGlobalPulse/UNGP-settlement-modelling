@@ -44,51 +44,8 @@ class NFDistributionCenter(SocialVenue):
         self.area = area   
         self.coordinates = self.get_coordinates    
 
-        # if self.subgroup_type == "Age":
-        #     self.age_group_limits = self.subgroup_bins
-        #     self.min_age = self.age_group_limits[0]
-        #     self.max_age = self.age_group_limits[-1] - 1
-
-    # @property
-    # def SubgroupType(self):
-    #     return IntEnum("SubgroupType", self.subgroup_labels)
-
-    # class SubgroupType(IntEnum):
-    #     kids = 0
-    #     adults = 1
-
-    # def __init__(
-    #     self,
-    #     age_group_limits: List[int] = [0, 17, 100],
-    #     max_size = np.inf,
-    #     area=None,
-    # ):
-    #     super().__init__()
-    #     self.age_group_limits = age_group_limits
-    #     self.min_age = age_group_limits[0]
-    #     self.max_age = age_group_limits[-1] - 1
-    #     self.max_size = max_size
-
-    # def get_leisure_subgroup(self, person, subgroup_type=None, to_send_abroad=None):
-    #     if person.age >= self.min_age and person.age <= self.max_age:
-    #         subgroup_idx = (
-    #             np.searchsorted(self.age_group_limits, person.age, side="right") - 1
-    #         )
-    #         return self.subgroups[subgroup_idx]
-    #     else:
-    #         return
-
-    # @property
-    # def kids(self):
-    #     return self.subgroups[self.SubgroupType.kids]
-
-    # @property
-    # def adults(self):
-    #     return self.subgroups[self.SubgroupType.adults]
-
-
 class NFDistributionCenters(SocialVenues):
-    social_venue_class = NFDistributionCenter
+    venue_class = NFDistributionCenter
     default_coordinates_filename = default_nfdistributioncenters_coordinates_filename
 
 
