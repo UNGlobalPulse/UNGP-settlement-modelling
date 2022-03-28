@@ -26,4 +26,4 @@ dist/
 *.svg
 camp_data/
 **/tester_*
-results/**
+**/results/**
