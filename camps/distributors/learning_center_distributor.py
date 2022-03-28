@@ -82,14 +82,15 @@ class LearningCenterDistributor:
 
         Parameters
         ----------
-        learning_centers:
+        learning_centers
             instance of LearningCenters, containing all learning centers in the world
-        data_path:
+        data_path
             path to config dictionary
 
         Returns
         -------
-        LearningCenterDistributor instance
+        LearningCenterDistributor
+            Instance of the LearningCenterDistributor
         """
         enrollment_df = pd.read_csv(data_path, index_col=0)
         enrollment_df = enrollment_df[["Gender", "CampID", "Age", "Enrollment"]]
@@ -130,8 +131,12 @@ class LearningCenterDistributor:
 
         Parameters
         ----------
-        areas:
+        areas
             areas object where people to be distributed live
+
+        Returns
+        -------
+        None
         """
 
         for area in areas.members:
@@ -176,10 +181,14 @@ class LearningCenterDistributor:
 
         Parameters
         ----------
-        person:
+        person
             person to be sent to learning center
-        closest_centers_idx:
+        closest_centers_idx
             ids of the closest centers
+
+        Returns
+        -------
+        None
         """
         for i in closest_centers_idx:
             center = self.learning_centers.members[i]
@@ -205,6 +214,15 @@ class LearningCenterDistributor:
         """
         Distribute teachers from closest area to the learning center. There is only
         one teacher per learning center currently
+
+        Parameters
+        ----------
+        areas
+            Instance of the Areas class (group of Area classes)
+        
+        Returns
+        -------
+        None
         """
         for learning_center in self.learning_centers.members:
             # Find closest area to learning center

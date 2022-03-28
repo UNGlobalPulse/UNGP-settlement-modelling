@@ -54,6 +54,20 @@ area_residents_families_df.set_index("area", inplace=True)
 
 
 def generate_empty_world(filter_key: Optional[dict]=None):
+    """
+    Generates an empty world with baseline geography
+
+    Parameters
+    ----------
+    filter_key
+        Filter the geo-units which should enter the world
+
+    Returns
+    -------
+    CampWorld
+        camp world class with geographical setup but nothing else
+        
+    """
     geo = CampGeography.from_file(
         filter_key=filter_key,
         hierarchy_filename=area_mapping_filename,
@@ -73,6 +87,15 @@ def populate_world(world: CampWorld):
     following the data's age and sex distribution. We then split the population
     into the areas by taking the ratio of the area residents to the total super area
     population. Kids and adults are splited separately to keep a balanced population.
+
+    Parameters
+    ----------
+    world
+        CampWorld class which already ahs geography set up in order to populate
+
+    Returns
+    -------
+    None
     """
     super_area_names = [super_area.name for super_area in world.super_areas]
     age_sex_generators = load_age_and_sex_generators_for_bins(age_structure_filename)
@@ -124,6 +147,15 @@ def populate_world(world: CampWorld):
 def distribute_people_to_households(world: CampWorld):
     """
     Distributes the people in the world to households by using the CampHouseholdDistributor.
+
+    Parameters
+    ----------
+    world
+        CampWorld class with people ready to be cludtered into households
+
+    Returns
+    -------
+    None
     """
     household_distributor = CampHouseholdDistributor(max_household_size=12)
     households_total = []
