@@ -46,9 +46,9 @@ class LearningCenter(Group):
         """
         Parameters
         ----------
-        coordinates:
+        coordinates
             latitude and longitude for the learning center
-        n_pupils_max:
+        n_pupils_max
             maximum number of pupils in the classroom
         """
         super().__init__()
@@ -65,11 +65,11 @@ class LearningCenter(Group):
 
         Parameters
         ----------
-        person:
-            person to add
-        shift:
+        person
+            Person instance to add
+        shift
            shift that the person will attend 
-        subgroup_type:
+        subgroup_type
             subgroup to which the person is added
         """
         super().add(
@@ -110,12 +110,12 @@ class LearningCenters(Supergroup):
 
         Parameters
         ----------
-        learning_centers: 
-            list of learning centers
-        learning_centers_tree:
-            whether to build a tree with the learning center coordinates, for quick querying
-        n_shifts:
-            number of daily shifts 
+        learning_centers
+            List of learning centers
+        learning_centers_tree
+            Whether to build a tree with the learning center coordinates, for quick querying
+        n_shifts
+            Number of daily shifts 
         """
         super().__init__(members=learning_centers)
         self.members = learning_centers
@@ -129,6 +129,20 @@ class LearningCenters(Supergroup):
     def from_config(
         cls, learning_centers: "LearningCenters", config_path: str = default_config_path
     ):
+        """
+        Defines class from config file
+
+        Parameters
+        ----------
+        learning_centers
+            Instance of LearningCentres contining all LearningCenter instances
+        config_path
+            Full path to config file
+        
+        Returns
+        -------
+        LearningCentres class instance
+        """
         with open(config_path) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return cls(learning_centers, **config)
@@ -142,6 +156,24 @@ class LearningCenters(Supergroup):
         max_size=np.inf,
         **kwargs
     ):
+        """
+        Defines class from areas and coordinates of learning centers
+
+        Parameters
+        ----------
+        areas
+            Instance of Areas containing instances of Area classes
+        coordinates_path
+            Full path to csv file contining coordinates of learning centers
+        max_distance
+            Maximum distance (in km) people are willing to travel to find their 'nearest' learning center
+        max_size
+            Maximum size of the learning centers
+
+        Returns
+        -------
+        LearningCenters class instance
+        """
         learning_centers_df = pd.read_csv(coordinates_path)
         coordinates = learning_centers_df.loc[:, ["latitude", "longitude"]].values
         return cls.from_coordinates(
@@ -156,6 +188,24 @@ class LearningCenters(Supergroup):
         max_distance_to_area=5,
         max_size=np.inf,
     ):
+        """
+        Defines class from geography
+
+        Parameters
+        ----------
+        geography
+            Geography class initialised with heirarchy
+        coordinates_path
+            Full path to csv file contining coordinates of learning centers
+        max_distance
+            Maximum distance (in km) people are willing to travel to find their 'nearest' learning center
+        max_size
+            Maximum size of the learning centers
+
+        Returns
+        -------
+        LearningCenters class instance
+        """
         return cls.for_areas(
             areas=geography.areas,
             coordinates_path=coordinates_path,
@@ -167,11 +217,29 @@ class LearningCenters(Supergroup):
     def from_coordinates(
         cls,
         coordinates: List[np.array],
-        max_size=np.inf,
         areas: Optional["Areas"] = None,
         max_distance_to_area=5,
+        max_size=np.inf,
         **kwargs
     ):
+        """
+        Defines class from coordinates
+
+        Parameters
+        ----------
+        coordinates
+            List of np.array of coordinates
+        areas
+            Instance of the Areas class to reference learning centers to their area
+        max_distance
+            Maximum distance (in km) people are willing to travel to find their 'nearest' learning center
+        max_size
+            Maximum size of the learning centers
+
+        Returns
+        -------
+        LearningCenters class instance
+        """
         if areas is not None:
             _, distances = areas.get_closest_areas(
                 coordinates, k=1, return_distance=True
@@ -194,13 +262,12 @@ class LearningCenters(Supergroup):
 
         Parameters
         ----------
-        learning centers coordinates: 
+        learning_centers_coordinates 
             array with coordinates
 
         Returns
         -------
         Tree to query nearby learning centers 
-
         """
         return BallTree(np.deg2rad(learning_centers_coordinates), metric="haversine")
 
@@ -210,9 +277,9 @@ class LearningCenters(Supergroup):
 
         Parameters
         ----------
-        coordinates: 
+        coordinates
             latitude and longitude
-        k:
+        k
             k-th neighbour
 
         Returns
@@ -233,8 +300,12 @@ class LearningCenters(Supergroup):
 
         Paramters
         ---------
-        n_shifts:
+        n_shifts
             number of total daily shifts
+
+        Returns
+        -------
+        None
         """
         for learning_center in self.members:
             learning_center.active_shift += 1
