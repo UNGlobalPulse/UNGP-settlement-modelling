@@ -30,10 +30,30 @@ class Shelter(Household):
         household_2 = 2
 
     def __init__(self, area=None):
+        """
+        A shelter is comprised of multiple households. Currently there is a maximum of 2 households per shelter.
+        
+        Parameters
+        ----------
+        area
+            Area in which to assign shelter
+        """
         super().__init__(type="shelter", area=area)
         self.shelters_to_visit = None
 
     def add(self, household: Household):
+        """
+        Add household to shelter
+
+        Parameters
+        ----------
+        household
+            Instance of the Household class to add to the shelter
+        
+        Returns
+        -------
+        None
+        """
         if not isinstance(household, Household):
             raise ValueError("Shelters want households added to them, not people.")
         if len(household.people) == 0:
@@ -79,10 +99,32 @@ class Shelter(Household):
 
 class Shelters(Supergroup):
     def __init__(self, shelters):
+        """
+        Create and store information on multiple Shelter instances
+
+        Parameters
+        ----------
+        shelters
+            List of Shelter classes
+        """
         super().__init__(shelters)
 
     @classmethod
     def from_families_in_area(cls, n_families_area, sharing_shelter_ratio=0.75):
+        """
+        Defines class given information on households/families
+        
+        Parameters
+        ----------
+        n_families_area : int
+            Number of familities in total
+        sharing_shelter_ratio : float
+            Percentage of families who share a shelter
+
+        Returns
+        -------
+        Shelters class instance
+        """
         n_shelters_multi = int(np.floor(sharing_shelter_ratio * n_families_area / 2))
         n_shelters = n_families_area - n_shelters_multi
         shelters = [Shelter() for _ in range(n_shelters)]
@@ -90,6 +132,20 @@ class Shelters(Supergroup):
 
     @classmethod
     def for_areas(cls, areas: Areas, sharing_shelter_ratio=0.75):
+        """
+        Defines class from areas
+
+        Parameters
+        ----------
+        areas
+            List of Area instances
+        sharing_shelter_ratio : float
+            Percentage of families who share a shelter
+
+        Returns
+        -------
+        Shelters class instance
+        """
         shelters = []
         for area in areas:
             n_families_area = len(area.households)
@@ -101,9 +157,31 @@ class Shelters(Supergroup):
 
 class ShelterDistributor:
     def __init__(self, sharing_shelter_ratio=0.75):
+        """
+        Distributes people to shelters
+
+        Parameters
+        ----------
+        sharing_shelter_ratio : float
+            Percentage of families who share a shelter
+        """
         self.sharing_shelter_ratio = sharing_shelter_ratio
 
     def distribute_people_in_shelters(self, shelters: Shelters, households: Households):
+        """
+        Distributes people to shelters
+        
+        Parameters
+        ----------
+        shelters
+            Instance of the Shelters class containing information on Shelter instances
+        households
+            Instance of the Households class containing information on Household instances
+
+        Returns
+        -------
+        None
+        """
         households_idx = np.arange(0, len(households))
         np.random.shuffle(households_idx)
         households_idx = list(households_idx)
