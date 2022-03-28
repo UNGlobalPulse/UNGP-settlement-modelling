@@ -42,6 +42,13 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+def remove_module_docstring(app, what, name, obj, options, lines):
+    if what == "module":
+        del lines[:]
+
+def setup(app):
+    app.connect("autodoc-process-docstring", remove_module_docstring)
+
 
 # -- Options for HTML output -------------------------------------------------
 
