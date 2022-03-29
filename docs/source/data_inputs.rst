@@ -40,8 +40,7 @@ Geography
 *********
 
 In the ``geography/`` folder we include information about the
-geogrpahy of the ``world`` we are modelling - e.g. a refugee
-settlement.
+geogrpahy of the ``world`` we are modelling - e.g. a refugee settlement.
 
 ``JUNE`` operates on a three-tiered geographical hierarchy:
 1. Regions: the highest level
@@ -229,8 +228,7 @@ include the following locations:
 - Female-friendly spaces (``female_communal.csv``)
 - Food distribution centers (``distribution_center.csv``)
 - E-voucher outlets (``e_voucher_outlet.csv``)
-- LPG, blanket and other non-food distribution centers
-  (``non_food_distribution_center.csv``)
+- LPG, blanket, et.c distribution centers (``non_food_distribution_center.csv``)
 - Religious centers (``religious.csv``)
 
 Here each file is formatted just as a list of latutudes and longitudes
@@ -264,6 +262,3 @@ which contains information on the enrollment rates of students by sex,
 age and region (``enrollment_rates.csv``), as well as a file, like
 those in the activties folder, specifying the locations of the
 learning centers (``learning_center.csv``).
-
-Outputs
-=======
