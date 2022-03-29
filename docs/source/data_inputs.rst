@@ -1,5 +1,6 @@
 Data Inputs
-======
+===========
+
 The data to run the model is stored in the ``$BASE/camp_data/``
 folder. There are multiple ways to structure the data folder, however,
 the simplest way is to keep a consistent setup and naming convention
