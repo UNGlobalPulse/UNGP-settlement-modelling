@@ -247,7 +247,23 @@ as follows:
 Hospitals
 *********
 
+Even if not explicitly modelled, the model will always require the
+presence of some hospitals which patients can go to if/when they get
+infected and have particularly severe infections. This file is
+formatted in the same way as the activties files above.
 
+Other
+*****
+
+There may be other locations which are worth having other folders for
+which contain relevant information on their locations and other
+attributes.
+
+In the case of Cox's Bazar, we have a ``learning_centers/`` folder
+which contains information on the enrollment rates of students by sex,
+age and region (``enrollment_rates.csv``), as well as a file, like
+those in the activties folder, specifying the locations of the
+learning centers (``learning_center.csv``).
 
 Outputs
 =======
