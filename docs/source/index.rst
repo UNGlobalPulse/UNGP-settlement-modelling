@@ -13,6 +13,11 @@ Welcome to settlement-modelling's documentation!
    intro
    installation
    data_inputs
+   configs
+   model_setup
+   symptoms
+   model_running
+   data_outputs
    camps
 
 Indices and tables
