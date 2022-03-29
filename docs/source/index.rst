@@ -12,7 +12,7 @@ Welcome to settlement-modelling's documentation!
 
    intro
    installation
-   data
+   data_inputs
    camps
 
 Indices and tables
