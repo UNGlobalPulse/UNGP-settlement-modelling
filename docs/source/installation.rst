@@ -28,7 +28,7 @@ run::
 
 You need a second folder with the data for your particular adaptation
 (in our case, the Cox's Bazar refugee settlement). This should be in
-``<HOME>/camp_data/``
+``$BASE/camp_data/``
 
 The data we use to run the simualtion is all derived from open-source
 datasets, details of which can be found in our `paper <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009360>`_. Given the
