@@ -217,6 +217,36 @@ As above but for the reference population - in this case the UK.
 Activities
 **********
 
+In the ``activities/`` folder we store information on the locations of
+places in the model we want to specifically model and in which people
+in the model can go to. Each type of location should have its own
+``csv`` file in this folder which specifies the latitude/longitude
+coordinates of those relevant locations.
+
+In the case of the Cox's Bazar model, we
+include the following locations:
+- Community centers and other communal location (``communal.csv``)
+- Female-friendly spaces (``female_communal.csv``)
+- Food distribution centers (``distribution_center.csv``)
+- E-voucher outlets (``e_voucher_outlet.csv``)
+- LPG, blanket and other non-food distribution centers
+  (``non_food_distribution_center.csv``)
+- Religious centers (``religious.csv``)
+
+Here each file is formatted just as a list of latutudes and longitudes
+as follows:
+
++----------+-----------+
+| latitude | longitude |
++----------+-----------+
+|  [coord] |  [coord]  | 
++----------+-----------+
+|  [coord] |  [coord]  |
++----------+-----------+
+
+Hospitals
+*********
+
 
 
 Outputs
