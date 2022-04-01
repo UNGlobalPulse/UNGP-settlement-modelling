@@ -14,6 +14,10 @@ correspond to the ~20 camps which make up the settlements; super areas
 refer to the UNHCR deliniated blocks in whach camp; and areas refer to
 the Majhee blocks.
 
+Much of the code handling the creation of the geography is using that
+of the ``JUNE`` code. Some modifications have been made to allow for a
+simpler input format.
+
 TODO:
 - Reference back to data inputs
 - Add something on code to set up geography
