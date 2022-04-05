@@ -43,3 +43,6 @@ In order to introduce the user to our codebase we have created a
 walkthrough Notebook::
   Notebooks/quickstart camp.ipynb
 
+Troubleshooting
+***************
+

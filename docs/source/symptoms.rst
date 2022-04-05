@@ -1,13 +1,18 @@
 Disease Characteristics
 =======================
 
-By deafult, the ``JUNE`` is set up to model COVID-19. It has the
+By default, the ``JUNE`` is set up to model COVID-19. It has the
 capacity to model multiple variants, where different parameters are
 set relative to the wild-type (original) variant. The disease is able
 to be changed.
 
-TODO:
-- Mention 2 different data folders
+**Note:** In this section we will run through how the disease is
+set up in the ``JUNE`` code, with only a few references to the code in
+this repository. We will try to make clear throughout which code we
+are referring to. To change these, we recommend you locally install
+``JUNE`` to make the necessary changes. In addition, various changes
+may be required to the ``JUNE`` data folder to change disease
+parameters as the core of the disease parameter setting is done there.
 
 Infection
 *********
