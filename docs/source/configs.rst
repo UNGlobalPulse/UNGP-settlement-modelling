@@ -95,10 +95,107 @@ We now go through the key components of the file:
 Activity/Location Configs
 *************************
 
-The probabilities 
+The probabilities that certain people go to certain locations is based
+on the activity config files. These can be found in the
+``configs_camps/defaults/groups`` folder with ``.yaml`` files for each
+location. The names are linked to their respective group distributors.
+
+The requirements for each file are as follows::
+  times_per_week:
+    weekday:
+      male:
+        [min_age]-[max_age]: [# times]
+	.
+	.
+	.
+      female:
+        [min_age]-[max_age]: [# times]
+	.
+	.
+	.
+    weekend:
+      male:
+        [min_age]-[max_age]: [# times]
+	.
+	.
+	.
+      female:
+        [min_age]-[max_age]: [# times]
+	.
+	.
+	.
+  hours_per_day:
+    weekday:
+      male:
+        [min_age]-[max_age]: [age]
+	.
+	.
+	.
+      female:
+        [min_age]-[max_age]: [age]
+	.
+	.
+	.
+  drags_household_probability: [probability]
+  neighbours_to_consider: [#]
+  maximum_distance: [#]
+
+
+The ``times_per_week`` sets, by age and sex, the regularity with which
+people attend certain locations during the weekdays or weekends (as
+defined by the global config file). This is calculated by look
+determining how many times per weekday or weekend a person visits
+those locations on average.
+
+For example, if a person attends a community centre 2 times on average
+during the weekday, then ``# times = 2``.
+
+To make it more complicated, if
+there is a 30% change that someone in a given age and sex bracket will
+go to an activity and that if they do then they will go 2 times per
+weekday on average, then this can be represented as a meanfield effect
+as ``# times = 2*0.3 = 0.6``.
+
+As a final example, if a person goes 2 times a week on average,
+regardless of weekday or weekend then for the weekday ``# times =
+2*(5/7) = 1.43`` and on the weekend ``# times = 2*(2/7) = 0.57``.
+
+The ``hours_per_day`` specifies the number of hours with which a
+person of those demographic characteristics, can do the activity in a
+give day. For example, in the case of Cox's Bazar, a person has 8
+hours per day in which they can choose (across multiple time slots)
+which activities to do.
+
+The ``drags_household_probability`` sets the chance that, if someone
+decides to do an activity, they will bring their whole
+household/family with them. For example, this might be more likely to
+be the case when visiting other households.
+
+The ``neightbours_to_consider`` parameter sets the number of possible
+nearby venues, within the radius (in km) of where they live set by the
+``maximum_distance`` parameter, which a person might consider
+visiting. For example, if::
+  neighbours_to_consider: 5
+  maximum_distane: 10
+then the person will randomly choose one of 5 possible venues to visit
+for that activity as long as each of the 5 are within a 10km radius of
+where they live. The reason the ``neighbours_to_consider`` parameter
+is needed, rather than each time selecting randomly a venue within the
+radius is twofold: i) people often only regularly visit a handful of
+local venues of given types rather than always randomly choosing based
+on proximity; and ii) for computational efficency, the number of
+possible selectable venues is pre-computed when the model is
+initialised to save on random number generation.
+
+**Note:** In theory, one is not restricted to setting regularities of
+attendance based only on age and sex. Other characteristics can be
+readily added by modifying the distributor classes of the given venues.
+      
 
 Interaction Parameters
 **********************
+
+
 
 Policies
 ********
