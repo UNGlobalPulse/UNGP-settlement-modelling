@@ -108,7 +108,6 @@ camps.groups.shelter\_visits module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

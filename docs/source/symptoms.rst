@@ -35,8 +35,8 @@ have to be manually edited at the moment to be able to account for
 other such shapes.
 
 For example in the case of COVID-19, infectiousness profiles are
-constructed from `<https://www.nature.com/articles/s41591-020-0869-5>
-here`_ and `<https://arxiv.org/pdf/2007.06602.pdf> here`_.
+constructed from `here
+<https://www.nature.com/articles/s41591-020-0869-5>`_ and `here <https://arxiv.org/pdf/2007.06602.pdf>`_.
 
 The ``HealthIndexGenerator`` is another component of the
 ``InfectionSelector`` and requires information about the rates at

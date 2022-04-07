@@ -12,7 +12,6 @@ camps.activity.activity\_manager module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

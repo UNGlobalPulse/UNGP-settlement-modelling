@@ -12,7 +12,6 @@ camps.policy.isolation module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

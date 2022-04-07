@@ -20,7 +20,6 @@ camps.distributors.learning\_center\_distributor module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

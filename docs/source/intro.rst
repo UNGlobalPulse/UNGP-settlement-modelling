@@ -27,7 +27,9 @@ the code operations and how they are used before discussing how to run
 the model. Finally, we cover the outputs of the model.
 
 Details of the use of this package are presened in our `paper
-<https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009360>`_.
+<https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009360>`_
+which serves as a secondary source of documentation to add details to
+those included here.
 
 Please cite::
 
