@@ -10,14 +10,14 @@ at what time.
 All config files are in the ``configs_camps`` folder.
 
 Global Config
-*************
+-------------
 
 An example of the  global config file:
 ``configs_camps/config_example.yaml``.
 
 We now go through the key components of the file:
 
-**1. Activities**
+--1. Activities--
 ::
   activity_to_super_groups:
     primary_activity: []
@@ -33,7 +33,7 @@ other activities which people in the model might perform are chosen
 based on probability distributions of attendance frequency.
 
 The ``leisure`` list will give all probabilistically chosen
-activities. The term *leisure* is a legacy term used by the
+activities. The term -leisure- is a legacy term used by the
 ``JUNE`` framework but refers to activities more than just those
 otherwise considered as leisure activities.
 
@@ -46,7 +46,7 @@ places people can go if they need medical treatment once infected
 in the model. In the case of Cox's Bazar, this is just
 ``hospitals``.
 
-**2. Time**
+--2. Time--
 ::
   time:
     initial_day: '2020-05-24'
@@ -95,7 +95,7 @@ always available.
 
 
 Activity/Location Configs
-*************************
+-------------------------
 
 The probabilities that certain people go to certain locations is based
 on the activity config files. These can be found in the
@@ -156,11 +156,11 @@ To make it more complicated, if
 there is a 30% change that someone in a given age and sex bracket will
 go to an activity and that if they do then they will go 2 times per
 weekday on average, then this can be represented as a meanfield effect
-as ``# times = 2*0.3 = 0.6``.
+as ``# times = 2-0.3 = 0.6``.
 
 As a final example, if a person goes 2 times a week on average,
 regardless of weekday or weekend then for the weekday ``# times =
-2*(5/7) = 1.43`` and on the weekend ``# times = 2*(2/7) = 0.57``.
+2-(5/7) = 1.43`` and on the weekend ``# times = 2-(2/7) = 0.57``.
 
 The ``hours_per_day`` specifies the number of hours with which a
 person of those demographic characteristics, can do the activity in a
@@ -196,7 +196,7 @@ readily added by modifying the distributor classes of the given venues.
       
 
 Interaction Parameters
-**********************
+----------------------
 
 Related to the disease characteristics, the interaction parameters
 control how intense interactions between people in the model are. This
@@ -247,7 +247,7 @@ TODO:
 - Cover contact matrices in separate document
       
 Policies
-********
+--------
 
 Policies handle the interventions and behaviour changes in the model
 due to e.g. government measures, people changing their behaviour due
@@ -304,7 +304,7 @@ The standard policies which can be implemented are:
    different types of venues, as well as the
    overall reduction in the ``betas`` due to the efficacy of the
    mask. The new value of the ``betas`` is calculated as::
-     1 - ([overall compliance]*[venue compliance]*(1-[mask efficacy
+     1 - ([overall compliance]-[venue compliance]-(1-[mask efficacy
      beta reduction]))
 
 **Note:** In the current implementation, compliance factors do not

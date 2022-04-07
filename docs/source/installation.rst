@@ -2,7 +2,7 @@ Getting Started
 ===============
 
 Installation
-************
+------------
 
 The package has not been published on PyPi, but the source code can be
 cloned and locally installed using `pip`.
@@ -37,12 +37,12 @@ however, please get in contact with us if you would like to know more
 about data access: ``joseph[at]unglobalpulse.org``.
 
 Quickstart
-**********
+----------
 
 In order to introduce the user to our codebase we have created a
 walkthrough Notebook::
   Notebooks/quickstart camp.ipynb
 
 Troubleshooting
-***************
+---------------
 

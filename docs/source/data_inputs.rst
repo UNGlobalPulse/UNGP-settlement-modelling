@@ -47,9 +47,11 @@ The default data folder setup is as follows::
   
 We now go through each of these data elements to describe the
 necessary input data.
-  
+
+.. _data-geography:
+
 Geography
-*********
+---------
 
 In the ``geography/`` folder we include information about the
 geogrpahy of the ``world`` we are modelling - e.g. a refugee settlement.
@@ -129,7 +131,7 @@ are part of another region.
 
 
 Demography
-**********
+----------
 
 In the ``demography/`` folder we include information about the world's
 population. This is generally derived from census-type data, or other
@@ -226,7 +228,7 @@ As above but for the reference population - in this case the UK.
 
 
 Activities
-**********
+----------
 
 In the ``activities/`` folder we store information on the locations of
 places in the model we want to specifically model and in which people
@@ -255,7 +257,7 @@ as follows:
 +----------+-----------+
 
 Hospitals
-*********
+---------
 
 Even if not explicitly modelled, the model will always require the
 presence of some hospitals which patients can go to if/when they get
@@ -263,7 +265,7 @@ infected and have particularly severe infections. This file is
 formatted in the same way as the activties files above.
 
 Other
-*****
+-----
 
 There may be other locations which are worth having other folders for
 which contain relevant information on their locations and other

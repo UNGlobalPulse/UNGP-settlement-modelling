@@ -8,7 +8,7 @@ notebook. This notebook also breaks down each stage and explains the process.
 
 
 Scripts
-*******
+-------
 
 TODO:
 - Develop simple script run through larger yaml file

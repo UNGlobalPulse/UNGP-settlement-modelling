@@ -2,7 +2,7 @@ Model Setup
 ===========
 
 Geography
-*********
+---------
 
 ``JUNE`` operates on a three-tiered geographical hierarchy:
 1. Regions: the highest level
@@ -18,19 +18,21 @@ Much of the code handling the creation of the geography is using that
 of the ``JUNE`` code. Some modifications have been made to allow for a
 simpler input format.
 
+Refer to :ref:`data-geography`.
+
 TODO:
 - Reference back to data inputs
 - Add something on code to set up geography
 
 Demography
-**********
+----------
 
 TODO:
 - Reference back to data inputs
 - Add something on code to set up demography
 
 Households/Shelters
-*******************
+-------------------
 
 TODO:
 - Reference back to data inputs page
@@ -38,7 +40,7 @@ TODO:
 - Add something on construction of shelters
 
 Activities/Locations
-********************
+--------------------
 
 TODO:
 - Reference back to data inputs page
@@ -46,7 +48,7 @@ TODO:
   main JUNE
 
 Policies
-********
+--------
 
 
 

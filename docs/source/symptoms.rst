@@ -19,7 +19,7 @@ may be required to the ``JUNE`` data folder to change disease
 parameters as the core of the disease parameter setting is done there.
 
 Infection
-*********
+---------
 
 The first stage to running the code is to set the infection
 parameters. These are handled by the ``InfectionSelector`` which takes
@@ -58,7 +58,7 @@ spending time in these different stages.
 
 
 Comorbidities
-*************
+-------------
 
 The above section specifies how to set what happens to people who get
 infected with the circulating agent. An additional change to this is
@@ -85,7 +85,7 @@ accounted for comorbidities in ithe IFRs which then need to be
 corrected for a different populations' comorbiditity prevalence
 rates. This is done through calling the ``ImmunitySetter`` and passing
 the prevalence rates of the population being modeled, and those of the
-*reference* popualtion.
+-reference- popualtion.
 
 Physiological Age Correction
-****************************
+----------------------------
