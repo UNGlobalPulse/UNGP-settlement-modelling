@@ -1,8 +1,8 @@
 Model Setup
 ===========
 
-Geography
----------
+Geography/World
+---------------
 
 ``JUNE`` operates on a three-tiered geographical hierarchy:
 1. Regions: the highest level
@@ -18,11 +18,27 @@ Much of the code handling the creation of the geography is using that
 of the ``JUNE`` code. Some modifications have been made to allow for a
 simpler input format.
 
-Refer to :ref:`data-geography`.
+On the :ref:`data-inputs` page we discussed the :ref:`data-geography` data required. Here we set up the heirarchy and provide the
+coordinates for the super areas and areas.
 
-TODO:
-- Reference back to data inputs
-- Add something on code to set up geography
+These files are utilised by the :class:`.CampGeography` class which
+generates the geography. This class inherits from the make ``JUNE``
+class ``Geography``. If you want to only generate a subset of the
+possible geographic areas then the ``filter_key`` option can be used
+to pass a list of areas, super areas or regions which you want to
+initialise. An example of doing this is in the ``Notebooks/quickstart camps.ipynb`` notebook.
+
+Once the geography class is created we can create the ``world`` which
+is where everything is eventually stored (geography, popualation,
+locations etc.).
+
+The :class:`.CampWorld` class sets up the ``world`` and the
+geographical areas are created. A simple example of setting this up is
+in the :func:`.generate_empty_world` function which also initialises
+an empty ``Population`` class (imported from ``JUNE``). We will cover
+this the :ref:`setup-demography` section.
+
+.. _setup-demography: 
 
 Demography
 ----------
