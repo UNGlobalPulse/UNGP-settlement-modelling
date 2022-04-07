@@ -195,7 +195,118 @@ readily added by modifying the distributor classes of the given venues.
 Interaction Parameters
 **********************
 
+Related to the disease characteristics, the interaction parameters
+control how intense interactions between people in the model are. This
+affects the probability of being infected given the presence of an
+infected person in the same venue as another person at the same time.
 
+Interaction parameters are controlled by a ``.yaml`` file passed to
+the ``Interaction`` class. This is stored in the
+``configs_camps/defaults/interaction/`` folder. There are several key
+sets of interaction parameters::
+  
+  alpha_physical: [#]
 
+  betas:
+    religious: [#]
+    distribution_center: [#]
+    .
+    .
+    .
+
+  contact_matrices:
+    religious:
+      contacts: [matrix]
+      proportion_physical: [matrix]
+      characteristic_time: [#]
+    distribution_center:
+      contacts: [matrix]
+      proportion_physical: [matrix]
+      characteristic_time: [#]
+
+Contacts between people in the model can induce disease spread if one
+of these people are infected. The number of contacts between people of
+different ages in different venues is contolled by the
+``contact_matrices``. Contacts are divided into two categories: i)
+physical and non-physical. The total number of contacts is given by a
+contacter-contactee matrix in the ``contacts`` element. The ``proportion_physical`` matrix denotes
+what percentage of each type of contact (i.e. elemenet of the contact
+matrices) are physical (i.e. have a higher internsity). The contact
+matrices are generally derived from surveys of the population.
+
+The intensity of contacts (which scales the probability of infection
+given a contact) is handled by the ``betas``. These have a maximum
+value of ``1.0``. The scaling of these betas when contacts are
+physical are handled by the ``alpha_physical`` parameters which
+scales, irrespective of the location.
+
+**Note:** In general, when fitting the model it is these ``betas`` and
+``alpha_physical`` parameters which are considered free fitting parameters.
+
+TODO:
+- Cover contact matrices in separate document
+      
 Policies
 ********
+
+Policies handle the interventions and behaviour changes in the model
+due to e.g. government measures, people changing their behaviour due
+to the disease, etc.
+
+``JUNE`` allows for many policy choices and changes and more can be
+added through designing new classes of policies. An example of adding
+a new policy class can be seen in ``camps/policy/isolation.py``.
+
+All policies are
+given a ``start_time`` and ``end_time`` in ``datetime`` format.
+
+Examples of policy file setups can be found in the
+``configs_camps/defaults/policy/`` folder or in the main ``JUNE``
+folder: ``june/configs/defaults/policy/``.
+
+The standard policies which can be implemented are:
+
+1. ``hospitalisation`` which should be set all the time if hospitals
+   are available and specifies that people should be hopitalised if
+   necessary.
+
+2. ``severe_symptoms_stay_home`` specifies during what period those
+   with severe symptoms should stay home (i.e. if someone progresses
+   to severe symptomatic level then they are considered too ill to
+   leave the home). This should be active the whole time if the
+   categorisation of severe symptoms is considered bad enough.
+
+3. ``quarantine`` specifies for how many days a symptomatic person
+   should quarantine in their home for and with what level of
+   compliance people quarantine. Similarly, this policy allows you to
+   set the number of days other household members must quarantine for
+   if someone else in their household is symptomatic. The household's
+   level of compliance can also be set in this policy.
+
+4. ``shielding`` can be used to ensure people over a certain age do
+   not leave their homes as regularly. A minimum age is set to
+   determine this, as well as a compliance factor.
+
+4. ``social_distancing`` where the ``betas`` are scaled by
+   ``beta_factors`` to simualte the effects of social/physical
+   distancing.
+
+5. ``close_leisure_venue`` allows for the specification of closing
+   specific venues completely for certain periods of time.
+
+6. ``change_leisure_probability`` specifies a new temporary set of
+   ``times_per_week`` for specific venues and demographics. Any set of
+   venues or demographics not specified in the policy are taken from
+   the above mentioned activity configs as default values.
+
+7. ``mask_wearing`` acts in a similar way to the ``social_distancing``
+   policy. The compliance with mask wearing can be set at the level of
+   different types of venues, as well as the
+   overall reduction in the ``betas`` due to the efficacy of the
+   mask. The new value of the ``betas`` is calculated as::
+     1 - ([overall compliance]*[venue compliance]*(1-[mask efficacy
+     beta reduction]))
+
+**Note:** In the current implementation, compliance factors do not
+denote specific individuals who are compliant and those who are not,
+rather it acts as a mean field effect.
