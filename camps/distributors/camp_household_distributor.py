@@ -359,16 +359,16 @@ class CampHouseholdDistributor:
                 Intersection = intersection(Houses_W_Children,Houses_W_Children) 
 
             for household in Intersection:
-                NKids = len(household.kids.people)
-                NAdults = len(household.adults.people)
+                NKids = len(household.kids)
+                NAdults = len(household.adults)
 
                 #if NAdults == 0:
                 #    continue
 
                 #Single Adult with no children YET
                 if NAdults == 1 and NKids == 0:
-                    adult_a_sex = household.adults.people[0].sex
-                    adult_a_age = household.adults.people[0].age
+                    adult_a_sex = household.adults[0].sex
+                    adult_a_age = household.adults[0].age
                     if adult_a_sex == "f":
                         age_kid = adult_a_age - mother_firstchild_gap_generator.rvs(size=1)
                     elif adult_a_sex == "m":
@@ -379,19 +379,19 @@ class CampHouseholdDistributor:
 
                 #Couple with no children YET
                 if NAdults == 2 and NKids == 0:
-                    adult_a_sex = household.adults.people[0].sex
+                    adult_a_sex = household.adults[0].sex
                     if adult_a_sex == "f":
-                        mother = household.adults.people[0]
-                        father = household.adults.people[1]
+                        mother = household.adults[0]
+                        father = household.adults[1]
                     elif adult_a_sex == "m":
-                        mother = household.adults.people[1]
-                        father = household.adults.people[0]
+                        mother = household.adults[1]
+                        father = household.adults[0]
                     couple_age_gap = father.age - mother.age
                     age_kid = mother.age - mother_firstchild_gap_generator.rvs(size=1)
 
                 #If a family not orphans need a minimum age gap for next kid
                 if NKids != 0 and NAdults != 0:
-                    age_kid = min([kid_i.age for kid_i in household.kids.people]) - self.min_age_gap_between_childen
+                    age_kid = min([kid_i.age for kid_i in household.kids]) - self.min_age_gap_between_childen
 
                 
                 #Find a child to add
@@ -417,13 +417,13 @@ class CampHouseholdDistributor:
                 break
 
             for household in Intersection:
-                NKids = len(household.kids.people)
-                NAdults = len(household.adults.people)
+                NKids = len(household.kids)
+                NAdults = len(household.adults)
 
                 if NAdults > 0: #If there is an adult already try to preference adding parents!
                     #Get random adult
-                    idx = np.random.randint(0, len(household.adults.people))
-                    rand_adult = household.adults.people[idx]
+                    idx = np.random.randint(0, len(household.adults))
+                    rand_adult = household.adults[idx]
 
                     sex = random_sex()
                     #Generate the appropiate age gaps
@@ -468,12 +468,12 @@ class CampHouseholdDistributor:
                 Intersection = intersection(households, households)
 
             for household in Intersection:
-                NAdults = len(household.adults.people)
+                NAdults = len(household.adults)
 
                 if NAdults > 0: #If there is an adult already try to preference adding parents!
                     #Get random adult
-                    idx = np.random.randint(0, len(household.adults.people))
-                    rand_adult = household.adults.people[idx]
+                    idx = np.random.randint(0, len(household.adults))
+                    rand_adult = household.adults[idx]
 
                     sex = random_sex()
                     #Generate the appropiate age gaps

@@ -42,7 +42,7 @@ class PumpLatrine(SocialVenue):
         self.coordinates = self.get_coordinates   
 
 class PumpLatrines(SocialVenues):
-    venue_class = PumpLatrine
+    venue_class = PumpLatrine 
 
     def __init__(self, pump_latrines: List[PumpLatrine]):
         super().__init__(pump_latrines, make_tree=False)
