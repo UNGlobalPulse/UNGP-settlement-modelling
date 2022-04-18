@@ -1,13 +1,14 @@
 # Men go to religious meetings once a week 76 % chance
+
 times_per_week:
   weekday:
     male:
-      11-100: 0.58
+      11-100: 0.543
     female:
       0-100: 0.0
   weekend:
     male:
-      11-100: 0.23
+      11-100: 0.217
     female:
       0-100: 0.0
 hours_per_day:

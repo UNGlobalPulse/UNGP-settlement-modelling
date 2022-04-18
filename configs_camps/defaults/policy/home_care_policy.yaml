@@ -1,7 +1,7 @@
 # needs more thinking
 social_distancing:
-        start_time: 2021-03-16
-        end_time: 2021-07-04 
+        start_time: 9999-03-16
+        end_time: 9999-07-04 
         beta_factors:
           communal: 0.5
           female_communal: 0.5
@@ -55,9 +55,16 @@ change_leisure_probability:
             both_sexes:
               0-100: 0.66
 
+          shelter_visit:
+            male:
+              0-100: 1.0
+            female:
+              0-100: 0.5
+
+
     2:
         start_time: 2020-04-15
-        end_time: 2021-01-01
+        end_time: 9999-01-01
         activity_reductions:
 
           communal:
@@ -72,4 +79,10 @@ change_leisure_probability:
 
           distribution_center:
             both_sexes:
-              0-100: 0.66
+              0-100: 0.5
+
+          shelter_visit:
+            male:
+              0-100: 1.0
+            female:
+              0-100: 0.5
