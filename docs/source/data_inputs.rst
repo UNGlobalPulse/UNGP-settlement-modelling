@@ -5,14 +5,15 @@ Data Inputs
 
 **Note:** There are two sources of data required to run the model -
 the data for the camps (stored in ``$BASE/camp_data/``) and the data
-for the ``JUNE`` more broedly which is set up to model the UK by
+for ``JUNE`` more broadly which is set up to model the UK by
 default. The latter comes already downloaded with the ``JUNE`` code
-but can be added to the repository in ``$BASE/data/``. If configuring
-``JUNE`` to use this data then modifications can be made to the
-underlying ``JUNE`` data which is useful for editing disease parameter
+but can be added to the repository in ``$BASE/data/`` (see
+:ref:`Installation <installation>` on how to get this). If configuring
+the base installation of ``JUNE`` to use this data then modifications can be made to the ``$BASE/data/`` folder which is useful for editing disease parameter
 characteristics. In this section we will only cover data in the
 ``camp_data`` folder which is related to the set up of the digital
-twin of the camp in question.
+twin of the camp in question but we might make references in later
+section to changes to the make data in the ``$BASE/data/`` folder.
 
 The data to run the model is stored in the ``$BASE/camp_data/``
 folder. There are multiple ways to structure the data folder, however,
