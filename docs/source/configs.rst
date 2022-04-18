@@ -19,7 +19,7 @@ An example of the  global config file:
 
 We now go through the key components of the file:
 
---1. Activities--
+**1. Activities**
 ::
   activity_to_super_groups:
     primary_activity: []
@@ -48,7 +48,7 @@ places people can go if they need medical treatment once infected
 in the model. In the case of Cox's Bazar, this is just
 ``hospitals``.
 
---2. Time--
+**2. Time**
 ::
   time:
     initial_day: '2020-05-24'
@@ -205,6 +205,9 @@ control how intense interactions between people in the model are. This
 affects the probability of being infected given the presence of an
 infected person in the same venue as another person at the same time.
 
+Details on the use and implementation of these interaction parameters
+(`betas`) can be found in the main `JUNE paper <https://royalsocietypublishing.org/doi/full/10.1098/rsos.210506>`_.
+
 Interaction parameters are controlled by a ``.yaml`` file passed to
 the ``Interaction`` class. This is stored in the
 ``configs_camps/defaults/interaction/`` folder. There are several key
@@ -244,9 +247,6 @@ scales, irrespective of the location.
 
 **Note:** In general, when fitting the model it is these ``betas`` and
 ``alpha_physical`` parameters which are considered free fitting parameters.
-
-TODO:
-- Cover contact matrices in separate document
       
 Policies
 --------
