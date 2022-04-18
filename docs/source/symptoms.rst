@@ -7,18 +7,22 @@ TODO:
 - Be clear which ones of these can be set from the camps model itself
   as there are some which are set in the ``full_run_parse`` script.
 
-By default, the ``JUNE`` is set up to model COVID-19. It has the
+By default, the ``JUNE`` framework is set up to model COVID-19. It has the
 capacity to model multiple variants, where different parameters are
-set relative to the wild-type (original) variant. The disease is able
+set relative to the wild-type (original) variant. however, the disease is able
 to be changed.
 
 **Note:** In this section we will run through how the disease is
 set up in the ``JUNE`` code, with only a few references to the code in
 this repository. We will try to make clear throughout which code we
-are referring to. To change these, we recommend you locally install
-``JUNE`` to make the necessary changes. In addition, various changes
-may be required to the ``JUNE`` data folder to change disease
-parameters as the core of the disease parameter setting is done there.
+are referring to. Some of these changes just require a different files
+to be passed to certain imported ``june`` functions, but more in depth
+changes will require changes to the ``JUNE`` code. To do these we recommend you locally install
+``JUNE`` to make the necessary changes.
+
+A walkthrough of how to change the disease characteristics for a
+different disease (while still based on contact patterns is give in
+:ref:`New Disease <new-airbourne-disease>`)
 
 Infection
 ---------
@@ -29,7 +33,7 @@ in information about the transmission properties of the disease, how
 people develop different symptoms, as
 well as the ``HealthIndexGenerator``. These
 are stored in the ``transmission_config`` file and describe details
-about a persoc's infectiousness. The results of which construct
+about a person's infectiousness. The results of which construct
 information about the transmission parameters fed into the
 ``TransmissionGamma`` class. This class is specifically designed to
 construct a gamma function style infectiousness profile which would
@@ -87,7 +91,10 @@ accounted for comorbidities in ithe IFRs which then need to be
 corrected for a different populations' comorbiditity prevalence
 rates. This is done through calling the ``ImmunitySetter`` and passing
 the prevalence rates of the population being modeled, and those of the
--reference- popualtion.
+`reference` popualtion.
 
 Physiological Age Correction
 ----------------------------
+
+TODO:
+- Add details here
