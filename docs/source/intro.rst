@@ -1,14 +1,14 @@
 Introduction
 ============
 
-The ``camps`` is a python package for disease modelling in refugee and
+``camps`` is a python package for disease modelling in refugee and
 internally displaces people settlements. The package is based on the
 `JUNE <https://github.com/IDAS-Durham/JUNE>`_ package - a framework for
-agent-based modelling.
+agent-based disease modelling.
 
-The current version of ``camps`` is set up to model the spread of
+The current default version of ``camps`` is set up to model the spread of
 COVID-19 in the Cox's Bazar
-refugee settlement in Bangladesh by default, however, can simply be
+refugee settlement in Bangladesh, however, can simply be
 modified to other settings as necessary.
 
 This documentation is designed to give an overview of the code in the
@@ -16,15 +16,19 @@ This documentation is designed to give an overview of the code in the
 framework - leaving this to the JUNE code itself to be
 documented.
 
-We lay out the documentation such that we first address the data
-inputs - how to construct the input data necessary to run the
-model. Next we cover the config file set ups which specify how the
-model is setup, how the disease spreads, and which interventions
-(e.g. lockdowns, vaccines etc.) are turned on in the model.
+We lay out the documentation in the following way:
 
-Once we have covered the higher level changes to the model, we cover
-the code operations and how they are used before discussing how to run
-the model. Finally, we cover the outputs of the model.
+1. First we address the minmal high level changes needed to run the
+   model for a new location - the :ref:`data inputs <data-inputs>` (how to construct
+   the input data necessary to run the model), the :ref:`config file <configs>` changes which specify how the model is setup, and
+   then how :ref:`model-running <run the model>` model without changing anything else.
+
+2. Once we have covered the higher level changes to the model, we cover
+   the code operations and how they are used to provide more
+   understanding of the underlying mechanics, as well as which bits
+   might be changes to allow for more fine-grained control over the
+   model. This includes a overview of the :ref:`model setup <model-setup>` and a dive into the way the :ref:`disease characteristics
+   <disease-characteristics>` are handled.
 
 Details of the use of this package are presened in our `paper
 <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009360>`_

@@ -1,3 +1,5 @@
+.. _model-setup:
+
 Model Setup
 ===========
 

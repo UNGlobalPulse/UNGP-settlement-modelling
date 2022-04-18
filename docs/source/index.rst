@@ -8,17 +8,27 @@ Welcome to settlement-modelling's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Overview:
 
    intro
    installation
+
+.. toctree::
+   :maxdepth: 2
+   :caption: High level:
+
    data_inputs
    configs
-   model_setup
-   symptoms
    model_running
    data_outputs
-   camps
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Lower level:
+
+   model_setup
+   symptoms
+   modules
 
 Indices and tables
 ==================

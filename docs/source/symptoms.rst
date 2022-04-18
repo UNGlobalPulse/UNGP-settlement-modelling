@@ -1,3 +1,5 @@
+.. _disease-characteristics:
+
 Disease Characteristics
 =======================
 

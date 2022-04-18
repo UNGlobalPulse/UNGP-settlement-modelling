@@ -1,3 +1,5 @@
+.. _model-running:
+
 Model Running
 =============
 
