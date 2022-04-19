@@ -19,6 +19,7 @@ Welcome to settlement-modelling's documentation!
 
    data_inputs
    configs
+   seeding
    model_running
    data_outputs
 
@@ -29,6 +30,12 @@ Welcome to settlement-modelling's documentation!
    model_setup
    symptoms
    modules
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples:
+
+   new_airborne_disease
 
 Indices and tables
 ==================

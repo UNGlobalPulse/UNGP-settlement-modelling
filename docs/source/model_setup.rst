@@ -65,6 +65,11 @@ TODO:
 - Add something on construction of locations - referencing back to
   main JUNE
 
+.. _setup_interactions:
+  
+Interactions
+------------
+
 Policies
 --------
 

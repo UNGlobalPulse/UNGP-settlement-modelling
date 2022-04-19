@@ -15,7 +15,7 @@ and where the possible activities people can go to have been
 distirbuted to the population. We also assume that the policies have
 been created and saved to ``policies``, along with the
 ``infection_seeds`` and ``interaction`` patterns (respectively covered
-in :ref:`configs-policies`, :ref:`infection_seeding` and :ref:`interactions`). What remains is then to initialise the
+in :ref:`configs-policies`, :ref:`infection-seeding` and :ref:`setup-interactions`). What remains is then to initialise the
 various disease characteristics and pass everything to the
 ``Simulator`` which handles the running of the model.
 
