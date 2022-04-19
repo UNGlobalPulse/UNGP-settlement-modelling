@@ -248,6 +248,8 @@ scales, irrespective of the location.
 **Note:** In general, when fitting the model it is these ``betas`` and
 ``alpha_physical`` parameters which are considered free fitting parameters.
       
+.. _configs-policies:
+
 Policies
 --------
 

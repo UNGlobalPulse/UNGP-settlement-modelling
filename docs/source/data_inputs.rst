@@ -132,6 +132,7 @@ their own super areas. The first three areas, and the first two super
 areas are part of the first region, and the final area and super area
 are part of another region.
 
+.. _data-demography:
 
 Demography
 ----------
