@@ -1,7 +1,7 @@
 .. _new-airborne-disease:
 
-Example: New Airborne Disease
-==============================
+New Airborne Disease
+====================
 
 In this example we walk through the changes required to simulate the
 spread of a new airborne disease. We utilise the fact that by default
