@@ -1,15 +1,17 @@
 # twice per day
+# 100% compliance
+
 times_per_week:
   weekday:
     male:
-      0-100: 11.5
+      0-100: 10.0
     female:
-      0-100: 11.5
+      0-100: 10.0
   weekend:
     male:
-      0-100: 4.6
+      0-100: 4.0
     female:
-      0-100: 4.6
+      0-100: 4.0
 hours_per_day:
   weekday:
     male:

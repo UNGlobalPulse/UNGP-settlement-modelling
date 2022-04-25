@@ -89,6 +89,7 @@ class HouseholdError(BaseException):
 
 
 class CampHouseholdDistributor:
+    
     def __init__(
         self,
         kid_max_age=17,
@@ -102,6 +103,23 @@ class CampHouseholdDistributor:
         chance_single_parent_mf=None,
         ignore_orphans: bool = False,
     ):
+        """
+        Cluters people into households
+        
+        Parameters
+        ----------
+        kid_max_age : int
+            Maximum age of people categorised as 'children'
+        adult_min_age : int
+            Minimum age of people categorised as 'adults'
+        adult_max_age : int
+            Maximum age of adults
+        max_household_size : int
+            Maximum size of a household/family
+        household_size_distribution : dict
+            Optional dict specifying percentage distribution of households by integer size.
+            If not set then default taken.
+        """
         self.kid_max_age = kid_max_age
         self.adult_min_age = adult_min_age
         self.adult_max_age = adult_max_age
@@ -148,6 +166,20 @@ class CampHouseholdDistributor:
     def _create_people_dicts(self, area: Area):
         """
         Creates dictionaries with the men and women per age key living in the area.
+
+        Parameters
+        ----------
+        area
+            Area class in which to cluster households
+
+        Returns
+        -------
+        kids
+            List of people categorised as children
+        men_by_age
+            Dictionary of lists of men indexed by age
+        women_by_age
+            Dictionary of lists of women indexed by age
         """
         kids_by_age = defaultdict(list)
         men_by_age = defaultdict(list)
@@ -163,13 +195,48 @@ class CampHouseholdDistributor:
         return kids_by_age, men_by_age, women_by_age
 
     def _create_household(self, area, max_size):
+        """
+        Creates household classes for a given area
+        
+        Parameters
+        ----------
+        area
+            Area Class in which to assign a Household class
+        max_size
+            Maximum size of the household created
+
+        Returns
+        -------
+        Household
+            Household class returned with attributes passed
+        """
         return Household(area=area, type="family", max_size=max_size)
 
     def clear_dictionary(self, dictionary, age):
+        """ Clears dictionary object indexed by a given age"""
         if not dictionary[age]:
             del dictionary[age]
 
     def get_closest_person_of_age(self, men_by_age, women_by_age, age, sex):
+        """
+        For a given person, find someone of a given gender closest to their age
+        
+        Parameters
+        ----------
+        men_by_age : dict
+            Dictionary of lists of men indexed by age
+        women_by_age : dict
+            Dictionary of lists of women indexed by age
+        age : int
+            Age of reference person
+        sex: str
+            Sex of reference person
+        
+        Returns
+        -------
+        person
+            If a suitable person is found then they are returned, if not then None is returned
+        """
         if sex == "m":
             if men_by_age:
                 available_ages = np.array(list(men_by_age.keys()))
@@ -223,6 +290,21 @@ class CampHouseholdDistributor:
         partner_age_gap_generator,
         mother_firstchild_gap_generator,
     ) -> Households:
+        """
+        Distributes people to household given an area with a given number of families
+        
+        Parameters
+        ----------
+        area
+            Area class in which people are to be clustered into households
+        n_families : int
+            Number of families in the area
+        
+        Returns
+        -------
+        households
+            List of households in the area
+        """
 
         def SingleHousePickSex():
             pick = ["m" for i in range(self.chance_single_parent_mf["m"])] + ["f" for i in range(self.chance_single_parent_mf["f"])] 

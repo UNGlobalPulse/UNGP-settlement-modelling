@@ -36,6 +36,18 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         hours_per_day,
         drags_household_probability=0,
     ):
+        """
+        Like other 'leisure' distributors in JUNE, this defines the distributor for the shelters
+
+        Parameters
+        ----------
+        times_per_week
+            Number of times per week people go on shelter visits
+        hours_per_day
+            Number of hours per day they spend visiting
+        drags_household_probability
+            Probability that, if one person from a household goes, that they bring everyone else with them
+        """
         super().__init__(
             times_per_week=times_per_week,
             hours_per_day=hours_per_day,
@@ -45,19 +57,38 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
 
     @classmethod
     def from_config(cls, config_filename: str = default_config_filename):
+        """
+        Defines class from config
+        
+        Parameters
+        ----------
+        config_filename
+            Full path to config file
+        
+        Returns
+        -------
+        Instance of the ShelterVisitsDistributor class
+        """
+        
         with open(config_filename) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return cls(**config)
 
     def link_shelters_to_shelters(self, super_areas):
         """
-        Links people between shelters. Strategy: We pair each shelter with 0, 1, or 2 other shelters (with equal prob.). The shelter of the former then has a probability of visiting the shelter of the later
+        Links people between shelters. 
+        Strategy: We pair each shelter with 0, 1, or 2 other shelters (with equal prob.). 
+        The shelter of the former then has a probability of visiting the shelter of the later
         at every time step.
 
         Parameters
         ----------
         super_areas
             list of super areas
+        
+        Returns
+        -------
+        None
         """
         for super_area in super_areas:
             shelters_super_area = list(
@@ -82,6 +113,19 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
                     shelter.shelters_to_visit = tuple(shelters_to_visit)
 
     def get_leisure_group(self, person):
+        """
+        Gets the group of a person
+        
+        Parameters
+        ----------
+        person
+            A person - instance of the Person class
+
+        Returns
+        -------
+        group
+            Group of a person 
+        """
         candidates = person.residence.group.shelters_to_visit
         if candidates is None:
             return

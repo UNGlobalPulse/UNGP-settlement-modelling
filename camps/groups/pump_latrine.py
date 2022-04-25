@@ -31,11 +31,17 @@ from enum import IntEnum, Enum
 default_config_filename = camp_configs_path / "defaults/groups/pump_latrine.yaml"
 
 class PumpLatrine(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
+        """
+        Pumps and latrines people can use
+
+        Parameters
+        ----------
+        max_size
+            Maximum size of any one given play group
+        area
+            Optional Area class for play groups to be associated with
+        """
         super().__init__()
         self.max_size = max_size
         self.area = area   
@@ -45,6 +51,14 @@ class PumpLatrines(SocialVenues):
     venue_class = PumpLatrine 
 
     def __init__(self, pump_latrines: List[PumpLatrine]):
+        """
+        Create and store information on multiple PumpLatrine instances
+        
+        Parameters
+        ----------
+        pump_latrines
+            List of PumpLatrine classes
+        """
         super().__init__(pump_latrines, make_tree=False)
     
     @classmethod
@@ -55,6 +69,22 @@ class PumpLatrines(SocialVenues):
         max_size=np.inf,
     ):
 
+        """
+        Defines class from areas
+
+        Parameters
+        ----------
+        areas
+            List of Area instances
+        venues_per_capita
+            Number of venues to be created for every n people
+        max_size
+            Maximum size of any one given play group
+
+        Returns
+        -------
+        PumpLatrines class instance
+        """
         pump_latrines = []
         for area in areas:
             area_population = len(area.people)
@@ -67,15 +97,41 @@ class PumpLatrines(SocialVenues):
         return cls(pump_latrines)
 
 class PumpLatrineDistributor(SocialVenueDistributor):
+    """
+    Distributes people to pumps and latrines according to probability parameters
+    """
     default_config_filename = default_config_filename
 
     def get_social_venue_for_person(self, person):
         """
         We select a random pump or latrine from the person area.
+
+        Parameters
+        ----------
+        person
+            Instance of the Person class
+
+        Returns
+        -------
+        venue
+            Venue selected for person
         """
         venue = np.random.choice(person.area.pump_latrines)
         return venue
 
     def get_possible_venues_for_area(self, area: Area):
+        """
+        Select a random pump or latrine from a given Area
+
+        Parameters
+        ----------
+        area
+            Area from which to select pump or latrine
+        
+        Returns
+        -------
+        venue
+            Venue selected from area
+        """
         venue = np.random.choice(area.pump_latrines)
         return [venue]

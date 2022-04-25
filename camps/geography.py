@@ -38,12 +38,12 @@ class CampGeography(Geography):
 
         Parameters
         ----------
-        hierarchy
-            The different geographical division units from which the
-            hierachical structure will be constructed.
-        area_coordinates
-
-        Note: It would be nice to find a better way to handle coordinates.
+        areas
+            List of CampArea instances to create the lowerest layer in the geographical heirarchy
+        super_areas
+            List of SuperArea instances to create the midde layer in the geographical heirarchy
+        regions
+            List of Region instances to create highest layer in the geographical heirarchy
         """
         self.areas = areas
         self.super_areas = super_areas
@@ -57,7 +57,7 @@ class CampGeography(Geography):
 
     @classmethod
     def _create_areas(
-        cls, area_coords: pd.DataFrame, super_area: pd.DataFrame, socioeconomic_indices = None,
+        cls, area_coords: pd.DataFrame, super_area: "SuperArea", socioeconomic_indices = None,
     ) -> List[Area]:
         """
         Applies the _create_area function throught the area_coords dataframe.
@@ -69,6 +69,8 @@ class CampGeography(Geography):
         area_coords
             pandas Dataframe with the area name as index and the coordinates
             X, Y where X is longitude and Y is latitude.
+        super_area
+            Instance of the SuperArea class for for each of the areas in the area_coords Dataframes
         """
         # if a single area is given, then area_coords is a series
         # and we cannot do iterrows()

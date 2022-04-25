@@ -36,6 +36,19 @@ class PlayGroup(SocialVenue):
         max_size = np.inf,
         area=None,
     ):
+        """
+        Play groups in which children can play according to their age groups
+        
+        Parameters
+        ----------
+        age_group_limits
+            List of successive upper bound age limits for different play groups.
+            For example, [3, 7, 12] creates 3 groups with upper bounds of 3, 7, and 12.
+        max_size
+            Maximum size of any one given play group
+        area
+            Optional Area class for play groups to be associated with
+        """
         super().__init__()
         self.max_size = max_size
         self.area = area   
@@ -46,6 +59,9 @@ class PlayGroups(SocialVenues):
     venue_class = PlayGroup
     def __init__(self, play_groups: List[PlayGroup]):
         super().__init__(play_groups, make_tree=False)
+        """
+        Create and store information on multiple PlayGroup instances
+        """
 
     @classmethod
     def for_areas(
@@ -54,6 +70,25 @@ class PlayGroups(SocialVenues):
         venues_per_capita: float = 1 / 20,
         max_size: int = 10,
     ):
+        """
+        Defines class from areas
+
+        Parameters
+        ----------
+        areas
+            List of CampArea instances
+        venues_per_capita
+            Number of venues to be created for every n people
+        age_group_limits
+            List of successive upper bound age limits for different play groups.
+            For example, [3, 7, 12] creates 3 groups with upper bounds of 3, 7, and 12.
+        max_size
+            Maximum size of any one given play group
+
+        Returns
+        -------
+        PlayGroups class instance
+        """
         play_groups = []
 
         #Make a dummy to get the age bins
@@ -76,8 +111,11 @@ class PlayGroups(SocialVenues):
 
 
 class PlayGroupDistributor(SocialVenueDistributor):
+    """
+    Distributes people to play groups according to probability parameters
+    """
     default_config_filename = default_config_filename
-
+    
     def get_social_venue_for_person(self, person):
         """
         We select a random play group from the person area.

@@ -1,15 +1,17 @@
 # Assume people go twice a week to community centers, any day equally likely (weekdays and weekends)
+# Assume 80% compliance
+
 times_per_week:
   weekday:
     male:
-      0-100: 1.783
+      0-100: 1.143
     female:
-      0-100: 1.783
+      0-100: 1.143
   weekend:
     male:
-      0-100: 0.713
+      0-100: 0.457
     female:
-      0-100: 0.713
+      0-100: 0.457
 hours_per_day:
   weekday:
     male:
