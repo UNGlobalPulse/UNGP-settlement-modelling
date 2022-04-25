@@ -427,7 +427,7 @@ class CampHouseholdDistributor:
             #House now full?
             if household.size >= household.max_size:
                 households_with_space.remove(household)
-        print("Parents done")
+        #print("Parents done")
 
         #Distribute all the children
         while True:
@@ -489,7 +489,7 @@ class CampHouseholdDistributor:
                 #Check if we finished up the kids
                 if not kids_by_age:
                     break
-        print("Kids done")
+        #print("Kids done")
 
         while True:
             if not men_by_age and not women_by_age:
@@ -537,7 +537,7 @@ class CampHouseholdDistributor:
                 #Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        print("All multigen adults done")
+        #print("All multigen adults done")
 
         while True:
             sqeeze = False
@@ -587,7 +587,7 @@ class CampHouseholdDistributor:
                 #Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        print("All adults only houses done")
+        #print("All adults only houses done")
 
         # check everyone has a house
         people_in_households = len(

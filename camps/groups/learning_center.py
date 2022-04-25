@@ -181,7 +181,7 @@ class LearningCenters(Supergroup):
         logger.info(f"There are {len(learning_centers_df)} learning center(s)")
         coordinates = learning_centers_df.loc[:, ["latitude", "longitude"]].values
         return cls.from_coordinates(
-            coordinates, max_size, areas, max_distance_to_area=max_distance_to_area,**kwargs
+            coordinates=coordinates, max_size=max_size, areas=areas, max_distance_to_area=max_distance_to_area,**kwargs
         )
 
     @classmethod
