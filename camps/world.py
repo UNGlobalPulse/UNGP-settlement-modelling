@@ -51,4 +51,5 @@ class CampWorld(World):
         self.learning_centers = None
         self.isolation_units = None
         self.play_groups = None
+        self.informal_works = None
 

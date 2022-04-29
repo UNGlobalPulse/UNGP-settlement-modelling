@@ -1,0 +1,27 @@
+#TODO Pick good values
+
+times_per_week:
+  weekday:
+    male:
+      18-65: 2.86
+    female:
+      0-100: 0.0
+  weekend:
+    male:
+      18-100: 1.14
+    female:
+      0-100: 0.0
+hours_per_day:
+  weekday:
+    male:
+      18-100: 8.0
+    female:
+      0-100: 0.0
+  weekend:
+    male:
+      18-100: 8.0
+    female:
+      0-100: 0.0
+drags_household_probability: 0
+neighbours_to_consider: 5
+maximum_distance: 1000

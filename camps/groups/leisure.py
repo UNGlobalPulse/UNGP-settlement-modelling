@@ -25,6 +25,7 @@ from june.groups.leisure import (
 )
 from camps.groups import (
     PumpLatrineDistributor,
+    InformalWorkDistributor,
     FemaleCommunalDistributor,
     DistributionCenterDistributor,
     CommunalDistributor,
@@ -76,6 +77,12 @@ def generate_leisure_for_world(list_of_leisure_groups, world):
             )
         leisure_distributors.append(
             FemaleCommunalDistributor.from_config(world.female_communals)
+        )
+    if "informal_works" in list_of_leisure_groups:
+        if not hasattr(world, "informal_works"):
+            raise ValueError("Your world does note have informal work")
+        leisure_distributors.append(
+            InformalWorkDistributor.from_config(world.informal_works)
         )
     if "household_visits" in list_of_leisure_groups:
         if not hasattr(world, "households"):

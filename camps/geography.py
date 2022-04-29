@@ -28,6 +28,7 @@ class CampArea(Area):
         self.pump_latrines = list()
         self.play_groups = list()
         self.shelters = list()
+        self.informal_works = list()
 
 class CampGeography(Geography):
     def __init__(
