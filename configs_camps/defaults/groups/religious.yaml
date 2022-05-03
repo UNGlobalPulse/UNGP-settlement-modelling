@@ -24,5 +24,5 @@ hours_per_day:
       0-100: 8
 drags_household_probability: 0
 neighbours_to_consider: 5
-maximum_distance: 1000
+maximum_distance: 100
 
