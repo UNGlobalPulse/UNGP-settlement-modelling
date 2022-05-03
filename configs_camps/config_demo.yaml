@@ -2,13 +2,13 @@ title: Covid configuration example
 
 activity_to_super_groups:
   primary_activity: ['learning_centers']
-  leisure: ['distribution_centers', 'communals', 'female_communals', 'pump_latrines', 'religiouss', 'play_groups', 'e_vouchers', 'n_f_distribution_centers', 'shelters_visits'] 
+  leisure: ['distribution_centers', 'communals', 'female_communals', 'pump_latrines', 'religiouss', 'play_groups', 'e_vouchers', 'n_f_distribution_centers', 'shelters_visits', 'informal_works'] 
   residence: ['shelters']
   medical_facility: ["isolation_units", 'hospitals']
 
 time:
   initial_day: '2020-05-24'
-  total_days: 3
+  total_days: 7
   step_duration: 
       weekday:
           0: 2 
@@ -39,3 +39,5 @@ time:
           3: ['medical_facility', 'leisure', 'residence']
           4: ['medical_facility', 'leisure', 'residence']
           5: ['medical_facility', 'residence']
+weekend: ["Friday", "Saturday"]
+weekday: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"]

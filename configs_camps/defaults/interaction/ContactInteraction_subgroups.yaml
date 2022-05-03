@@ -15,6 +15,7 @@ betas:
   play_group: 0.02
   pump_latrine: 0.02  
   religious: 0.04
+  informal_work: 0.04
 
   hospital: 0.02
   shelter: 0.2
@@ -81,8 +82,13 @@ contact_matrices:
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
-    
-    
+  informal_work:
+    contacts: [[5]]
+    proportion_physical: [[0.12]]
+    characteristic_time: 8.00
+    type: Age
+    bins: [0,100]
+   
   learning_center:
     contacts: [[10.88,2.00],[9.00,6.00]]
     contacts_err: [[1.24,0.51],[2.18,1.47]]
