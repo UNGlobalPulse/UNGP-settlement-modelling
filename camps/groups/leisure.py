@@ -118,6 +118,15 @@ def generate_leisure_for_config(world, config_filename):
     with open(config_filename) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     list_of_leisure_groups = config["activity_to_super_groups"]["leisure"]
-    daytypes = {"weekday": config["weekday"],"weekend": config["weekend"]}
+    if "weekday" in config.keys() and "weekend" in config.keys():
+        daytypes = {
+            "weekday": config["weekday"],
+            "weekend": config["weekend"]
+        }
+    else:
+        daytypes = {
+            "weekday":["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "weekend": ["Saturday", "Sunday"]
+        }
     leisure_instance = generate_leisure_for_world(list_of_leisure_groups, world, daytypes)
     return leisure_instance
