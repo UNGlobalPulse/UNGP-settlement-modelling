@@ -155,7 +155,7 @@ class LearningCenters(Supergroup):
         cls,
         areas: "Areas",
         coordinates_path: str = default_learning_centers_coordinates_path,
-        max_distance_to_area=5,
+        max_distance_to_area=1,
         max_size=np.inf,
         **kwargs
     ):
@@ -222,7 +222,7 @@ class LearningCenters(Supergroup):
         cls,
         coordinates: List[np.array],
         areas: Optional["Areas"] = None,
-        max_distance_to_area=5,
+        max_distance_to_area=0.25,
         max_size=np.inf,
         **kwargs
     ):
@@ -250,6 +250,7 @@ class LearningCenters(Supergroup):
             )
             distances_close = np.where(distances < max_distance_to_area)
             coordinates = coordinates[distances_close]
+
         learning_centers = list()
         for coord in coordinates:
             lc = cls.venue_class()   

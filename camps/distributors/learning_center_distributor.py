@@ -192,6 +192,8 @@ class LearningCenterDistributor:
         """
         for i in closest_centers_idx:
             center = self.learning_centers.members[i]
+            if len(center.teachers) == 0:
+                continue
             if len(center.students) >= center.n_pupils_max:
                 continue
             else:
@@ -244,15 +246,24 @@ class LearningCenterDistributor:
 
                 if len(old_people) == 0:
                     area_k += 1
-                    if area_k > area_k_max:
+                    if area_k >= area_k_max or area_k == len(area):
                         break
 
-            teacher = random.choice(old_people)
-            # add the teacher to all shifts in the school
+            if len(old_people) == 0:
+                continue
 
-            for shift in range(self.n_shifts):
-                learning_center.add(
-                    person=teacher,
-                    shift=shift,
-                    subgroup_type=learning_center.SubgroupType.teachers,
-                )
+            NTeachers = int(np.random.poisson(1.2)+1)
+            if NTeachers > len(old_people):
+                NTeachers = len(old_people)
+            teachers = np.random.choice(old_people, NTeachers, replace=False)
+            # add the teacher to all shifts in the school
+            for teacher in teachers:
+                for shift in range(self.n_shifts):
+                    learning_center.add(
+                        person=teacher,
+                        shift=shift,
+                        subgroup_type=learning_center.SubgroupType.teachers,
+                    )
+ 
+
+

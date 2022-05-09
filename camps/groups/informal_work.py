@@ -65,7 +65,7 @@ class InformalWorks(SocialVenues):
     def for_areas(
         cls, 
         areas: List[Area], 
-        venues_per_capita=0.01447158259,
+        venues_per_capita=0.01447531156,
         max_size=15,
     ):
 
@@ -79,7 +79,7 @@ class InformalWorks(SocialVenues):
         venues_per_capita
             Number of venues to be created for every n people
         max_size
-            Maximum size of any one given play group
+            Maximum size of any one given work venue
 
         Returns
         -------
