@@ -65,7 +65,7 @@ class InformalWorks(SocialVenues):
     def for_areas(
         cls, 
         areas: List[Area], 
-        venues_per_capita=0.01447531156,
+        venues_per_capita=0.00242101907,
         max_size=15,
     ):
 

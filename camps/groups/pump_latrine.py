@@ -65,7 +65,7 @@ class PumpLatrines(SocialVenues):
     def for_areas(
         cls, 
         areas: List[Area], 
-        venues_per_capita=1 / (100 + 35 / 2), 
+        venues_per_capita=0.002426274539, #1 / (100 + 35 / 2),
         max_size=np.inf,
     ):
 
