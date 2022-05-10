@@ -252,7 +252,7 @@ class LearningCenterDistributor:
             if len(old_people) == 0:
                 continue
 
-            NTeachers = int(np.random.poisson(1.2)+1)
+            NTeachers = int(np.random.poisson(5)+1)
             if NTeachers > len(old_people):
                 NTeachers = len(old_people)
             teachers = np.random.choice(old_people, NTeachers, replace=False)
