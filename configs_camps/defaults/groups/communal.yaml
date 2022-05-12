@@ -32,7 +32,7 @@ hours_per_day:
     female:
       0-100: 8
 drags_household_probability: 0
-neighbours_to_consider: 5
+neighbours_to_consider: 3
 maximum_distance: 1000
 open:
    weekday: 9-17 
