@@ -254,6 +254,7 @@ parser.add_argument(
     required=False,
     default="results",
 )
+args.save_path = Path(args.save_path)
 
 parser.add_argument(
     "--n_seeding_days",
