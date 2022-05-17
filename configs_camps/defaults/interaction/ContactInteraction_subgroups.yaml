@@ -9,15 +9,14 @@ betas:
   distribution_center: 0.04
   e_voucher: 0.04
   female_communal: 0.04
+  hospital: 0.02
+  informal_work: 0.4
   isolation_unit: 0.00
   learning_center: 0.04
   n_f_distribution_center: 0.04
   play_group: 0.02
-  pump_latrine: 0.02  
+  pump_latrine: 0.02
   religious: 0.04
-  informal_work: 0.04
-
-  hospital: 0.02
   shelter: 0.2
 
 contact_matrices:
@@ -49,12 +48,31 @@ contact_matrices:
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
+  hospital:
+    contacts: [[5.00, 10., 10.], [1., 0., 0.], [1., 0., 0.]]
+    proportion_physical: [[0.05, 1., 1.], [1.0, 0., 0.], [1., 0., 0.]]
+    characteristic_time: 8 # in hours
+    type: Discrete
+    bins: ["workers", "patients", "icu_patients"]
+  informal_work:
+    contacts: [[5]]
+    proportion_physical: [[0.12]]
+    characteristic_time: 8.00
+    type: Age
+    bins: [0,100]
   isolation_unit:
     contacts: [[0,0], [0,0]]
     proportion_physical: [[0,0], [0,0]]
     characteristic_time: 24
     type: Age
     bins: [0,18,60]
+  learning_center:
+    contacts: [[10.88,2.00],[9.00,6.00]]
+    contacts_err: [[1.24,0.51],[2.18,1.47]]
+    proportion_physical: [[0.12,0.12],[0.12,0.12]]
+    characteristic_time: 1.50
+    type: Discrete
+    bins: ["students", "teachers"]  
   n_f_distribution_center:
     contacts: [[5.00,10.00],[2.00,10.00]]
     contacts_err: [[0.98,1.72],[0.48,1.62]]
@@ -82,26 +100,6 @@ contact_matrices:
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
-  informal_work:
-    contacts: [[5]]
-    proportion_physical: [[0.12]]
-    characteristic_time: 8.00
-    type: Age
-    bins: [0,100]
-   
-  learning_center:
-    contacts: [[10.88,2.00],[9.00,6.00]]
-    contacts_err: [[1.24,0.51],[2.18,1.47]]
-    proportion_physical: [[0.12,0.12],[0.12,0.12]]
-    characteristic_time: 1.50
-    type: Discrete
-    bins: ["students", "teachers"]  
-  hospital:
-    contacts: [[5.00, 10., 10.], [1., 0., 0.], [1., 0., 0.]]
-    proportion_physical: [[0.05, 1., 1.], [1.0, 0., 0.], [1., 0., 0.]]
-    characteristic_time: 8 # in hours
-    type: Discrete
-    bins: ["workers", "patients", "icu_patients"]
   shelter:
     contacts: [[5, 2], [2, 5]]
     proportion_physical: [[0.8, 0.3], [0.8, 0.3]]
