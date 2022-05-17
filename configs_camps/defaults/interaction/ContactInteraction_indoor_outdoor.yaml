@@ -6,6 +6,7 @@ betas:
   e_voucher: 0.1
   female_communal: 0.1
   hospital: 0.02
+  household: 0.2
   informal_work: 0.1
   isolation_unit: 0.00
   learning_center: 0.1
@@ -46,6 +47,12 @@ contact_matrices:
     characteristic_time: 8 # in hours
     type: Discrete
     bins: ["workers", "patients", "icu_patients"]
+  household:
+    contacts: [[1.2,1.27,1.27,1.27],[1.69,1.34,1.3,1.3],[1.69,1.47,1.34,1.34],[1.69,1.47,1.34,2.00]]
+    proportion_physical: [[0.79,0.7,0.7,0.7],[0.7,0.34,0.4,0.4],[0.7,0.4,0.62,0.62],[0.7,0.62,0.62,0.45]] 
+    characteristic_time: 12
+    type: Discrete
+    bins: ["kids","young_adults","adults","old_adults"]
   informal_work:
     contacts: [[5]]
     proportion_physical: [[0.12]]

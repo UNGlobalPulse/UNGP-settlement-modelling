@@ -124,7 +124,7 @@ parser.add_argument(
     "--tracker",
     help="Activate Tracker for CM tracing",
     required=False,
-    default=False,
+    default="False",
 )
 
 parser.add_argument(
@@ -165,7 +165,7 @@ parser.add_argument(
     "--child_susceptibility",
     help="Reduce child susceptibility for under 12s",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-u",
@@ -217,7 +217,7 @@ parser.add_argument(
     "--learning_centers",
     help="Add learning centers",
     required=False,
-    default=True,
+    default="True",
 )
 parser.add_argument(
     "-lcs",
@@ -231,21 +231,21 @@ parser.add_argument(
     "--extra_learning_centers",
     help="Number of learning centers to add based on enrolment",
     required=False,
-    default=True,
+    default="True",
 )
 parser.add_argument(
     "-lch",
     "--learning_center_beta_ratio",
     help="Learning center/household beta ratio scaling",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-pgh",
     "--play_group_beta_ratio",
     help="Play group/household beta ratio scaling",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-s",
