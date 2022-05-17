@@ -231,7 +231,7 @@ parser.add_argument(
     "--extra_learning_centers",
     help="Number of learning centers to add based on enrolment",
     required=False,
-    default=False,
+    default=True,
 )
 parser.add_argument(
     "-lch",
