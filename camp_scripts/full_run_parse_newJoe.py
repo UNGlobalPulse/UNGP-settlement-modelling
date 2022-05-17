@@ -254,7 +254,6 @@ parser.add_argument(
     required=False,
     default="results",
 )
-args.save_path = Path(args.save_path)
 
 parser.add_argument(
     "--n_seeding_days",
@@ -270,6 +269,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+args.save_path = Path(args.save_path)
 
 if args.tracker == "True":
     args.tracker = True
