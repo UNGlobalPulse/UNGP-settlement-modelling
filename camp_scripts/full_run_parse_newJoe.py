@@ -217,7 +217,7 @@ parser.add_argument(
     "--learning_centers",
     help="Add learning centers",
     required=False,
-    default=False,
+    default=True,
 )
 parser.add_argument(
     "-lcs",
@@ -269,6 +269,11 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+
+if args.tracker == "True":
+    args.tracker = True
+else:
+    args.tracker = False
 
 if args.comorbidities == "True":
     args.comorbidities = True
