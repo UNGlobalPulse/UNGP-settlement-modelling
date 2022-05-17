@@ -329,6 +329,11 @@ if args.learning_center_beta_ratio == "True":
 else:
     args.learning_center_beta_ratio = False
     
+if args.play_group_beta_ratio == "True":
+    args.play_group_beta_ratio = True
+else:
+    args.play_group_beta_ratio = False
+    
 
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
