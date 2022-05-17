@@ -284,10 +284,12 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
+    
 if args.no_vaccines == "True":
     args.no_vaccines = True
 else:
     args.no_vaccines = False
+    
 if args.vaccines == "True":
     args.vaccines = True
 else:
@@ -312,15 +314,21 @@ if args.learning_centers == "True":
     args.learning_centers = True
 else:
     args.learning_centers = False
-
-if args.extra_learning_centers == "False":
+    
+if args.extra_learning_centers == "True":
+    args.extra_learning_centers = True
+else:
     args.extra_learning_centers = False
+
 
 if args.learning_center_shifts == "False":
     args.learning_center_shifts = 4
 
-if args.learning_center_beta_ratio == "False":
+if args.learning_center_beta_ratio == "True":
+    args.learning_center_beta_ratio = True
+else:
     args.learning_center_beta_ratio = False
+    
 
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
