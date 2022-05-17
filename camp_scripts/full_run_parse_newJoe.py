@@ -410,7 +410,7 @@ world.isolation_units = IsolationUnits([IsolationUnit(area=hospital.area) for ho
 hospital_distributor.distribute_medics_from_world(world.people)
 
 if args.learning_centers:
-    LearningCenters.Get_Interaction(Interactions_File_Path)
+    LearningCenters.Get_Interaction(args.parameters)
     world.learning_centers = LearningCenters.for_areas(
         world.areas, n_shifts=int(args.learning_center_shifts)
     )
