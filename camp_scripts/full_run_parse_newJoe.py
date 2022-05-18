@@ -271,6 +271,13 @@ parser.add_argument(
 args = parser.parse_args()
 args.save_path = Path(args.save_path)
 
+counter = 0
+OG_save_path = args.save_path 
+while args.save_path.is_file() == True:
+    args.save_path = OG_save_path + "_%s" % counter
+    counter += 1
+    
+
 if args.tracker == "True":
     args.tracker = True
 else:
