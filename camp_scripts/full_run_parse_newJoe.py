@@ -755,7 +755,7 @@ infections_df = read.get_table_with_extras("infections", "infected_ids")
 
 locations_df = infections_df.groupby(["location_specs", "timestamp"]).size()
 
-locations_df.to_csv(args.save_path + "/locations.csv")
+locations_df.to_csv(args.save_path / "locations.csv")
 
 # ==================================================================================#
 
