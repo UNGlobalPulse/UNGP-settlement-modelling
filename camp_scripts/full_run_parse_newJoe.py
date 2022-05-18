@@ -501,10 +501,11 @@ if args.learning_centers:
         learning_center_distributor.distribute_kids_to_learning_centers(world.areas)
         learning_center_distributor.distribute_teachers_to_learning_centers(world.areas)
 
-    CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
+    #CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
 if args.no_visits:
-    CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
+    pass
+    #CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
 
 PumpLatrines.Get_Interaction(args.parameters)
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
