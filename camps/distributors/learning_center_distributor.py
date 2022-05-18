@@ -249,10 +249,12 @@ class LearningCenterDistributor:
                     if area_k >= area_k_max or area_k == len(area):
                         break
 
+            
             if len(old_people) == 0:
                 continue
 
-            NTeachers = int(np.random.poisson(5)+1)
+
+            NTeachers = int(np.random.poisson(2)+1)
             if NTeachers > len(old_people):
                 NTeachers = len(old_people)
             teachers = np.random.choice(old_people, NTeachers, replace=False)
