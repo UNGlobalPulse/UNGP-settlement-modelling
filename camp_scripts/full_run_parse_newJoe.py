@@ -613,9 +613,11 @@ elif args.vaccines:
 
 else:
     policies = Policies.from_file(
-        camp_configs_path / "defaults/policy/home_care_policy.yaml",
+        camp_configs_path / "defaults/policy/simple_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
+    
+print("Policy path set to: {}".format(policies.config_file))
 
 # ============================================================================#
 
@@ -797,11 +799,8 @@ locations_df.to_csv(args.save_path / "locations.csv")
 if args.tracker:
     tracker.contract_matrices("AC", np.array([0,18,60]))
     tracker.contract_matrices("All", np.array([0,100]))
-                                                                            
+                                                                                
     tracker.post_process_simulation(save=True, duplicate=False)
-    tracker.PrintOutResults()
-    
-    tracker.post_process_simulation(save=True, duplicate=True)
     tracker.PrintOutResults()
 
     tracker.make_plots()
