@@ -589,6 +589,7 @@ if args.isolation_units:
     policies.policies[3].n_quarantine_days = int(args.isolation_time)
     policies.policies[3].testing_mean_time = int(args.isolation_testing)
     policies.policies[3].compliance = float(args.isolation_compliance)
+    print("Policy path set to: {}".format("defaults/policy/isolation.yaml"))
 
 elif args.mask_wearing:
     policies = Policies.from_file(
@@ -598,26 +599,29 @@ elif args.mask_wearing:
 
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
+    print("Policy path set to: {}".format("defaults/policy/mask_wearing.yaml"))
 
 elif args.no_vaccines:
     policies = Policies.from_file(
         camp_configs_path / "vaccine_tests/no_vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
+    print("Policy path set to: {}".format("vaccine_tests/no_vaccine.yaml"))
 
 elif args.vaccines:
     policies = Policies.from_file(
         camp_configs_path / "vaccine_tests/vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
+    print("Policy path set to: {}".format("vaccine_tests/vaccine.yaml"))
 
 else:
     policies = Policies.from_file(
         camp_configs_path / "defaults/policy/simple_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
-    
-print("Policy path set to: {}".format(policies.config_file))
+   
+    print("Policy path set to: {}".format(camp_configs_path / "defaults/policy/simple_policy.yaml"))
 
 # ============================================================================#
 
