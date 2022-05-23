@@ -1,4 +1,5 @@
 # Once per week 50 % compliance
+
 times_per_week:
   weekday:
     male:
@@ -7,8 +8,8 @@ times_per_week:
       18-100: 0.0
     female:
       #0-100: 0.357
-      0-18: 0.44087
-      18-100: 0.38571
+      0-18: 0.42891
+      18-100: 0.37525
   weekend:
     male:
       #0-100: 0.0
@@ -16,8 +17,8 @@ times_per_week:
       18-100: 0.0
     female:
       #0-100: 0.143
-      0-18: 0.17635
-      18-100: 0.15429
+      0-18: 0.17156
+      18-100: 0.15010
 hours_per_day:
   weekday:
     male:
