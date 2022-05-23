@@ -1,13 +1,6 @@
 # collection is twice a month
 # those who collect aid: men under 18: 8%; men over 18 68%; women under 18 23%; women over 18: 1%
 # only 12% of people recieve their food from distribution centres
-
-0.01610
-0.05164
-
-0.03219
-0.10329
-
 times_per_week:
   weekday:
     male:
