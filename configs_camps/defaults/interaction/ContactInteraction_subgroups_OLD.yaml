@@ -22,29 +22,29 @@ betas:
 
 contact_matrices:
   communal:
-    contacts: [[5.00,2.03],[4.79,6.00]]
-    contacts_err: [[0.12,0.29],[0.68,0.46]]
+    contacts: [[5.00,4.00],[3.75,7.50]]
+    contacts_err: [[0.31,0.66],[0.51,0.69]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
   distribution_center:
-    contacts: [[4.00,5.21],[12.29,10.00]]
-    contacts_err: [[0.66,0.85],[2.00,0.84]]
+    contacts: [[5.00,10.00],[2.00,10.00]]
+    contacts_err: [[0.98,1.72],[0.48,1.62]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
   e_voucher:
-    contacts: [[0.00,2.00],[4.72,13.50]]
-    contacts_err: [[0.64,1.76],[4.16,1.22]]
+    contacts: [[1.33,4.00],[0.00,15.00]]
+    contacts_err: [[2.07,7.03],[0.23,2.08]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
     bins: [0,18,60]
   female_communal:
-    contacts: [[5.00,2.03],[4.79,6.00]]
-    contacts_err: [[0.12,0.29],[0.68,0.46]]
+    contacts: [[5.00,4.00],[3.75,7.50]]
+    contacts_err: [[0.31,0.66],[0.51,0.69]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
@@ -74,15 +74,15 @@ contact_matrices:
     type: Age
     bins: [0,18,60]
   learning_center:
-    contacts: [[10.00,2.59],[6.11,3.88]]
-    contacts_err: [[0.77,0.37],[0.87,0.88]]
+    contacts: [[10.88,2.00],[9.00,6.00]]
+    contacts_err: [[1.24,0.51],[2.18,1.47]]
     proportion_physical: [[0.12,0.12],[0.12,0.12]]
     characteristic_time: 1.50
     type: Discrete
     bins: ["students", "teachers"]  
   n_f_distribution_center:
-    contacts: [[4.00,5.21],[12.29,10.00]]
-    contacts_err: [[0.66,0.85],[2.00,0.84]]
+    contacts: [[5.00,10.00],[2.00,10.00]]
+    contacts_err: [[0.98,1.72],[0.48,1.62]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
@@ -94,15 +94,15 @@ contact_matrices:
     type: Age
     bins: [3, 7, 12, 18]
   pump_latrine:
-    contacts: [[3.25,2.20],[5.19,4.33]]
-    contacts_err: [[0.34,0.19],[0.45,0.35]]
+    contacts: [[4.33,3.25],[3.07,4.88]]
+    contacts_err: [[0.59,0.66],[0.30,0.51]]
     proportion_physical: [[0.02]]
     characteristic_time: 0.54
     type: Age
     bins: [0,18,60]    
   religious:
-    contacts: [[5.00,4.03],[9.51,8.50]]
-    contacts_err: [[0.31,0.48],[1.13,0.59]]
+    contacts: [[5.00,8.00],[2.00,10.00]]
+    contacts_err: [[0.56,1.00],[0.25,0.68]]
     proportion_physical: [[0.12]]
     characteristic_time: 1.00
     type: Age
