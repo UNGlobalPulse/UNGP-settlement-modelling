@@ -51,6 +51,7 @@ from june.simulator import Simulator
 from june.records import Record, RecordReader
 
 from june.tracker.tracker import Tracker
+from june.tracker.tracker_plots import PlotClass
 
 from camps.activity import CampActivityManager
 from camps.paths import camp_data_path, camp_configs_path
@@ -804,3 +805,10 @@ if args.tracker:
     tracker.contract_matrices("AC", np.array([0,18,60]))
     tracker.contract_matrices("All", np.array([0,100]))                                
     tracker.post_process_simulation(save=True)
+    
+    #Make Plots
+    Plots = PlotClass(
+        record_path=args.save_path / "Tracker",
+
+    )
+    Plots.make_plots()
