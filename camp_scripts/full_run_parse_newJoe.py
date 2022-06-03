@@ -802,9 +802,5 @@ locations_df.to_csv(args.save_path / "locations.csv")
 
 if args.tracker:
     tracker.contract_matrices("AC", np.array([0,18,60]))
-    tracker.contract_matrices("All", np.array([0,100]))
-                                                                                
+    tracker.contract_matrices("All", np.array([0,100]))                                
     tracker.post_process_simulation(save=True)
-    tracker.PrintOutResults()
-
-    tracker.make_plots()
