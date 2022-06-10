@@ -811,7 +811,6 @@ if args.tracker:
     Plots = PlotClass(
         record_path=args.save_path / "Tracker",
         Tracker_Contact_Type = "1D"
-
     )
     Plots.make_plots(
         plot_AvContactsLocation=True, 
@@ -826,7 +825,6 @@ if args.tracker:
     Plots = PlotClass(
         record_path=args.save_path / "Tracker",
         Tracker_Contact_Type = "All"
-
     )
     Plots.make_plots(
         plot_AvContactsLocation=False, 
