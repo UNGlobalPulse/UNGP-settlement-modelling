@@ -230,7 +230,7 @@ def distribute_people_to_households(world: CampWorld):
         mother_firstchild_gap_mean = area_structure["Mother-First Child Age Diff"]
         partner_age_gap_mean = area_structure["avgAgeDiff"]
 
-        mother_firstchild_gap_generator, dist = GenerateDiscretePDF(datarange=[14,30], Mean=mother_firstchild_gap_mean+0.5+(9/12), SD=2.4) #SDs guess
+        mother_firstchild_gap_generator, dist = GenerateDiscretePDF(datarange=[14,60], Mean=mother_firstchild_gap_mean+0.5+(9.0/12.0), SD=2.4) #SDs guess
         partner_age_gap_generator, dist = GenerateDiscretePDF(datarange=[-20,20], Mean=partner_age_gap_mean+0.5, SD=3) #SDs guess
 
         chance_single_parent = area_structure["chance of Single Parent"]

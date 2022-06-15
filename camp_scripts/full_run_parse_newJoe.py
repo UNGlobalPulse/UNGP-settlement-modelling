@@ -813,6 +813,7 @@ if args.tracker:
         Tracker_Contact_Type = "1D"
     )
     Plots.make_plots(
+    	plot_INPUTOUTPUT=True,
         plot_AvContactsLocation=True, 
     	plot_dTLocationPopulation=True, 
     	plot_InteractionMatrices=True, 
@@ -827,6 +828,7 @@ if args.tracker:
         Tracker_Contact_Type = "All"
     )
     Plots.make_plots(
+    	plot_INPUTOUTPUT=False,
         plot_AvContactsLocation=False, 
     	plot_dTLocationPopulation=False, 
     	plot_InteractionMatrices=True, 

@@ -411,7 +411,7 @@ class CampHouseholdDistributor:
                 household.add(person, subgroup_type=household.SubgroupType.adults)
             else:
                 adult_M_age = random_age(age_min=self.adult_min_age, age_max=self.young_adult_max_age) 
-                adult_F_age = adult_M_age - partner_age_gap_generator.rvs(size=1)
+                adult_F_age = adult_M_age - partner_age_gap_generator.rvs(size=1)[0]
 
                 
                 adult_F = self.get_closest_person_of_age(men_by_age, women_by_age, adult_F_age, "f")
@@ -452,11 +452,11 @@ class CampHouseholdDistributor:
                     adult_a_sex = household.adults[0].sex
                     adult_a_age = household.adults[0].age
                     if adult_a_sex == "f":
-                        age_kid = adult_a_age - mother_firstchild_gap_generator.rvs(size=1)
+                        age_kid = adult_a_age - mother_firstchild_gap_generator.rvs(size=1)[0]
                     elif adult_a_sex == "m":
                         #Need a dead(?) mother so generate the appropiate age gap
-                        couple_age_gap = partner_age_gap_generator.rvs(size=1) 
-                        mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)
+                        couple_age_gap = partner_age_gap_generator.rvs(size=1)[0]
+                        mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)[0]
                         age_kid = adult_a_age - ( couple_age_gap + mother_age_gap)
 
                 #Couple with no children YET
@@ -469,7 +469,7 @@ class CampHouseholdDistributor:
                         mother = household.adults[1]
                         father = household.adults[0]
                     couple_age_gap = father.age - mother.age
-                    age_kid = mother.age - mother_firstchild_gap_generator.rvs(size=1)
+                    age_kid = mother.age - mother_firstchild_gap_generator.rvs(size=1)[0]
 
                 #If a family not orphans need a minimum age gap for next kid
                 if NKids != 0 and NAdults != 0:
