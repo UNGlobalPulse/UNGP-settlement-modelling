@@ -95,7 +95,7 @@ class CampHouseholdDistributor:
         kid_max_age=17,
         adult_min_age=17,
         adult_max_age=99,
-        young_adult_max_age=45,
+        young_adult_max_age=49,
         max_household_size=8,
         household_size_distribution=None,
         chance_unaccompanied_childen=None,
