@@ -117,7 +117,7 @@ parser.add_argument(
     "--parameters",
     help="Parameter file",
     required=False,
-    default=camp_configs_path / "defaults/interaction/ContactInteraction_subgroups.yaml",
+    default=camp_configs_path / "defaults/interaction/interaction_Survey.yaml",
 )
 
 parser.add_argument(
