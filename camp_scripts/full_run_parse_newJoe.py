@@ -813,27 +813,36 @@ if args.tracker:
         Tracker_Contact_Type = "1D"
     )
     Plots.make_plots(
-    	plot_INPUTOUTPUT=True,
+        plot_BBC = True,
+        plot_thumbprints = True,
+        SameCMAP="Log",
+    
+        plot_INPUTOUTPUT=True,
         plot_AvContactsLocation=True, 
-    	plot_dTLocationPopulation=True, 
-    	plot_InteractionMatrices=True, 
-    	plot_ContactMatrices=True,
-    	plot_CompareSexMatrices=True,
-    	plot_AgeBinning=True, 
-    	plot_Distances=True 
+        plot_dTLocationPopulation=True, 
+        plot_InteractionMatrices=True, 
+        plot_ContactMatrices=True,
+        plot_CompareSexMatrices=True,
+        plot_AgeBinning=True, 
+        plot_Distances=True 
     )
     
+    ##Make Plots
     Plots = PlotClass(
         record_path=args.save_path / "Tracker",
         Tracker_Contact_Type = "All"
     )
     Plots.make_plots(
-    	plot_INPUTOUTPUT=False,
+        plot_BBC = True,
+        plot_thumbprints = True,
+        SameCMAP="Log",
+    
+        plot_INPUTOUTPUT=False,
         plot_AvContactsLocation=False, 
-    	plot_dTLocationPopulation=False, 
-    	plot_InteractionMatrices=True, 
-    	plot_ContactMatrices=True,
-    	plot_CompareSexMatrices=True,
-    	plot_AgeBinning=False, 
-    	plot_Distances=False 
+        plot_dTLocationPopulation=False, 
+        plot_InteractionMatrices=True, 
+        plot_ContactMatrices=True,
+        plot_CompareSexMatrices=True,
+        plot_AgeBinning=False, 
+        plot_Distances=False 
     )
