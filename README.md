@@ -73,6 +73,29 @@ In order to introduce the user to our codebase we have created a walkthrough Not
 Notebooks/quickstart camp.ipynb
 ```
 
+# Documentation
+
+The documentation for this project is in the `docs/` folder. Currently, the user needs to build this locally to render the `html` files. Do to this make sure the relevant `sphinx` packages are installed:
+
+```
+pip install sphinx
+pip install sphinx_rtd_theme
+```
+
+Then you can generate the `build/` file:
+
+```
+cd docs/
+make clean
+make html
+```
+
+The docs can then be viewed in a web browser:
+
+```
+open build/html/index.html
+```
+
 # Contributing
 
 Contributions to this project are welcome. Please fork the repository and submit Pull Requests with detailed descriptions of your changes. Please consider whether this change is more appropriate to this repository or the [JUNE](https://github.com/IDAS-Durham/JUNE) repository.
