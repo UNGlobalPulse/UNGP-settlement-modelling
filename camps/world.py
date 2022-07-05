@@ -48,3 +48,8 @@ class CampWorld(World):
         self.shelters = None
         self.e_vouchers = None
         self.n_f_distribution_centers = None
+        self.learning_centers = None
+        self.isolation_units = None
+        self.play_groups = None
+        self.informal_works = None
+

@@ -14,10 +14,16 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 """
 
+import yaml
 import numpy as np
 import pandas as pd
 from typing import Optional
 import matplotlib.pyplot as plt
+
+from scipy import stats
+import scipy.integrate as integrate
+from scipy.special import factorial
+from scipy.special import gamma as gammafunc
 
 from june.demography.demography import (
     load_age_and_sex_generators_for_bins,
@@ -52,6 +58,53 @@ area_residents_families = (
 area_residents_families_df = pd.read_csv(area_residents_families)
 area_residents_families_df.set_index("area", inplace=True)
 
+area_household_structure_params = (
+    camp_data_path / "input/households/household_structure.yaml"
+)
+area_household_structure = (
+    camp_data_path /  "input/households/area_household_structure.csv"
+)
+area_household_structure_df = pd.read_csv(area_household_structure)
+area_household_structure_df.set_index("CampSSID", inplace=True)
+
+def read_yaml(config_filename):
+    with open(config_filename) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    return config
+
+def GenerateDiscretePDF(Type="Gaussian", datarange=[0,100], Mean=0, SD=1):
+    def PValue(Mean,SD,Xmin,Xmax):
+        return integrate.quad(lambda x: Gaussian(Mean,SD,x), Xmin,Xmax)
+
+    def Gaussian(Mean, SD, x): 
+        return np.exp(-0.5*((x-Mean)/SD)**2.0)/(SD*np.sqrt(2*np.pi))
+
+    def Poisson(Lambda, N): 
+        return np.exp(-Lambda)*(Lambda)**(N) / factorial(N)
+
+    def ChiSq(x,k):
+        return ( x**(k*0.5 - 1)*np.exp(-x*0.5) ) / ( 2**(0.5*k)*gammafunc(0.5*k))
+
+    Vals = np.arange(datarange[0],datarange[1]+1,1)
+    dist = {}
+    for a_i in range(len(Vals)-1):
+        XMin = Vals[a_i]-0
+        XMax = Vals[a_i]+1
+        PVal = PValue(Mean,SD, XMin, XMax)[0]
+        if PVal < 1e-3:
+            dist[Vals[a_i]] = 0
+        elif PVal >= 1e-3:
+            dist[Vals[a_i]] = PVal
+
+    #Renormalize
+    dist = {k: v / sum(dist.values()) for k, v in dist.items()}
+    generator = stats.rv_discrete(
+        values=[
+            list(dist.keys()),
+            list(dist.values()),
+        ]
+    )
+    return generator, dist
 
 def generate_empty_world(filter_key: Optional[dict]=None):
     """
@@ -157,15 +210,47 @@ def distribute_people_to_households(world: CampWorld):
     -------
     None
     """
-    household_distributor = CampHouseholdDistributor(max_household_size=12)
+    config = read_yaml(area_household_structure_params) #Add an assert to check sum to 1? TODO
+    household_distributor = CampHouseholdDistributor(
+        max_household_size=12,
+        household_size_distribution=config["area"]["coarse"]["household_size"],
+        chance_unaccompanied_childen=config["area"]["coarse"]["chance_unaccompanied_childen"],
+        chance_single_parent_mf=config["area"]["coarse"]["chance_single_parent"],
+        min_age_gap_between_childen = config["area"]["coarse"]["min_age_gap_between_childen"]
+    )
+
     households_total = []
     for area in world.areas:
-        area_data = area_residents_families_df.loc[area.name]
+        areaName = area.name
+        regionName = area.name[:-4]
+        
+        area_data = area_residents_families_df.loc[areaName]
+        area_structure = area_household_structure_df.loc[regionName]
+
+        mother_firstchild_gap_mean = area_structure["Mother-First Child Age Diff"]
+        partner_age_gap_mean = area_structure["avgAgeDiff"]
+
+        mother_firstchild_gap_generator, dist = GenerateDiscretePDF(datarange=[14,60], Mean=mother_firstchild_gap_mean+0.5+(9.0/12.0), SD=2.4) #SDs guess
+        partner_age_gap_generator, dist = GenerateDiscretePDF(datarange=[-20,20], Mean=partner_age_gap_mean+0.5, SD=3) #SDs guess
+
+        chance_single_parent = area_structure["chance of Single Parent"]
+        chance_multigenerational = area_structure["chance of Multigenerational Families"]
+        chance_withchildren = area_structure["chance family with children"]
+
         n_families = int(area_data["families"])
         n_residents = int(area_data["residents"])
         n_families_adapted = int(np.round(len(area.people) / n_residents * n_families))
         area.households = household_distributor.distribute_people_to_households(
-            area=area, n_families=n_families_adapted,
+            area=area, 
+
+            n_families=n_families_adapted, 
+            n_families_wchildren = int(np.round(chance_withchildren*n_families_adapted)),
+            n_families_multigen = int(np.round(chance_multigenerational*n_families_adapted)),
+            n_families_singleparent = int(np.round(chance_single_parent*n_families_adapted)),
+
+            partner_age_gap_generator=partner_age_gap_generator, 
+            mother_firstchild_gap_generator=mother_firstchild_gap_generator,
+            
         )
         households_total += area.households
     world.households = Households(households_total)

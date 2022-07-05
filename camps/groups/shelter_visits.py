@@ -33,6 +33,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
     def __init__(
         self,
         times_per_week,
+        daytypes,
         hours_per_day,
         drags_household_probability=0,
     ):
@@ -50,13 +51,14 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         """
         super().__init__(
             times_per_week=times_per_week,
+            daytypes=daytypes,
             hours_per_day=hours_per_day,
             residence_type_probabilities={"household": 1.0},
             drags_household_probability=drags_household_probability,
         )
 
     @classmethod
-    def from_config(cls, config_filename: str = default_config_filename):
+    def from_config(cls, daytypes: dict, config_filename: str = default_config_filename):
         """
         Defines class from config
         
@@ -72,7 +74,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         
         with open(config_filename) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
-        return cls(**config)
+        return cls(daytypes=daytypes, **config)
 
     def link_shelters_to_shelters(self, super_areas):
         """

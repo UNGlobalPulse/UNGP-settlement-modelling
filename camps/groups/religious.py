@@ -19,6 +19,7 @@ import pandas as pd
 import yaml
 from typing import List, Optional
 from june.geography import Areas
+from enum import IntEnum
 
 from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVenueError
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor
@@ -28,11 +29,18 @@ default_religiouss_coordinates_filename = camp_data_path / "input/activities/rel
 default_config_filename = camp_configs_path / "defaults/groups/religious.yaml"
 
 class Religious(SocialVenue):
-    max_size = np.inf
-
+    def __init__(
+        self,
+        max_size = np.inf,
+        area=None,
+    ):
+        super().__init__()
+        self.max_size = max_size
+        self.area = area  
+        self.coordinates = self.get_coordinates     
 
 class Religiouss(SocialVenues):
-    social_venue_class = Religious
+    venue_class = Religious
     default_coordinates_filename = default_religiouss_coordinates_filename
 
 
