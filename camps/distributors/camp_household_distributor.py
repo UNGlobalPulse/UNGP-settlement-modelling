@@ -333,10 +333,15 @@ class CampHouseholdDistributor:
         #Get households with children   
         Houses_W_Children = list(np.random.choice(np.array(households)[household_sizes>=householdcut], size=n_families_wchildren, replace=False))
         household_W_Children_sizes = np.array([household.max_size for household in Houses_W_Children])
+        for h in Houses_W_Children:
+            h.type = "Children"
+          
 
         #Get households without children
         Houses_WO_Children = list(set(households).difference(Houses_W_Children))
         household_WO_Children_sizes = np.array([household.max_size for household in Houses_WO_Children])
+        for h in Houses_WO_Children:
+            h.type = "NoChildren"
 
         #Preferance smaller houses for households with single parents.
         for N in range(0, self.max_household_size):
@@ -347,10 +352,14 @@ class CampHouseholdDistributor:
         #Get households with single parents
         Houses_Single = list(np.random.choice(np.array(Houses_W_Children)[household_W_Children_sizes<=householdcut], size=n_families_singleparent))
         household_Single_sizes = np.array([household.max_size for household in Houses_Single])
+        for h in Houses_Single:
+            h.type = "Single"
 
         #Get households with grandparents
         Houses_Multigen = list(np.random.choice(np.array(Houses_W_Children), size=n_families_multigen))
         household_Multigen_sizes = np.array([household.max_size for household in Houses_Multigen])
+        for h in Houses_Multigen:
+            h.type = "Multigen"
 
         # print("Families", n_families, len(households))
         # print("Families with children", n_families_wchildren,len(Houses_W_Children), np.median(household_W_Children_sizes))
@@ -554,22 +563,35 @@ class CampHouseholdDistributor:
 
                 if NAdults > 0: #If there is an adult already try to preference adding parents!
                     #Get random adult
-                    idx = np.random.randint(0, len(household.adults))
-                    rand_adult = household.adults[idx]
+                    if NAdults >= 2:
+                        idx = np.random.randint(0, len(household.adults))
+                        rand_adult = household.adults[idx]
 
-                    sex = random_sex()
-                    #Generate the appropiate age gaps
-                    couple_age_gap = partner_age_gap_generator.rvs(size=1) 
-                    mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)
-                    if sex == "m":
-                        age_gap = couple_age_gap + mother_age_gap
-                    elif sex == "f":
-                        age_gap = mother_age_gap
-                    parent = self.get_closest_person_of_age(men_by_age, women_by_age, rand_adult.age+age_gap, sex)
-                    if parent is None:
-                        raise ValueError
+                        sex = random_sex()
+                        #Generate the appropiate age gaps
+                        couple_age_gap = partner_age_gap_generator.rvs(size=1) 
+                        mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)
+                        if sex == "m":
+                            age_gap = couple_age_gap + mother_age_gap
+                        elif sex == "f":
+                            age_gap = mother_age_gap
+                        parent = self.get_closest_person_of_age(men_by_age, women_by_age, rand_adult.age+age_gap, sex)
+                        if parent is None:
+                            raise ValueError
+                        else:
+                            household.add(parent, subgroup_type=household.SubgroupType.adults)
                     else:
-                        household.add(parent, subgroup_type=household.SubgroupType.adults)
+                        idx = np.random.randint(0, len(household.adults))
+                        rand_adult = household.adults[idx]
+
+                        sex = random_sex()
+                        #Generate the appropiate age gaps
+                        auntuncle = self.get_closest_person_of_age(men_by_age, women_by_age, rand_adult.age, sex)
+                        if auntuncle is None:
+                            raise ValueError
+                        else:
+                            household.add(auntuncle, subgroup_type=household.SubgroupType.adults)
+
 
                 else: #If there is no adult
                     sex = random_sex()
