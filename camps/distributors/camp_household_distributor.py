@@ -163,6 +163,33 @@ class CampHouseholdDistributor:
         else:
             self.chance_single_parent_mf = chance_single_parent_mf
 
+
+    #TESTING TODO
+    ######################################################################
+    def P_IsAdult(self, age):
+        tanh_halfpeak_age = 15#17.1
+        tanh_width = .7#1
+        
+        minageadult = 13
+        maxagechild = 17
+        if age < minageadult:
+            return 0
+        elif age > maxagechild:
+            return 1
+        else:
+            return (np.tanh(tanh_width*(age-tanh_halfpeak_age))+1)/2
+        
+    def P_IsChild(self, age):
+        return 1 - self.P_IsAdult(age)
+
+    def AorC(self, age):
+        r = np.random.rand(1)[0]
+        if r < self.P_IsAdult(age):
+            return "Adult"
+        else:
+            return "Child"
+    ######################################################################
+
     def _create_people_dicts(self, area: Area):
         """
         Creates dictionaries with the men and women per age key living in the area.
@@ -185,13 +212,24 @@ class CampHouseholdDistributor:
         men_by_age = defaultdict(list)
         women_by_age = defaultdict(list)
         for person in area.people:
-            if person.age <= self.kid_max_age:
+
+            AorC_value = self.AorC(person.age)
+            if AorC_value == "Child":
                 kids_by_age[person.age].append(person)
-            else:
+            elif AorC_value == "Adult":
+
                 if person.sex == "m":
                     men_by_age[person.age].append(person)
                 else:
                     women_by_age[person.age].append(person)
+
+            # if person.age <= self.kid_max_age:
+            #     kids_by_age[person.age].append(person)
+            # else:
+            #     if person.sex == "m":
+            #         men_by_age[person.age].append(person)
+            #     else:
+            #         women_by_age[person.age].append(person)
         return kids_by_age, men_by_age, women_by_age
 
     def _create_household(self, area, max_size):
@@ -491,6 +529,7 @@ class CampHouseholdDistributor:
                 else: #Orphans
                     age_kid = random_age(age_min=0, age_max=self.adult_min_age)
                     kid = self.get_closest_child_of_age(kids_by_age, age_kid)
+
 
                 household.add(kid, subgroup_type=household.SubgroupType.kids)
                 if household.size >= household.max_size and not squeeze:
