@@ -26,6 +26,7 @@ from june.groups import Group, Supergroup
 from june.demography import Person
 
 import logging
+
 logger = logging.getLogger("learning_centers")
 
 default_learning_centers_coordinates_path = (
@@ -39,8 +40,9 @@ class LearningCenter(Group):
     One learning center is equivalent to one room that kids go to during weekdays in 
     different shifts. There are two subgroups, students and teachers
     """
+
     def __init__(
-        self, coordinates: Tuple[float, float] = (None,None), n_pupils_max: int = 35,
+        self, coordinates: Tuple[float, float] = (None, None), n_pupils_max: int = 35
     ):
         """
         Parameters
@@ -85,7 +87,7 @@ class LearningCenter(Group):
         return len(self.teachers)
 
     @property
-    def teachers(self):              
+    def teachers(self):
         return self.subgroups[self.SubgroupType.teachers]
 
     @property
@@ -99,7 +101,7 @@ class LearningCenter(Group):
 
 class LearningCenters(Supergroup):
     venue_class = LearningCenter
-    
+
     def __init__(
         self,
         learning_centers: List[venue_class],
@@ -157,7 +159,7 @@ class LearningCenters(Supergroup):
         coordinates_path: str = default_learning_centers_coordinates_path,
         max_distance_to_area=1,
         max_size=np.inf,
-        **kwargs
+        **kwargs,
     ):
         """
         Defines class from areas and coordinates of learning centers
@@ -181,7 +183,11 @@ class LearningCenters(Supergroup):
         logger.info(f"There are {len(learning_centers_df)} learning center(s)")
         coordinates = learning_centers_df.loc[:, ["latitude", "longitude"]].values
         return cls.from_coordinates(
-            coordinates=coordinates, max_size=max_size, areas=areas, max_distance_to_area=max_distance_to_area,**kwargs
+            coordinates=coordinates,
+            max_size=max_size,
+            areas=areas,
+            max_distance_to_area=max_distance_to_area,
+            **kwargs,
         )
 
     @classmethod
@@ -224,7 +230,7 @@ class LearningCenters(Supergroup):
         areas: Optional["Areas"] = None,
         max_distance_to_area=0.25,
         max_size=np.inf,
-        **kwargs
+        **kwargs,
     ):
         """
         Defines class from coordinates
@@ -253,8 +259,8 @@ class LearningCenters(Supergroup):
 
         learning_centers = list()
         for coord in coordinates:
-            lc = cls.venue_class()   
-            lc.coordinates = coord         
+            lc = cls.venue_class()
+            lc.coordinates = coord
             if areas is not None:
                 lc.area = areas.get_closest_area(coordinates=coord)
             learning_centers.append(lc)
@@ -296,7 +302,7 @@ class LearningCenters(Supergroup):
         coordinates_rad = np.deg2rad(coordinates).reshape(1, -1)
         k = min(k, len(list(self.learning_centers_tree.data)))
         distances, neighbours = self.learning_centers_tree.query(
-            coordinates_rad, k=k, sort_results=True,
+            coordinates_rad, k=k, sort_results=True
         )
         return neighbours[0]
 

@@ -31,11 +31,7 @@ default_config_filename = camp_configs_path / "defaults/groups/shelter_visits.ya
 
 class SheltersVisitsDistributor(ResidenceVisitsDistributor):
     def __init__(
-        self,
-        times_per_week,
-        daytypes,
-        hours_per_day,
-        drags_household_probability=0,
+        self, times_per_week, daytypes, hours_per_day, drags_household_probability=0
     ):
         """
         Like other 'leisure' distributors in JUNE, this defines the distributor for the shelters
@@ -58,7 +54,9 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         )
 
     @classmethod
-    def from_config(cls, daytypes: dict, config_filename: str = default_config_filename):
+    def from_config(
+        cls, daytypes: dict, config_filename: str = default_config_filename
+    ):
         """
         Defines class from config
         
@@ -71,7 +69,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         -------
         Instance of the ShelterVisitsDistributor class
         """
-        
+
         with open(config_filename) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return cls(daytypes=daytypes, **config)

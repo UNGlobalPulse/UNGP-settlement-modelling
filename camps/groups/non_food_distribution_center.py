@@ -34,15 +34,12 @@ default_config_filename = (
 
 
 class NFDistributionCenter(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
         super().__init__()
         self.max_size = max_size
-        self.area = area   
-        self.coordinates = self.get_coordinates    
+        self.area = area
+        self.coordinates = self.get_coordinates
+
 
 class NFDistributionCenters(SocialVenues):
     venue_class = NFDistributionCenter

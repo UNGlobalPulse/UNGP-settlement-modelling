@@ -12,7 +12,7 @@ UNGP Operational Intervention Simulation Tool is distributed in the
 hope that it will be useful, but WITHOUT ANY WARRANTY; without even 
 the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 See the GNU General Public License for more details.
-""" 
+"""
 
 from pipes import Template
 from june.groups.group.subgroup import Subgroup
@@ -30,6 +30,7 @@ from enum import IntEnum, Enum
 
 default_config_filename = camp_configs_path / "defaults/groups/informal_work.yaml"
 
+
 class InformalWork(SocialVenue):
     def __init__(self, max_size=np.inf, area=None):
         """
@@ -44,11 +45,12 @@ class InformalWork(SocialVenue):
         """
         super().__init__()
         self.max_size = max_size
-        self.area = area   
-        self.coordinates = self.get_coordinates   
+        self.area = area
+        self.coordinates = self.get_coordinates
+
 
 class InformalWorks(SocialVenues):
-    venue_class = InformalWork 
+    venue_class = InformalWork
 
     def __init__(self, informal_work: List[InformalWork]):
         """
@@ -60,14 +62,9 @@ class InformalWorks(SocialVenues):
             List of InformalWork classes
         """
         super().__init__(informal_work, make_tree=False)
-    
+
     @classmethod
-    def for_areas(
-        cls, 
-        areas: List[Area], 
-        venues_per_capita=0.00242101907,
-        max_size=15,
-    ):
+    def for_areas(cls, areas: List[Area], venues_per_capita=0.00242101907, max_size=15):
 
         """
         Defines class from areas
@@ -89,17 +86,17 @@ class InformalWorks(SocialVenues):
         for area in areas:
             area_population = len(area.people)
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                informal_work = cls.venue_class(
-                    max_size, 
-                    area=area)
+                informal_work = cls.venue_class(max_size, area=area)
                 area.informal_works.append(informal_work)
                 informal_works.append(informal_work)
         return cls(informal_works)
+
 
 class InformalWorkDistributor(SocialVenueDistributor):
     """
     Distributes people to pumps and latrines according to probability parameters
     """
+
     default_config_filename = default_config_filename
 
     def get_social_venue_for_person(self, person):

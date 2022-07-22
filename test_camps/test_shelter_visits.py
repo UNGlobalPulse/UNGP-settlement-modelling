@@ -46,5 +46,3 @@ def test__shelter_links(visits_world):
     for i in shelters_to_visit_sizes.values():
         for j in shelters_to_visit_sizes.values():
             assert np.isclose(i, j, rtol=0.11)
-
-

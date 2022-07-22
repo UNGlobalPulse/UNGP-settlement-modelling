@@ -20,9 +20,10 @@ import numpy as np
 
 from june.geography import Area, Geography, SuperArea, Region
 
+
 class CampArea(Area):
     def __init__(
-        self, name: str, super_area: "SuperArea", coordinates: Tuple[float, float],
+        self, name: str, super_area: "SuperArea", coordinates: Tuple[float, float]
     ):
         super().__init__(name, super_area, coordinates)
         self.pump_latrines = list()
@@ -30,9 +31,10 @@ class CampArea(Area):
         self.shelters = list()
         self.informal_works = list()
 
+
 class CampGeography(Geography):
     def __init__(
-            self, areas: List[CampArea], super_areas: List[SuperArea], regions: List[Region]
+        self, areas: List[CampArea], super_areas: List[SuperArea], regions: List[Region]
     ):
         """
         Generate hierachical devision of geography.
@@ -58,7 +60,10 @@ class CampGeography(Geography):
 
     @classmethod
     def _create_areas(
-        cls, area_coords: pd.DataFrame, super_area: "SuperArea", socioeconomic_indices = None,
+        cls,
+        area_coords: pd.DataFrame,
+        super_area: "SuperArea",
+        socioeconomic_indices=None,
     ) -> List[Area]:
         """
         Applies the _create_area function throught the area_coords dataframe.

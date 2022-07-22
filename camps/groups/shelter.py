@@ -26,6 +26,7 @@ from june.geography import Areas
 
 class Shelter(Household):
     __slots__ = "shelters_to_visit"
+
     class SubgroupType(IntEnum):
         household_1 = 1
         household_2 = 2
@@ -41,10 +42,9 @@ class Shelter(Household):
         """
         super().__init__(type="shelter", area=area)
         self.shelters_to_visit = None
-        #self.age_group_limits = age_group_limits
-        #self.min_age = age_group_limits[0]
-        #self.max_age = age_group_limits[-1] - 1
-
+        # self.age_group_limits = age_group_limits
+        # self.min_age = age_group_limits[0]
+        # self.max_age = age_group_limits[-1] - 1
 
     def add(self, household: Household):
         """
@@ -78,7 +78,7 @@ class Shelter(Household):
         else:
             assert self.n_households == 2
             raise ValueError("Shelter full!")
-  
+
         # add to residents
         self.residents = tuple((*self.residents, *household.people))
 
@@ -111,11 +111,10 @@ class Shelter(Household):
     #         subgroup = "adults"
     #     return subgroup
 
-
     def get_leisure_subgroup(self, person, subgroup_type, to_send_abroad):
         self.being_visited = True
         self.make_household_residents_stay_home(to_send_abroad=to_send_abroad)
-        return self[randint(0,1)] #Pick house to visit
+        return self[randint(0, 1)]  # Pick house to visit
 
     def get_interactive_group(self, people_from_abroad=None):
         return InteractiveGroup(self, people_from_abroad=people_from_abroad)
@@ -123,6 +122,7 @@ class Shelter(Household):
 
 class Shelters(Supergroup):
     venue_class = Shelter
+
     def __init__(self, shelters):
         """
         Create and store information on multiple Shelter instances
@@ -174,11 +174,14 @@ class Shelters(Supergroup):
         shelters = []
         for area in areas:
             n_families_area = len(area.households)
-            n_shelters_multi = int(np.floor(sharing_shelter_ratio * n_families_area/ 2))
+            n_shelters_multi = int(
+                np.floor(sharing_shelter_ratio * n_families_area / 2)
+            )
             n_shelters = n_families_area - n_shelters_multi
             area.shelters = [cls.venue_class(area=area) for _ in range(n_shelters)]
             shelters += area.shelters
         return cls(shelters)
+
 
 class ShelterDistributor:
     def __init__(self, sharing_shelter_ratio=0.75):

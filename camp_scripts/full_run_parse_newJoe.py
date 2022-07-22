@@ -39,7 +39,12 @@ from june.demography.demography import (
 from june.paths import data_path, configs_path
 from june.epidemiology.epidemiology import Epidemiology
 from june.epidemiology.infection import ImmunitySetter
-from june.epidemiology.infection import Infection, HealthIndexGenerator, InfectionSelector, InfectionSelectors
+from june.epidemiology.infection import (
+    Infection,
+    HealthIndexGenerator,
+    InfectionSelector,
+    InfectionSelectors,
+)
 from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
@@ -78,10 +83,12 @@ from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 from camps.groups import InformalWorks, InformalWorkDistributor
 
+
 def set_random_seed(seed=999):
     """
     Sets global seeds for testing in numpy, random, and numbaized numpy.
     """
+
     @nb.njit(cache=True)
     def set_seed_numba(seed):
         random.seed(seed)
@@ -91,6 +98,7 @@ def set_random_seed(seed=999):
     set_seed_numba(seed)
     random.seed(seed)
     return
+
 
 set_random_seed(0)
 
@@ -129,21 +137,25 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-ro",
-    "--region_only",
-    help="Run only one region",
-    required=False,
-    default="False",
+    "-ro", "--region_only", help="Run only one region", required=False, default="False"
 )
 
 parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
-    "-nnv", "--no_vaccines", help="Implement no vaccine policies", required=False, default="False"
+    "-nnv",
+    "--no_vaccines",
+    help="Implement no vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
-    "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
+    "-v",
+    "--vaccines",
+    help="Implement vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
     "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
@@ -184,11 +196,7 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t",
-    "--isolation_testing",
-    help="Mean testing time",
-    required=False,
-    default=3,
+    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -265,10 +273,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--n_seeding_days",
-    help="number of seeding days",
-    required=False,
-    default=10,
+    "--n_seeding_days", help="number of seeding days", required=False, default=10
 )
 parser.add_argument(
     "--n_seeding_case_per_day",
@@ -281,9 +286,9 @@ args = parser.parse_args()
 args.save_path = Path(args.save_path)
 
 counter = 1
-OG_save_path = args.save_path 
+OG_save_path = args.save_path
 while args.save_path.is_dir() == True:
-    args.save_path = Path( str(OG_save_path) + "_%s" % counter)
+    args.save_path = Path(str(OG_save_path) + "_%s" % counter)
     counter += 1
 args.save_path.mkdir(parents=True, exist_ok=False)
 
@@ -293,8 +298,8 @@ elif args.region_only == "True":
     args.region_only = ["CXB-219"]
 else:
     args.region_only = [args.region_only]
- 
-    
+
+
 if args.tracker == "True":
     args.tracker = True
 else:
@@ -309,12 +314,12 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
-    
+
 if args.no_vaccines == "True":
     args.no_vaccines = True
 else:
     args.no_vaccines = False
-    
+
 if args.vaccines == "True":
     args.vaccines = True
 else:
@@ -339,7 +344,7 @@ if args.learning_centers == "True":
     args.learning_centers = True
 else:
     args.learning_centers = False
-    
+
 if args.extra_learning_centers == "True":
     args.extra_learning_centers = True
 else:
@@ -353,12 +358,12 @@ if args.learning_center_beta_ratio == "True":
     args.learning_center_beta_ratio = True
 else:
     args.learning_center_beta_ratio = False
-    
+
 if args.play_group_beta_ratio == "True":
     args.play_group_beta_ratio = True
 else:
     args.play_group_beta_ratio = False
-    
+
 
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
@@ -425,12 +430,12 @@ time.sleep(10)
 CONFIG_PATH = args.config
 
 # create empty world's geography
-#world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+# world = generate_empty_world({"super_area": ["CXB-219-C"]})
+# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
 if args.region_only == False:
     world = generate_empty_world()
 else:
-    world = generate_empty_world({"region": args.region_only}) 
+    world = generate_empty_world({"region": args.region_only})
 
 # populate empty world
 populate_world(world)
@@ -452,7 +457,9 @@ hospital_distributor = HospitalDistributor(
     hospitals, medic_min_age=20, patients_per_medic=10
 )
 hospital_distributor.assign_closest_hospitals_to_super_areas(world.super_areas)
-world.isolation_units = IsolationUnits([IsolationUnit(area=hospital.area) for hospital in world.hospitals])
+world.isolation_units = IsolationUnits(
+    [IsolationUnit(area=hospital.area) for hospital in world.hospitals]
+)
 
 hospital_distributor.distribute_medics_from_world(world.people)
 
@@ -502,11 +509,11 @@ if args.learning_centers:
         learning_center_distributor.distribute_kids_to_learning_centers(world.areas)
         learning_center_distributor.distribute_teachers_to_learning_centers(world.areas)
 
-    #CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
+    # CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
 if args.no_visits:
     pass
-    #CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
+    # CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
 
 PumpLatrines.Get_Interaction(args.parameters)
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
@@ -534,7 +541,6 @@ world.n_f_distribution_centers = NFDistributionCenters.for_areas(world.areas)
 
 InformalWorks.Get_Interaction(args.parameters)
 world.informal_works = InformalWorks.for_areas(world.areas)
-
 
 
 print("Total people = ", len(world.people))
@@ -567,15 +573,18 @@ else:
     print("WARNING: no comorbidities. All people are super health as ini conditon")
     # health_index_generator = HealthIndexGenerator.from_file()
 
-male_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_male_comorbidities.csv"
-female_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_female_comorbidities.csv"
+male_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_male_comorbidities.csv"
+)
+female_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_female_comorbidities.csv"
+)
 comorbidities_multipliers_path = camp_configs_path / "defaults/comorbidities.yaml"
 
 immunity_setter = ImmunitySetter.from_file_with_comorbidities(
-    comorbidity_multipliers_path= comorbidities_multipliers_path,
-    male_comorbidity_reference_prevalence_path= male_comorbidity_reference_prevalence_path,
-    female_comorbidity_reference_prevalence_path = female_comorbidity_reference_prevalence_path,
-    
+    comorbidity_multipliers_path=comorbidities_multipliers_path,
+    male_comorbidity_reference_prevalence_path=male_comorbidity_reference_prevalence_path,
+    female_comorbidity_reference_prevalence_path=female_comorbidity_reference_prevalence_path,
 )
 # ============================================================================#
 
@@ -621,16 +630,18 @@ else:
         camp_configs_path / "defaults/policy/simple_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
-   
-    print("Policy path set to: {}".format(camp_configs_path / "defaults/policy/simple_policy.yaml"))
+
+    print(
+        "Policy path set to: {}".format(
+            camp_configs_path / "defaults/policy/simple_policy.yaml"
+        )
+    )
 
 # ============================================================================#
 
 # =================================== infection ===============================#
 
-interaction = Interaction.from_file(
-    config_filename = args.parameters,
-)
+interaction = Interaction.from_file(config_filename=args.parameters)
 
 selector = InfectionSelector.from_file(
     transmission_config_path=transmission_config_path
@@ -691,24 +702,28 @@ if args.play_group_beta_ratio:
 # read out start date
 with open(CONFIG_PATH) as file:
     config_temp = yaml.load(file, Loader=yaml.FullLoader)
-    start_date = datetime.strptime(config_temp['time']['initial_day'],"%Y-%m-%d %H:%M")
+    start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d %H:%M")
 
 # generate seeding dataframe
 N_seeding_days = int(args.n_seeding_days)
 
-seeding_date_list = [start_date + timedelta(days=iday) for iday in range(N_seeding_days)]
+seeding_date_list = [
+    start_date + timedelta(days=iday) for iday in range(N_seeding_days)
+]
 mi = pd.MultiIndex.from_product([seeding_date_list, ["0-100"]], names=["date", "age"])
 df = pd.DataFrame(index=mi, columns=["all"])
 # df = pd.DataFrame(index=mi, columns=["CXB-207"])
 df[:] = args.n_seeding_case_per_day / len(world.people)
 
-print('#### seeding df:')
+print("#### seeding df:")
 print(df)
-print('####')
+print("####")
 
-infection_seed = InfectionSeed(world=world, infection_selector=selector,
-                               daily_cases_per_capita_per_age_per_region=df,
-                              )
+infection_seed = InfectionSeed(
+    world=world,
+    infection_selector=selector,
+    daily_cases_per_capita_per_age_per_region=df,
+)
 infection_seeds = InfectionSeeds([infection_seed])
 
 # ==================================================================================#
@@ -722,7 +737,7 @@ epidemiology = Epidemiology(
 
 # =================================== leisure config ===============================#
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
-#Check if shelters visits not in?
+# Check if shelters visits not in?
 
 # associate social activities to shelters
 leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
@@ -731,7 +746,7 @@ leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
 
 # =================================== tracker ===============================#
 if args.tracker:
-    group_types=[
+    group_types = [
         world.hospitals,
         world.distribution_centers,
         world.communals,
@@ -753,11 +768,11 @@ if args.tracker:
         group_types=group_types,
         load_interactions_path=args.parameters,
         contact_sexes=["unisex", "male", "female"],
-        Tracker_Contact_Type=["1D", "All"]
+        Tracker_Contact_Type=["1D", "All"],
     )
 else:
-    tracker=None
-	
+    tracker = None
+
 
 # ==================================================================================#
 
@@ -776,7 +791,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    epidemiology = epidemiology,
+    epidemiology=epidemiology,
     record=record,
 )
 
@@ -803,46 +818,40 @@ locations_df.to_csv(args.save_path / "locations.csv")
 # =================================== tracker figures ===============================#
 
 if args.tracker:
-    simulator.tracker.contract_matrices("AC", np.array([0,18,60]))
-    simulator.tracker.contract_matrices("All", np.array([0,100]))                                
+    simulator.tracker.contract_matrices("AC", np.array([0, 18, 60]))
+    simulator.tracker.contract_matrices("All", np.array([0, 100]))
     simulator.tracker.post_process_simulation(save=True)
-    
-    #Make Plots
-    Plots = PlotClass(
-        record_path=args.save_path / "Tracker",
-        Tracker_Contact_Type = "1D"
-    )
+
+    # Make Plots
+    Plots = PlotClass(record_path=args.save_path / "Tracker", Tracker_Contact_Type="1D")
     Plots.make_plots(
-        plot_BBC = True,
-        plot_thumbprints = True,
+        plot_BBC=True,
+        plot_thumbprints=True,
         SameCMAP="Log",
-    
         plot_INPUTOUTPUT=True,
-        plot_AvContactsLocation=True, 
-        plot_dTLocationPopulation=True, 
-        plot_InteractionMatrices=True, 
+        plot_AvContactsLocation=True,
+        plot_dTLocationPopulation=True,
+        plot_InteractionMatrices=True,
         plot_ContactMatrices=True,
         plot_CompareSexMatrices=True,
-        plot_AgeBinning=True, 
-        plot_Distances=True 
+        plot_AgeBinning=True,
+        plot_Distances=True,
     )
-    
+
     ##Make Plots
     Plots = PlotClass(
-        record_path=args.save_path / "Tracker",
-        Tracker_Contact_Type = "All"
+        record_path=args.save_path / "Tracker", Tracker_Contact_Type="All"
     )
     Plots.make_plots(
-        plot_BBC = True,
-        plot_thumbprints = True,
+        plot_BBC=True,
+        plot_thumbprints=True,
         SameCMAP="Log",
-    
         plot_INPUTOUTPUT=False,
-        plot_AvContactsLocation=False, 
-        plot_dTLocationPopulation=False, 
-        plot_InteractionMatrices=True, 
+        plot_AvContactsLocation=False,
+        plot_dTLocationPopulation=False,
+        plot_InteractionMatrices=True,
         plot_ContactMatrices=True,
         plot_CompareSexMatrices=True,
-        plot_AgeBinning=False, 
-        plot_Distances=False 
+        plot_AgeBinning=False,
+        plot_Distances=False,
     )

@@ -32,15 +32,12 @@ default_config_filename = camp_configs_path / "defaults/groups/distribution_cent
 
 
 class DistributionCenter(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
         super().__init__()
         self.max_size = max_size
-        self.area = area     
-        self.coordinates = self.get_coordinates  
+        self.area = area
+        self.coordinates = self.get_coordinates
+
 
 class DistributionCenters(SocialVenues):
     venue_class = DistributionCenter

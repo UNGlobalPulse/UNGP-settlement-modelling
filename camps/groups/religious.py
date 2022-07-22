@@ -25,19 +25,19 @@ from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVe
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor
 from camps.paths import camp_data_path, camp_configs_path
 
-default_religiouss_coordinates_filename = camp_data_path / "input/activities/religious.csv"
+default_religiouss_coordinates_filename = (
+    camp_data_path / "input/activities/religious.csv"
+)
 default_config_filename = camp_configs_path / "defaults/groups/religious.yaml"
 
+
 class Religious(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
         super().__init__()
         self.max_size = max_size
-        self.area = area  
-        self.coordinates = self.get_coordinates     
+        self.area = area
+        self.coordinates = self.get_coordinates
+
 
 class Religiouss(SocialVenues):
     venue_class = Religious

@@ -31,11 +31,7 @@ default_config_filename = camp_configs_path / "defaults/groups/play_group.yaml"
 
 
 class PlayGroup(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
         """
         Play groups in which children can play according to their age groups
         
@@ -51,12 +47,13 @@ class PlayGroup(SocialVenue):
         """
         super().__init__()
         self.max_size = max_size
-        self.area = area   
-        self.coordinates = self.get_coordinates    
+        self.area = area
+        self.coordinates = self.get_coordinates
 
 
 class PlayGroups(SocialVenues):
     venue_class = PlayGroup
+
     def __init__(self, play_groups: List[PlayGroup]):
         super().__init__(play_groups, make_tree=False)
         """
@@ -91,7 +88,7 @@ class PlayGroups(SocialVenues):
         """
         play_groups = []
 
-        #Make a dummy to get the age bins
+        # Make a dummy to get the age bins
         age_group_limits = cls.venue_class().subgroup_bins
 
         for area in areas:
@@ -104,7 +101,7 @@ class PlayGroups(SocialVenues):
                 ]
             )
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                play_group = cls.venue_class( max_size=max_size, area=area )
+                play_group = cls.venue_class(max_size=max_size, area=area)
                 area.play_groups.append(play_group)
                 play_groups.append(play_group)
         return cls(play_groups=play_groups)
@@ -114,8 +111,9 @@ class PlayGroupDistributor(SocialVenueDistributor):
     """
     Distributes people to play groups according to probability parameters
     """
+
     default_config_filename = default_config_filename
-    
+
     def get_social_venue_for_person(self, person):
         """
         We select a random play group from the person area.

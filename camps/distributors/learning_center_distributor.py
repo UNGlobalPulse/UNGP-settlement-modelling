@@ -230,7 +230,9 @@ class LearningCenterDistributor:
         for learning_center in self.learning_centers.members:
             # Find closest area to learning center
             area = areas.get_closest_areas(
-                coordinates=learning_center.coordinates, k=area_k_max, return_distance=False
+                coordinates=learning_center.coordinates,
+                k=area_k_max,
+                return_distance=False,
             )
             area_k = 0
             while True:
@@ -249,12 +251,10 @@ class LearningCenterDistributor:
                     if area_k >= area_k_max or area_k == len(area):
                         break
 
-            
             if len(old_people) == 0:
                 continue
 
-
-            NTeachers = int(np.random.poisson(3)+1)
+            NTeachers = int(np.random.poisson(3) + 1)
             if NTeachers > len(old_people):
                 NTeachers = len(old_people)
             teachers = np.random.choice(old_people, NTeachers, replace=False)
@@ -266,6 +266,3 @@ class LearningCenterDistributor:
                         shift=shift,
                         subgroup_type=learning_center.SubgroupType.teachers,
                     )
- 
-
-

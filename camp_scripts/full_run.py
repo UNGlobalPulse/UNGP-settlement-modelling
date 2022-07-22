@@ -55,22 +55,22 @@ from camp_creation import (
 )  # this is loaded from the ../camp_scripts folder
 
 from camps.groups import PumpLatrines, PumpLatrineDistributor
-from camps.groups import PlayGroups, PlayGroupDistributor 
+from camps.groups import PlayGroups, PlayGroupDistributor
 from camps.groups import DistributionCenters, DistributionCenterDistributor
 from camps.groups import Communals, CommunalDistributor
 from camps.groups import FemaleCommunals, FemaleCommunalDistributor
 from camps.groups import Religiouss, ReligiousDistributor
 from camps.groups import Shelter, Shelters, ShelterDistributor
 from camps.groups import IsolationUnit, IsolationUnits
-from camps.groups import LearningCenters 
+from camps.groups import LearningCenters
 from camps.distributors import LearningCenterDistributor
 from june.groups.leisure import HouseholdVisitsDistributor
 
-#=============== world creation =========================#
+# =============== world creation =========================#
 
 # create empty world's geography
-#world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217"]})
+# world = generate_empty_world({"super_area": ["CXB-219-C"]})
+# world = generate_empty_world({"region": ["CXB-219", "CXB-217"]})
 world = generate_empty_world()
 
 # populate empty world
@@ -91,12 +91,9 @@ world.isolation_units = IsolationUnits([IsolationUnit()])
 
 hospital_distributor.distribute_medics_from_world(world.people)
 
-world.learning_centers = LearningCenters.for_areas(
-                    world.areas,
-                    n_shifts=4
-)
+world.learning_centers = LearningCenters.for_areas(world.areas, n_shifts=4)
 learning_center_distributor = LearningCenterDistributor.from_file(
-learning_centers=world.learning_centers
+    learning_centers=world.learning_centers
 )
 learning_center_distributor.distribute_kids_to_learning_centers(world.areas)
 learning_center_distributor.distribute_teachers_to_learning_centers(world.areas)
@@ -124,23 +121,24 @@ for area in world.areas:
 # =================================== comorbidities ===============================#
 
 
-comorbidity_data = load_comorbidity_data(camp_data_path / "input/demography/myanmar_male_comorbidities.csv",\
-                                          camp_data_path / "input/demography/myanmar_female_comorbidities.csv"
+comorbidity_data = load_comorbidity_data(
+    camp_data_path / "input/demography/myanmar_male_comorbidities.csv",
+    camp_data_path / "input/demography/myanmar_female_comorbidities.csv",
 )
 for person in world.people:
     person.comorbidity = generate_comorbidity(person, comorbidity_data)
 
 health_index_generator = HealthIndexGenerator.from_file_with_comorbidities(
-    camp_configs_path / 'defaults/comorbidities.yaml',
-    camp_data_path / 'input/demography/uk_male_comorbidities.csv',
-    camp_data_path / 'input/demography/uk_female_comorbidities.csv',
-    asymptomatic_ratio=0.2
+    camp_configs_path / "defaults/comorbidities.yaml",
+    camp_data_path / "input/demography/uk_male_comorbidities.csv",
+    camp_data_path / "input/demography/uk_female_comorbidities.csv",
+    asymptomatic_ratio=0.2,
 )
 
 
 ### UNCOMMENT THE BELOW AND COMMENT THE ABOVE TO REMOVE COMORBIDITIES
 
-#health_index_generator = HealthIndexGenerator.from_file(asymptomatic_ratio=0.2)
+# health_index_generator = HealthIndexGenerator.from_file(asymptomatic_ratio=0.2)
 
 # ============================================================================#
 
@@ -160,7 +158,7 @@ selector = InfectionSelector.from_file(health_index_generator=health_index_gener
 
 interaction = Interaction.from_file(
     config_filename=camp_configs_path
-    / "defaults/interaction/ContactInteraction_med_low_low_low.yaml",
+    / "defaults/interaction/ContactInteraction_med_low_low_low.yaml"
 )
 
 
@@ -198,9 +196,9 @@ leisure_instance.leisure_distributors = {}
 leisure_instance.leisure_distributors[
     "pump_latrines"
 ] = PumpLatrineDistributor.from_config(pump_latrines=world.pump_latrines)
-leisure_instance.leisure_distributors[
-    "play_groups"
-] = PlayGroupDistributor.from_config(play_groups=world.play_groups)
+leisure_instance.leisure_distributors["play_groups"] = PlayGroupDistributor.from_config(
+    play_groups=world.play_groups
+)
 leisure_instance.leisure_distributors[
     "distribution_centers"
 ] = DistributionCenterDistributor.from_config(
@@ -227,7 +225,7 @@ simulator = Simulator.from_file(
     policies=policies,
     config_filename=CONFIG_PATH,
     infection_selector=selector,
-    save_path="results_no_comorbidities"
+    save_path="results_no_comorbidities",
 )
 
 leisure_instance.leisure_distributors

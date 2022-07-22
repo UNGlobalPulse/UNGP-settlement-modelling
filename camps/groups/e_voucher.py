@@ -25,23 +25,24 @@ from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVe
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor
 from camps.paths import camp_data_path, camp_configs_path
 
-default_evouchers_coordinates_filename = camp_data_path / "input/activities/e_voucher_outlet.csv"
+default_evouchers_coordinates_filename = (
+    camp_data_path / "input/activities/e_voucher_outlet.csv"
+)
 default_config_filename = camp_configs_path / "defaults/groups/e_voucher_outlet.yaml"
 
+
 class EVoucher(SocialVenue):
-    def __init__(
-        self,
-        max_size = np.inf,
-        area=None,
-    ):
+    def __init__(self, max_size=np.inf, area=None):
         super().__init__()
         self.max_size = max_size
-        self.area = area 
-        self.coordinates = self.get_coordinates      
+        self.area = area
+        self.coordinates = self.get_coordinates
+
 
 class EVouchers(SocialVenues):
     venue_class = EVoucher
     default_coordinates_filename = default_evouchers_coordinates_filename
+
 
 class EVoucherDistributor(SocialVenueDistributor):
     default_config_filename = default_config_filename

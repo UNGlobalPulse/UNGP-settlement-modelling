@@ -39,7 +39,12 @@ from june.demography.demography import (
 from june.paths import data_path, configs_path
 from june.epidemiology.epidemiology import Epidemiology
 from june.epidemiology.infection import ImmunitySetter
-from june.epidemiology.infection import Infection, HealthIndexGenerator, InfectionSelector, InfectionSelectors
+from june.epidemiology.infection import (
+    Infection,
+    HealthIndexGenerator,
+    InfectionSelector,
+    InfectionSelectors,
+)
 from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
@@ -74,10 +79,12 @@ from camps.groups import EVouchers, EVoucherDistributor
 from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 
+
 def set_random_seed(seed=999):
     """
     Sets global seeds for testing in numpy, random, and numbaized numpy.
     """
+
     @nb.njit(cache=True)
     def set_seed_numba(seed):
         random.seed(seed)
@@ -87,6 +94,7 @@ def set_random_seed(seed=999):
     set_seed_numba(seed)
     random.seed(seed)
     return
+
 
 set_random_seed(0)
 
@@ -112,10 +120,18 @@ parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
-    "-nnv", "--no_vaccines", help="Implement no vaccine policies", required=False, default="False"
+    "-nnv",
+    "--no_vaccines",
+    help="Implement no vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
-    "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
+    "-v",
+    "--vaccines",
+    help="Implement vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
     "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
@@ -156,11 +172,7 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t",
-    "--isolation_testing",
-    help="Mean testing time",
-    required=False,
-    default=3,
+    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -237,10 +249,7 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--n_seeding_days",
-    help="number of seeding days",
-    required=False,
-    default=10,
+    "--n_seeding_days", help="number of seeding days", required=False, default=10
 )
 parser.add_argument(
     "--n_seeding_case_per_day",
@@ -356,9 +365,9 @@ time.sleep(10)
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
-#world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-#world = generate_empty_world({"region": ["CXB-219"]})
+# world = generate_empty_world({"super_area": ["CXB-219-C"]})
+# world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+# world = generate_empty_world({"region": ["CXB-219"]})
 world = generate_empty_world()
 
 # populate empty world
@@ -431,7 +440,7 @@ if args.learning_centers:
 
 if args.no_visits:
     CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
-    
+
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
 world.play_groups = PlayGroups.for_areas(world.areas)
 world.distribution_centers = DistributionCenters.for_areas(world.areas)
@@ -470,15 +479,18 @@ else:
     print("WARNING: no comorbidities. All people are super health as ini conditon")
     # health_index_generator = HealthIndexGenerator.from_file()
 
-male_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_male_comorbidities.csv"
-female_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_female_comorbidities.csv"
+male_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_male_comorbidities.csv"
+)
+female_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_female_comorbidities.csv"
+)
 comorbidities_multipliers_path = camp_configs_path / "defaults/comorbidities.yaml"
 
 immunity_setter = ImmunitySetter.from_file_with_comorbidities(
-    comorbidity_multipliers_path= comorbidities_multipliers_path,
-    male_comorbidity_reference_prevalence_path= male_comorbidity_reference_prevalence_path,
-    female_comorbidity_reference_prevalence_path = female_comorbidity_reference_prevalence_path,
-    
+    comorbidity_multipliers_path=comorbidities_multipliers_path,
+    male_comorbidity_reference_prevalence_path=male_comorbidity_reference_prevalence_path,
+    female_comorbidity_reference_prevalence_path=female_comorbidity_reference_prevalence_path,
 )
 # ============================================================================#
 
@@ -526,8 +538,7 @@ else:
 # =================================== infection ===============================#
 
 interaction = Interaction.from_file(
-    config_filename=camp_configs_path / "defaults/interaction/" /
-    args.parameters,
+    config_filename=camp_configs_path / "defaults/interaction/" / args.parameters
 )
 
 selector = InfectionSelector.from_file(
@@ -589,24 +600,28 @@ if args.play_group_beta_ratio:
 # read out start date
 with open(CONFIG_PATH) as file:
     config_temp = yaml.load(file, Loader=yaml.FullLoader)
-    start_date = datetime.strptime(config_temp['time']['initial_day'],"%Y-%m-%d")
+    start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d")
 
 # generate seeding dataframe
 N_seeding_days = int(args.n_seeding_days)
 
-seeding_date_list = [start_date + timedelta(days=iday) for iday in range(N_seeding_days)]
+seeding_date_list = [
+    start_date + timedelta(days=iday) for iday in range(N_seeding_days)
+]
 mi = pd.MultiIndex.from_product([seeding_date_list, ["0-100"]], names=["date", "age"])
 df = pd.DataFrame(index=mi, columns=["all"])
 # df = pd.DataFrame(index=mi, columns=["CXB-207"])
 df[:] = args.n_seeding_case_per_day / len(world.people)
 
-print('#### seeding df:')
+print("#### seeding df:")
 print(df)
-print('####')
+print("####")
 
-infection_seed = InfectionSeed(world=world, infection_selector=selector,
-                               daily_cases_per_capita_per_age_per_region=df,
-                              )
+infection_seed = InfectionSeed(
+    world=world,
+    infection_selector=selector,
+    daily_cases_per_capita_per_age_per_region=df,
+)
 infection_seeds = InfectionSeeds([infection_seed])
 
 # ==================================================================================#
@@ -633,9 +648,9 @@ leisure.leisure_distributors[
 leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
-leisure.leisure_distributors[
-    "female_communal"
-] = FemaleCommunalDistributor.from_config(world.female_communals)
+leisure.leisure_distributors["female_communal"] = FemaleCommunalDistributor.from_config(
+    world.female_communals
+)
 leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
 )
@@ -671,7 +686,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    epidemiology = epidemiology,
+    epidemiology=epidemiology,
     record=record,
 )
 
