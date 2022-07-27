@@ -115,7 +115,7 @@ def test__distribute_teachers():
 
     coordinates_1 = (12.3, 15.6)
     learning_center_1 = LearningCenter(coordinates=coordinates_1, n_pupils_max=20)
-    coordinates_2 = (120.3, 150.6)
+    coordinates_2 = (13.3, 150.6)
     learning_center_2 = LearningCenter(coordinates=coordinates_2, n_pupils_max=20)
     coordinates = np.vstack((np.array(coordinates_1), np.array(coordinates_2))).T
     learning_centers_tree = BallTree(np.deg2rad(coordinates), metric="haversine")
@@ -137,8 +137,9 @@ def test__distribute_teachers():
     )
 
     for learning_center in learning_centers:
-        assert len(learning_center.teachers) == 3
-        assert len(learning_center.ids_per_shift[0]) == 1
+        assert len(learning_center.teachers) > 3  # At least one teacher per shift
+        assert len(learning_center.teachers) < (3 * 10)  # No more than 10 teachers
+        assert len(learning_center.ids_per_shift[0]) < len(learning_center.teachers)
         assert learning_center.ids_per_shift[0] == learning_center.ids_per_shift[1]
         assert learning_center.ids_per_shift[1] == learning_center.ids_per_shift[2]
         assert learning_center.teachers[0].age >= 21

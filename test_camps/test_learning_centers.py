@@ -47,9 +47,21 @@ def make_dummy_world():
     learning_center.add(
         person=teacher, shift=2, subgroup_type=learning_center.SubgroupType.teachers
     )
-    learning_center.add(person=pupil_shift_1, shift=0)
-    learning_center.add(person=pupil_shift_2, shift=1)
-    learning_center.add(person=pupil_shift_3, shift=2)
+    learning_center.add(
+        person=pupil_shift_1,
+        shift=0,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
+    learning_center.add(
+        person=pupil_shift_2,
+        shift=1,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
+    learning_center.add(
+        person=pupil_shift_3,
+        shift=2,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
     world = World()
     world.learning_centers = LearningCenters(
         [learning_center], learning_centers_tree=False, n_shifts=3

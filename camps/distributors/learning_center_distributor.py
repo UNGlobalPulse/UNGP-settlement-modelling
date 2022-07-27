@@ -227,6 +227,9 @@ class LearningCenterDistributor:
         None
         """
         area_k_max = 5
+        if len(areas) < area_k_max:
+            area_k_max = len(areas)
+
         for learning_center in self.learning_centers.members:
             # Find closest area to learning center
             area = areas.get_closest_areas(
