@@ -55,7 +55,7 @@ class PumpLatrines(SocialVenues):
     def __init__(self, pump_latrines: List[PumpLatrine]):
         """
         Create and store information on multiple PumpLatrine instances
-        
+
         Parameters
         ----------
         pump_latrines
@@ -129,7 +129,7 @@ class PumpLatrineDistributor(SocialVenueDistributor):
         ----------
         area
             Area from which to select pump or latrine
-        
+
         Returns
         -------
         venue

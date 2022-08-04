@@ -40,7 +40,7 @@ def setup_shelter_visits(camps_world):
 def test__shelter_links(visits_world):
     shelters_to_visit_sizes = defaultdict(int)
     for shelter in visits_world.shelters:
-        if shelter.shelters_to_visit == None:
+        if shelter.shelters_to_visit is None:
             shelters_to_visit_sizes[0] += 1
         else:
             shelters_to_visit_sizes[len(shelter.shelters_to_visit)] += 1

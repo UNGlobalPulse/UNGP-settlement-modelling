@@ -37,7 +37,7 @@ default_config_path = paths.camp_configs_path / "defaults/groups/learning_center
 
 class LearningCenter(Group):
     """
-    One learning center is equivalent to one room that kids go to during weekdays in 
+    One learning center is equivalent to one room that kids go to during weekdays in
     different shifts. There are two subgroups, students and teachers
     """
 
@@ -69,7 +69,7 @@ class LearningCenter(Group):
         person
             Person instance to add
         shift
-           shift that the person will attend 
+           shift that the person will attend
         subgroup_type
             subgroup to which the person is added
         """
@@ -118,7 +118,7 @@ class LearningCenters(Supergroup):
         learning_centers_tree
             Whether to build a tree with the learning center coordinates, for quick querying
         n_shifts
-            Number of daily shifts 
+            Number of daily shifts
         """
         super().__init__(members=learning_centers)
         self.members = learning_centers
@@ -141,7 +141,7 @@ class LearningCenters(Supergroup):
             Instance of LearningCentres contining all LearningCenter instances
         config_path
             Full path to config file
-        
+
         Returns
         -------
         LearningCentres class instance
@@ -274,12 +274,12 @@ class LearningCenters(Supergroup):
 
         Parameters
         ----------
-        learning_centers_coordinates 
+        learning_centers_coordinates
             array with coordinates
 
         Returns
         -------
-        Tree to query nearby learning centers 
+        Tree to query nearby learning centers
         """
         return BallTree(np.deg2rad(learning_centers_coordinates), metric="haversine")
 

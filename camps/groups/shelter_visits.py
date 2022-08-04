@@ -59,12 +59,12 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
     ):
         """
         Defines class from config
-        
+
         Parameters
         ----------
         config_filename
             Full path to config file
-        
+
         Returns
         -------
         Instance of the ShelterVisitsDistributor class
@@ -76,8 +76,8 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
 
     def link_shelters_to_shelters(self, super_areas):
         """
-        Links people between shelters. 
-        Strategy: We pair each shelter with 0, 1, or 2 other shelters (with equal prob.). 
+        Links people between shelters.
+        Strategy: We pair each shelter with 0, 1, or 2 other shelters (with equal prob.).
         The shelter of the former then has a probability of visiting the shelter of the later
         at every time step.
 
@@ -85,7 +85,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         ----------
         super_areas
             list of super areas
-        
+
         Returns
         -------
         None
@@ -115,7 +115,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
     def get_leisure_group(self, person):
         """
         Gets the group of a person
-        
+
         Parameters
         ----------
         person
@@ -124,7 +124,7 @@ class SheltersVisitsDistributor(ResidenceVisitsDistributor):
         Returns
         -------
         group
-            Group of a person 
+            Group of a person
         """
         candidates = person.residence.group.shelters_to_visit
         if candidates is None:

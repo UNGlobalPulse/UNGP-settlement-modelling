@@ -34,7 +34,7 @@ class PlayGroup(SocialVenue):
     def __init__(self, max_size=np.inf, area=None):
         """
         Play groups in which children can play according to their age groups
-        
+
         Parameters
         ----------
         age_group_limits

@@ -21,7 +21,7 @@ class CampWorld(World):
     """
     This Class creates the world that will later be simulated.
     The world will be stored in pickle, but a better option needs to be found.
-    
+
     Note: BoxMode = Demography +- Sociology - Geography
     """
 
@@ -29,7 +29,7 @@ class CampWorld(World):
         """
         Initializes a world given a geography and a demography. For now, households are
         a special group because they require a mix of both groups (we need to fix
-        this later). 
+        this later).
         """
         self.areas = None
         self.super_areas = None

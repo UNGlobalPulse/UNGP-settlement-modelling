@@ -287,7 +287,7 @@ args.save_path = Path(args.save_path)
 
 counter = 1
 OG_save_path = args.save_path
-while args.save_path.is_dir() == True:
+while args.save_path.is_dir() is True:
     args.save_path = Path(str(OG_save_path) + "_%s" % counter)
     counter += 1
 args.save_path.mkdir(parents=True, exist_ok=False)
@@ -413,7 +413,7 @@ if args.learning_centers:
     print("Learning center shifts set to: {}".format(args.learning_center_shifts))
     print("Extra learning centers is set to: {}".format(args.extra_learning_centers))
 
-if args.region_only == False:
+if args.region_only is False:
     print("Running on all regions")
 else:
     print("Running on regions: {}".format(args.region_only))
@@ -432,7 +432,7 @@ CONFIG_PATH = args.config
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 # world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-if args.region_only == False:
+if args.region_only is False:
     world = generate_empty_world()
 else:
     world = generate_empty_world({"region": args.region_only})
@@ -489,7 +489,7 @@ if args.learning_centers:
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-int(args.extra_learning_centers) :]
+        top_k = learning_centers_sorted[-int(args.extra_learning_centers):]
         for learning_center in top_k:
             extra_lc = LearningCenter(
                 coordinates=learning_center.super_area.coordinates
@@ -838,7 +838,7 @@ if args.tracker:
         plot_Distances=True,
     )
 
-    ##Make Plots
+    # Make Plots
     Plots = PlotClass(
         record_path=args.save_path / "Tracker", Tracker_Contact_Type="All"
     )

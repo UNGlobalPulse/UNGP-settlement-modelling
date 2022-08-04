@@ -44,6 +44,13 @@ from camps.world import CampWorld
 # super area coding example CXB-219-C
 # region coding example CXB-219
 
+
+def read_yaml(config_filename):
+    with open(config_filename) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    return config
+
+
 area_mapping_filename = camp_data_path / "input/geography/area_super_area_region.csv"
 area_coordinates_filename = camp_data_path / "input/geography/area_coordinates.csv"
 super_area_coordinates_filename = (
@@ -55,46 +62,64 @@ age_structure_filename = (
 area_residents_families = (
     camp_data_path / "input/demography/area_residents_families.csv"
 )
-area_residents_families_df = pd.read_csv(area_residents_families)
-area_residents_families_df.set_index("area", inplace=True)
+
+if area_residents_families.is_file():
+    area_residents_families_exists = True
+    area_residents_families_df = pd.read_csv(area_residents_families)
+    area_residents_families_df.set_index("area", inplace=True)
+else:
+    area_residents_families_exists = False
+
 
 area_household_structure_params = (
     camp_data_path / "input/households/household_structure.yaml"
 )
+if area_household_structure_params.is_file():
+    area_household_structure_params_exists = True
+    area_household_structure_params_df = read_yaml(area_household_structure_params)
+else:
+    area_household_structure_params_exists = False
+
 area_household_structure = (
     camp_data_path / "input/households/area_household_structure.csv"
 )
-area_household_structure_df = pd.read_csv(area_household_structure)
-area_household_structure_df.set_index("CampSSID", inplace=True)
+
+if area_household_structure.is_file():
+    area_household_structure_exists = True
+    area_household_structure_df = pd.read_csv(area_household_structure)
+    area_household_structure_df.set_index("CampSSID", inplace=True)
+else:
+    area_household_structure_exists = False
+
+# area_residents_families_exists = False
+# area_household_structure_exists = False
+# area_household_structure_params_exists = False
 
 
-def read_yaml(config_filename):
-    with open(config_filename) as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
-    return config
+def GenerateDiscretePDF(Type="Gaussian", datarange=[0, 100], Mean=0, SD=1, stretch=False):
+    def PValue(Mean, SD, Xmin, Xmax, stretch=False):
+        return integrate.quad(lambda x: Gaussian(Mean, SD, x, stretch), Xmin, Xmax)
 
 
-def GenerateDiscretePDF(Type="Gaussian", datarange=[0, 100], Mean=0, SD=1):
-    def PValue(Mean, SD, Xmin, Xmax):
-        return integrate.quad(lambda x: Gaussian(Mean, SD, x), Xmin, Xmax)
+    def Gaussian(Mean, SD, x,stretch):
+        if stretch:
+            if abs(x - Mean) < 2:
+                return 4*np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
+            else:
+                return 1*np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
+        else:
+            return np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
 
-    def Gaussian(Mean, SD, x):
-        return np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
-
-    def Poisson(Lambda, N):
-        return np.exp(-Lambda) * (Lambda) ** (N) / factorial(N)
-
-    def ChiSq(x, k):
-        return (x ** (k * 0.5 - 1) * np.exp(-x * 0.5)) / (
-            2 ** (0.5 * k) * gammafunc(0.5 * k)
-        )
 
     Vals = np.arange(datarange[0], datarange[1] + 1, 1)
     dist = {}
     for a_i in range(len(Vals) - 1):
         XMin = Vals[a_i] - 0
         XMax = Vals[a_i] + 1
-        PVal = PValue(Mean, SD, XMin, XMax)[0]
+        if stretch:
+            PVal = PValue(Mean, SD, XMin, XMax, stretch)[0]
+        else:
+            PVal = PValue(Mean, SD, XMin, XMax)[0]
         if PVal < 1e-3:
             dist[Vals[a_i]] = 0
         elif PVal >= 1e-3:
@@ -119,7 +144,7 @@ def generate_empty_world(filter_key: Optional[dict] = None):
     -------
     CampWorld
         camp world class with geographical setup but nothing else
-        
+
     """
     geo = CampGeography.from_file(
         filter_key=filter_key,
@@ -209,20 +234,27 @@ def distribute_people_to_households(world: CampWorld):
     -------
     None
     """
-    config = read_yaml(
-        area_household_structure_params
-    )  # Add an assert to check sum to 1? TODO
-    household_distributor = CampHouseholdDistributor(
-        max_household_size=12,
-        household_size_distribution=config["area"]["coarse"]["household_size"],
-        chance_unaccompanied_childen=config["area"]["coarse"][
-            "chance_unaccompanied_childen"
-        ],
-        chance_single_parent_mf=config["area"]["coarse"]["chance_single_parent"],
-        min_age_gap_between_childen=config["area"]["coarse"][
-            "min_age_gap_between_childen"
-        ],
-    )
+
+    if area_household_structure_params_exists:
+        household_distributor = CampHouseholdDistributor(
+            max_household_size=12,
+            household_size_distribution=area_household_structure_params_df["area"][
+                "coarse"
+            ]["household_size"],
+            chance_unaccompanied_childen=area_household_structure_params_df["area"][
+                "coarse"
+            ]["chance_unaccompanied_childen"],
+            chance_single_parent_mf=area_household_structure_params_df["area"][
+                "coarse"
+            ]["chance_single_parent"],
+            min_age_gap_between_childen=area_household_structure_params_df["area"][
+                "coarse"
+            ]["min_age_gap_between_childen"],
+        )
+    else:
+        household_distributor = CampHouseholdDistributor(
+            max_household_size=12,
+        )
 
     households_total = []
     for area in world.areas:
@@ -230,28 +262,63 @@ def distribute_people_to_households(world: CampWorld):
         regionName = area.name[:-4]
 
         area_data = area_residents_families_df.loc[areaName]
-        area_structure = area_household_structure_df.loc[regionName]
+        if area_household_structure_exists:
+            area_structure = area_household_structure_df.loc[regionName]
 
-        mother_firstchild_gap_mean = area_structure["Mother-First Child Age Diff"]
-        partner_age_gap_mean = area_structure["avgAgeDiff"]
+            mother_firstchild_gap_mean = area_structure["Mother-First Child Age Diff"]
+            partner_age_gap_mean = area_structure["avgAgeDiff"]
+            chance_single_parent = area_structure["chance of Single Parent"]
+            chance_multigenerational = area_structure[
+                "chance of Multigenerational Families"
+            ]
+            chance_withchildren = area_structure["chance family with children"]
+
+            mother_firstchild_gap_STD = 2.4
+            partner_age_gap_mean_STD = 3
+            n_children_STD = 2
+
+            n_children = area_structure["children per family"]
+
+            stretch = False
+
+        else:
+            mother_firstchild_gap_mean = 22
+            mother_firstchild_gap_STD = 8
+
+            partner_age_gap_mean = 0
+            partner_age_gap_mean_STD = 10
+
+            chance_single_parent = 0.179
+            chance_multigenerational = 0.268
+            chance_withchildren = 0.922
+
+            n_children = 2.5
+            n_children_STD = 2
+
+            stretch = True
 
         mother_firstchild_gap_generator, dist = GenerateDiscretePDF(
             datarange=[14, 60],
             Mean=mother_firstchild_gap_mean + 0.5 + (9.0 / 12.0),
-            SD=2.4,
-        )  # SDs guess
+            SD=mother_firstchild_gap_STD
+            
+        )
         partner_age_gap_generator, dist = GenerateDiscretePDF(
-            datarange=[-20, 20], Mean=partner_age_gap_mean + 0.5, SD=3
-        )  # SDs guess
+            datarange=[-20, 20], 
+            Mean=partner_age_gap_mean + 0.5, 
+            SD=partner_age_gap_mean_STD,
+            stretch=stretch
+        )
 
-        chance_single_parent = area_structure["chance of Single Parent"]
-        chance_multigenerational = area_structure[
-            "chance of Multigenerational Families"
-        ]
-        chance_withchildren = area_structure["chance family with children"]
+        nchildren_generator, dist = GenerateDiscretePDF(
+            datarange=[0, 8], 
+            Mean=n_children, 
+            SD=n_children_STD,
+        )
 
         n_families = int(area_data["families"])
         n_residents = int(area_data["residents"])
+
         n_families_adapted = int(np.round(len(area.people) / n_residents * n_families))
         area.households = household_distributor.distribute_people_to_households(
             area=area,
@@ -267,6 +334,7 @@ def distribute_people_to_households(world: CampWorld):
             ),
             partner_age_gap_generator=partner_age_gap_generator,
             mother_firstchild_gap_generator=mother_firstchild_gap_generator,
+            nchildren_generator=nchildren_generator,
         )
         households_total += area.households
     world.households = Households(households_total)

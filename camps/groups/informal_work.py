@@ -55,7 +55,7 @@ class InformalWorks(SocialVenues):
     def __init__(self, informal_work: List[InformalWork]):
         """
         Create and store information on multiple InformalWork instances
-        
+
         Parameters
         ----------
         informal_work
@@ -124,7 +124,7 @@ class InformalWorkDistributor(SocialVenueDistributor):
         ----------
         area
             Area from which to select informal work
-        
+
         Returns
         -------
         venue

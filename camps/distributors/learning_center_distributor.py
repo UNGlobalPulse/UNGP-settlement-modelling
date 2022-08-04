@@ -176,7 +176,7 @@ class LearningCenterDistributor:
         self, person: "Person", closest_centers_idx: List[int]
     ):
         """
-        Sends a given person to one of their closest learning centers. If full, send to a 
+        Sends a given person to one of their closest learning centers. If full, send to a
         different one. If all full, pick one at random.
 
         Parameters
@@ -221,7 +221,7 @@ class LearningCenterDistributor:
         ----------
         areas
             Instance of the Areas class (group of Area classes)
-        
+
         Returns
         -------
         None

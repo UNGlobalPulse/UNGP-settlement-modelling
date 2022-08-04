@@ -34,7 +34,7 @@ class Shelter(Household):
     def __init__(self, area=None):
         """
         A shelter is comprised of multiple households. Currently there is a maximum of 2 households per shelter.
-        
+
         Parameters
         ----------
         area
@@ -54,7 +54,7 @@ class Shelter(Household):
         ----------
         household
             Instance of the Household class to add to the shelter
-        
+
         Returns
         -------
         None
@@ -138,7 +138,7 @@ class Shelters(Supergroup):
     def from_families_in_area(cls, n_families_area, sharing_shelter_ratio=0.75):
         """
         Defines class given information on households/families
-        
+
         Parameters
         ----------
         n_families_area : int
@@ -198,7 +198,7 @@ class ShelterDistributor:
     def distribute_people_in_shelters(self, shelters: Shelters, households: Households):
         """
         Distributes people to shelters
-        
+
         Parameters
         ----------
         shelters

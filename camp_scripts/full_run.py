@@ -136,7 +136,7 @@ health_index_generator = HealthIndexGenerator.from_file_with_comorbidities(
 )
 
 
-### UNCOMMENT THE BELOW AND COMMENT THE ABOVE TO REMOVE COMORBIDITIES
+# UNCOMMENT THE BELOW AND COMMENT THE ABOVE TO REMOVE COMORBIDITIES
 
 # health_index_generator = HealthIndexGenerator.from_file(asymptomatic_ratio=0.2)
 

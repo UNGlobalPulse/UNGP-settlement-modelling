@@ -204,7 +204,8 @@ class ClusterRunner:
             if ii == 0:
                 try:
                     print_script_path = script_path.relative_to(Path.cwd())
-                except:
+                except FileNotFoundError:
+                    print("Wrong file or file path, using default")
                     print_script_path = script_path
                 print(f"script at eg.\n    {print_script_path}")
 
@@ -213,7 +214,8 @@ class ClusterRunner:
             submit_all.writelines(submit_all_script_lines)
         try:
             print_submit_all_path = submit_all_path.relative_to(Path.cwd())
-        except:
+        except FileNotFoundError:
+            print("Wrong file or file path, using default")
             print_submit_all_path = submit_all_path
 
         print(f"submit all with\n    \033[35mbash {print_submit_all_path}\033[0m")

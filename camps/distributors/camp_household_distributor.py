@@ -86,7 +86,7 @@ according to census data.
 
 
 class HouseholdError(BaseException):
-    """ class for throwing household related errors """
+    """class for throwing household related errors"""
 
 
 class CampHouseholdDistributor:
@@ -105,7 +105,7 @@ class CampHouseholdDistributor:
     ):
         """
         Cluters people into households
-        
+
         Parameters
         ----------
         kid_max_age : int
@@ -162,18 +162,18 @@ class CampHouseholdDistributor:
         else:
             self.chance_single_parent_mf = chance_single_parent_mf
 
-    # TESTING TODO
     ######################################################################
     def P_IsAdult(self, age):
         tanh_halfpeak_age = 15  # 17.1
         tanh_width = 0.7  # 1
 
-        minageadult = 13
+        minageadult = 18
         maxagechild = 17
         if age < minageadult:
             return 0
         elif age > maxagechild:
             return 1
+
         else:
             return (np.tanh(tanh_width * (age - tanh_halfpeak_age)) + 1) / 2
 
@@ -234,7 +234,7 @@ class CampHouseholdDistributor:
     def _create_household(self, area, max_size):
         """
         Creates household classes for a given area
-        
+
         Parameters
         ----------
         area
@@ -250,14 +250,14 @@ class CampHouseholdDistributor:
         return Household(area=area, type="family", max_size=max_size)
 
     def clear_dictionary(self, dictionary, age):
-        """ Clears dictionary object indexed by a given age"""
+        """Clears dictionary object indexed by a given age"""
         if not dictionary[age]:
             del dictionary[age]
 
     def get_closest_person_of_age(self, men_by_age, women_by_age, age, sex):
         """
         For a given person, find someone of a given gender closest to their age
-        
+
         Parameters
         ----------
         men_by_age : dict
@@ -268,7 +268,7 @@ class CampHouseholdDistributor:
             Age of reference person
         sex: str
             Sex of reference person
-        
+
         Returns
         -------
         person
@@ -325,17 +325,18 @@ class CampHouseholdDistributor:
         n_families_singleparent: int,
         partner_age_gap_generator,
         mother_firstchild_gap_generator,
+        nchildren_generator,
     ) -> Households:
         """
         Distributes people to household given an area with a given number of families
-        
+
         Parameters
         ----------
         area
             Area class in which people are to be clustered into households
         n_families : int
             Number of families in the area
-        
+
         Returns
         -------
         households
@@ -356,26 +357,31 @@ class CampHouseholdDistributor:
             else:
                 return list(Intersection)
 
+        def not_in(list_A, list_B, permute=True):
+            not_in_set = np.array(list(set(list_A) - set(list_B)))
+            if permute:
+                return list(not_in_set[np.random.permutation(len(not_in_set))])
+            else:
+                return list(not_in_set)
+
         household_sizes = self.household_size_generator.rvs(size=n_families)
         households = [
             self._create_household(area, max_size=household_sizes[i])
             for i in range(n_families)
         ]
 
-        # Preferance larger houses for households with kids.
-        for N in range(0, self.max_household_size):
-            if sum(household_sizes > N) < n_families_wchildren:
-                householdcut = N - 1
-                break
+        if sum(household_sizes >= 2) < n_families_wchildren:
+            n_families_wchildren = sum(household_sizes >= 2)
 
         # Get households with children
         Houses_W_Children = list(
             np.random.choice(
-                np.array(households)[household_sizes >= householdcut],
+                np.array(households)[household_sizes >= 2],
                 size=n_families_wchildren,
                 replace=False,
             )
         )
+
         household_W_Children_sizes = np.array(
             [household.max_size for household in Houses_W_Children]
         )
@@ -390,16 +396,16 @@ class CampHouseholdDistributor:
         for h in Houses_WO_Children:
             h.type = "NoChildren"
 
-        # Preferance smaller houses for households with single parents.
-        for N in range(0, self.max_household_size):
-            if sum(household_W_Children_sizes > N) < n_families_singleparent:
-                householdcut = N - 1
+        # Get households with single parents
+        indexes = []
+        for i in range(self.max_household_size):
+            indexes += list(np.argwhere(household_W_Children_sizes == i).flatten())
+            if len(indexes) > n_families_singleparent:
                 break
 
-        # Get households with single parents
         Houses_Single = list(
             np.random.choice(
-                np.array(Houses_W_Children)[household_W_Children_sizes <= householdcut],
+                np.array(Houses_W_Children)[indexes],
                 size=n_families_singleparent,
             )
         )
@@ -418,33 +424,6 @@ class CampHouseholdDistributor:
         )
         for h in Houses_Multigen:
             h.type = "Multigen"
-
-        # print("Families", n_families, len(households))
-        # print("Families with children", n_families_wchildren,len(Houses_W_Children), np.median(household_W_Children_sizes))
-        # print("Families without children", n_families - n_families_wchildren, len(Houses_WO_Children), np.median(household_WO_Children_sizes))
-        # print("Families with multi", n_families_multigen,len(Houses_Multigen), np.median(household_Multigen_sizes))
-        # print("Families with single", n_families_singleparent,len(Houses_Single), np.median(household_Single_sizes))
-
-        # from matplotlib import pyplot as plt
-        # plt.figure()
-        # plt.hist(household_W_Children_sizes, bins=np.arange(12)-0.5)
-        # plt.title("With children")
-        # plt.show
-
-        # plt.figure()
-        # plt.hist(household_WO_Children_sizes, bins=np.arange(12)-0.5)
-        # plt.title("Without children")
-        # plt.show
-
-        # plt.figure()
-        # plt.hist(household_Multigen_sizes, bins=np.arange(12)-0.5)
-        # plt.title("multigen")
-        # plt.show
-
-        # plt.figure()
-        # plt.hist(household_Single_sizes, bins=np.arange(12)-0.5)
-        # plt.title("With children single")
-        # plt.show
 
         # Find the spares
         Houses_Left = [
@@ -468,7 +447,7 @@ class CampHouseholdDistributor:
         n_men = len([person for age in men_by_age for person in men_by_age[age]])
         n_women = len([person for age in women_by_age for person in women_by_age[age]])
         assert n_men + n_women + n_kids == len(area.people)
-        print(f"Distributing {len(area.people)} people to {area.name}")
+        # print(f"Distributing {len(area.people)} people to {area.name}")
 
         # put adults households with kids start
         Intersection = intersection(Houses_W_Children, households_with_space)
@@ -483,7 +462,7 @@ class CampHouseholdDistributor:
                     men_by_age, women_by_age, age, sex
                 )
                 if person is None:
-                    break
+                    continue
                 household.add(person, subgroup_type=household.SubgroupType.adults)
             else:
                 adult_M_age = random_age(
@@ -495,14 +474,14 @@ class CampHouseholdDistributor:
                     men_by_age, women_by_age, adult_F_age, "f"
                 )
                 if adult_F is None:
-                    break
+                    continue
                 household.add(adult_F, subgroup_type=household.SubgroupType.adults)
 
                 adult_M = self.get_closest_person_of_age(
                     men_by_age, women_by_age, adult_M_age, "m"
                 )
                 if adult_M is None:
-                    break
+                    continue
                 household.add(adult_M, subgroup_type=household.SubgroupType.adults)
 
             # House now full?
@@ -511,11 +490,17 @@ class CampHouseholdDistributor:
         # print("Parents done")
 
         # Distribute all the children
+        Loop_1 = True
         while True:
             squeeze = False
             if not kids_by_age:
                 break
-            Intersection = intersection(Houses_W_Children, households_with_space)
+
+            if Loop_1:
+                Intersection = intersection(Houses_W_Children, households_with_space)
+            else:
+                Intersection = intersection(not_in(Houses_W_Children,Houses_Single), households_with_space)
+
             if len(Intersection) == 0:
                 # Need to find space for final children we sqeeze them into Houses_W_Children even if full
                 squeeze = True
@@ -524,6 +509,9 @@ class CampHouseholdDistributor:
             for household in Intersection:
                 NKids = len(household.kids)
                 NAdults = len(household.adults)
+
+                if NKids > nchildren_generator.rvs(size=1)[0]:
+                    continue
 
                 # if NAdults == 0:
                 #    continue
@@ -576,6 +564,8 @@ class CampHouseholdDistributor:
                 # Check if we finished up the kids
                 if not kids_by_age:
                     break
+
+            Loop_1 = False
         # print("Kids done")
 
         while True:
@@ -636,11 +626,22 @@ class CampHouseholdDistributor:
             sqeeze = False
             if not men_by_age and not women_by_age:
                 break
-            Intersection = intersection(households_with_space, households_with_space)
+            Intersection = intersection(households_with_space, Houses_WO_Children)
             if len(Intersection) == 0:
-                sqeeze = True
-                # Sqeeze in the final adults
-                Intersection = intersection(households, households)
+                # Try placing in Multigen houses
+                if len(Houses_Multigen) > 0:
+                    Intersection = intersection(Houses_Multigen, households_with_space)
+                    if len(Intersection) == 0:
+                        sqeeze = True
+                        Intersection = intersection(Houses_Multigen, Houses_Multigen)
+
+                #Find houses with space
+                if len(households_with_space) > 0:
+                    Intersection = intersection(households_with_space, households_with_space)
+                else:
+                    # Sqeeze in the final adults
+                    sqeeze = True
+                    Intersection = intersection(Houses_WO_Children, Houses_WO_Children)
 
             for household in Intersection:
                 NAdults = len(household.adults)
