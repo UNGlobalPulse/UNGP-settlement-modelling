@@ -836,6 +836,8 @@ if args.tracker:
         plot_CompareSexMatrices=True,
         plot_AgeBinning=True,
         plot_Distances=True,
+        
+        MaxAgeBin=60
     )
 
     # Make Plots
@@ -854,4 +856,6 @@ if args.tracker:
         plot_CompareSexMatrices=True,
         plot_AgeBinning=False,
         plot_Distances=False,
+        
+        MaxAgeBin=60
     )
