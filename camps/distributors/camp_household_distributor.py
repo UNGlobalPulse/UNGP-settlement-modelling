@@ -447,7 +447,7 @@ class CampHouseholdDistributor:
         n_men = len([person for age in men_by_age for person in men_by_age[age]])
         n_women = len([person for age in women_by_age for person in women_by_age[age]])
         assert n_men + n_women + n_kids == len(area.people)
-        # print(f"Distributing {len(area.people)} people to {area.name}")
+        print(f"Distributing {len(area.people)} people to {area.name}")
 
         # put adults households with kids start
         Intersection = intersection(Houses_W_Children, households_with_space)
@@ -487,7 +487,7 @@ class CampHouseholdDistributor:
             # House now full?
             if household.size >= household.max_size:
                 households_with_space.remove(household)
-        # print("Parents done")
+        #print("Parents done")
 
         # Distribute all the children
         Loop_1 = True
@@ -620,7 +620,7 @@ class CampHouseholdDistributor:
                 # Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        # print("All multigen adults done")
+        #print("All multigen adults done")
 
         while True:
             sqeeze = False
@@ -642,6 +642,11 @@ class CampHouseholdDistributor:
                     # Sqeeze in the final adults
                     sqeeze = True
                     Intersection = intersection(Houses_WO_Children, Houses_WO_Children)
+
+            if len(Intersection) == 0:
+                sqeeze = True
+                intersection(households, households)
+
 
             for household in Intersection:
                 NAdults = len(household.adults)
@@ -703,7 +708,7 @@ class CampHouseholdDistributor:
                 # Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        # print("All adults only houses done")
+        #print("All adults only houses done")
 
         # check everyone has a house
         people_in_households = len(
