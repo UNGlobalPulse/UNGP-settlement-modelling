@@ -1,5 +1,5 @@
 susceptibilities:
-  0-13: 0.5
+  0-13: 1.0
   13-100: 1.0
 
 alpha_physical: 4. # double UK alpha
@@ -11,7 +11,7 @@ betas:
   female_communal: 0.04
   hospital: 0.02
   household: 0.2
-  informal_work: 0.04
+  informal_work: 0.4
   isolation_unit: 0.00
   learning_center: 0.04
   n_f_distribution_center: 0.04
@@ -19,32 +19,36 @@ betas:
   pump_latrine: 0.02
   religious: 0.04
   shelter: 0.2
-  
+
 contact_matrices:
   communal:
-    contacts: [[5]]
+    contacts: [[5.00,4.00],[3.75,7.50]]
+    contacts_err: [[0.31,0.66],[0.51,0.69]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   distribution_center:
-    contacts: [[5]]
+    contacts: [[5.00,10.00],[2.00,10.00]]
+    contacts_err: [[0.98,1.72],[0.48,1.62]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   e_voucher:
-    contacts: [[5]]
+    contacts: [[1.33,4.00],[0.00,15.00]]
+    contacts_err: [[2.07,7.03],[0.23,2.08]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   female_communal:
-    contacts: [[5]]
+    contacts: [[5.00,4.00],[3.75,7.50]]
+    contacts_err: [[0.31,0.66],[0.51,0.69]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   hospital:
     contacts: [[5.00, 10., 10.], [1., 0., 0.], [1., 0., 0.]]
     proportion_physical: [[0.05, 1., 1.], [1.0, 0., 0.], [1., 0., 0.]]
@@ -68,19 +72,21 @@ contact_matrices:
     proportion_physical: [[0,0], [0,0]]
     characteristic_time: 24
     type: Age
-    bins: [0,18,100]
+    bins: [0,18,60]
   learning_center:
-    contacts: [[1,1],[1,5]]
-    proportion_physical: [[0.12]]
-    characteristic_time: 2
+    contacts: [[10.88,2.00],[9.00,6.00]]
+    contacts_err: [[1.24,0.51],[2.18,1.47]]
+    proportion_physical: [[0.12,0.12],[0.12,0.12]]
+    characteristic_time: 1.50
     type: Discrete
-    bins: ["students", "teachers"] 
+    bins: ["students", "teachers"]  
   n_f_distribution_center:
-    contacts: [[5]]
+    contacts: [[5.00,10.00],[2.00,10.00]]
+    contacts_err: [[0.98,1.72],[0.48,1.62]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   play_group:
     contacts: [[5,0,0],[0,5,0],[0,0,5]]
     proportion_physical: [[0.6,0,0],[0,0.3,0],[0,0,0.15]]
@@ -88,17 +94,19 @@ contact_matrices:
     type: Age
     bins: [3, 7, 12, 18]
   pump_latrine:
-    contacts: [[5]]
+    contacts: [[4.33,3.25],[3.07,4.88]]
+    contacts_err: [[0.59,0.66],[0.30,0.51]]
     proportion_physical: [[0.02]]
-    characteristic_time: 2
+    characteristic_time: 0.54
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]    
   religious:
-    contacts: [[5]]
+    contacts: [[5.00,8.00],[2.00,10.00]]
+    contacts_err: [[0.56,1.00],[0.25,0.68]]
     proportion_physical: [[0.12]]
-    characteristic_time: 2
+    characteristic_time: 1.00
     type: Age
-    bins: [0,100]
+    bins: [0,18,60]
   shelter:
     contacts: [[5, 2], [2, 5]]
     proportion_physical: [[0.8, 0.3], [0.8, 0.3]]

@@ -4,14 +4,23 @@
 times_per_week:
   weekday:
     male:
-      0-100: 10.0
+      #0-100: 10.0
+      0-18: 10.0
+      18-100: 10.0
     female:
-      0-100: 10.0
+      #0-100: 10.0
+      0-18: 10.0
+      18-100: 10.0   
   weekend:
     male:
-      0-100: 4.0
+      #0-100: 4.0
+      0-18: 4.0
+      18-100: 4.0    
     female:
-      0-100: 4.0
+      #0-100: 4.0
+      0-18: 4.0
+      18-100: 4.0
+            
 hours_per_day:
   weekday:
     male:
@@ -24,6 +33,6 @@ hours_per_day:
     female:
       0-100: 8
 drags_household_probability: 0
-neighbours_to_consider: 2
+neighbours_to_consider: 3
 maximum_distance: 1000
 

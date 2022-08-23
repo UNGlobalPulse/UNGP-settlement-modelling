@@ -28,20 +28,20 @@ from june.geography import SuperArea, Area
 from june.groups import Household
 from enum import IntEnum, Enum
 
-default_config_filename = camp_configs_path / "defaults/groups/pump_latrine.yaml"
+default_config_filename = camp_configs_path / "defaults/groups/informal_work.yaml"
 
 
-class PumpLatrine(SocialVenue):
+class InformalWork(SocialVenue):
     def __init__(self, max_size=np.inf, area=None):
         """
-        Pumps and latrines people can use
+        Informal work venues people can use
 
         Parameters
         ----------
         max_size
-            Maximum size of any one given play group
+            Maximum size of any one given informal work venue
         area
-            Optional Area class for play groups to be associated with
+            Optional Area class for informal work venue to be associated with
         """
         super().__init__()
         self.max_size = max_size
@@ -49,27 +49,22 @@ class PumpLatrine(SocialVenue):
         self.coordinates = self.get_coordinates
 
 
-class PumpLatrines(SocialVenues):
-    venue_class = PumpLatrine
+class InformalWorks(SocialVenues):
+    venue_class = InformalWork
 
-    def __init__(self, pump_latrines: List[PumpLatrine]):
+    def __init__(self, informal_work: List[InformalWork]):
         """
-        Create and store information on multiple PumpLatrine instances
+        Create and store information on multiple InformalWork instances
 
         Parameters
         ----------
-        pump_latrines
-            List of PumpLatrine classes
+        informal_work
+            List of InformalWork classes
         """
-        super().__init__(pump_latrines, make_tree=False)
+        super().__init__(informal_work, make_tree=False)
 
     @classmethod
-    def for_areas(
-        cls,
-        areas: List[Area],
-        venues_per_capita=0.002426274539,  # 1 / (100 + 35 / 2),
-        max_size=np.inf,
-    ):
+    def for_areas(cls, areas: List[Area], venues_per_capita=0.00242101907, max_size=15):
 
         """
         Defines class from areas
@@ -81,23 +76,23 @@ class PumpLatrines(SocialVenues):
         venues_per_capita
             Number of venues to be created for every n people
         max_size
-            Maximum size of any one given play group
+            Maximum size of any one given work venue
 
         Returns
         -------
         PumpLatrines class instance
         """
-        pump_latrines = []
+        informal_works = []
         for area in areas:
             area_population = len(area.people)
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                pump_latrine = cls.venue_class(max_size, area=area)
-                area.pump_latrines.append(pump_latrine)
-                pump_latrines.append(pump_latrine)
-        return cls(pump_latrines)
+                informal_work = cls.venue_class(max_size, area=area)
+                area.informal_works.append(informal_work)
+                informal_works.append(informal_work)
+        return cls(informal_works)
 
 
-class PumpLatrineDistributor(SocialVenueDistributor):
+class InformalWorkDistributor(SocialVenueDistributor):
     """
     Distributes people to pumps and latrines according to probability parameters
     """
@@ -106,7 +101,7 @@ class PumpLatrineDistributor(SocialVenueDistributor):
 
     def get_social_venue_for_person(self, person):
         """
-        We select a random pump or latrine from the person area.
+        We select a random Informal Work venue from the person area.
 
         Parameters
         ----------
@@ -118,22 +113,22 @@ class PumpLatrineDistributor(SocialVenueDistributor):
         venue
             Venue selected for person
         """
-        venue = np.random.choice(person.area.pump_latrines)
+        venue = np.random.choice(person.area.informal_works)
         return venue
 
     def get_possible_venues_for_area(self, area: Area):
         """
-        Select a random pump or latrine from a given Area
+        Select a random informal works venue from a given Area
 
         Parameters
         ----------
         area
-            Area from which to select pump or latrine
+            Area from which to select informal work
 
         Returns
         -------
         venue
             Venue selected from area
         """
-        venue = np.random.choice(area.pump_latrines)
+        venue = np.random.choice(area.informal_works)
         return [venue]

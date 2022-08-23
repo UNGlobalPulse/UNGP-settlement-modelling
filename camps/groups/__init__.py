@@ -18,3 +18,4 @@ from .non_food_distribution_center import (
     NFDistributionCenterDistributor,
 )
 from .shelter_visits import SheltersVisitsDistributor
+from .informal_work import InformalWork, InformalWorks, InformalWorkDistributor

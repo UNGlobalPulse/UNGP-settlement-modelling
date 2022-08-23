@@ -47,13 +47,27 @@ def make_dummy_world():
     learning_center.add(
         person=teacher, shift=2, subgroup_type=learning_center.SubgroupType.teachers
     )
-    learning_center.add(person=pupil_shift_1, shift=0)
-    learning_center.add(person=pupil_shift_2, shift=1)
-    learning_center.add(person=pupil_shift_3, shift=2)
+    learning_center.add(
+        person=pupil_shift_1,
+        shift=0,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
+    learning_center.add(
+        person=pupil_shift_2,
+        shift=1,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
+    learning_center.add(
+        person=pupil_shift_3,
+        shift=2,
+        subgroup_type=learning_center.SubgroupType.students,
+    )
     world = World()
-    world.learning_centers = LearningCenters([learning_center],learning_centers_tree=False,n_shifts=3)
+    world.learning_centers = LearningCenters(
+        [learning_center], learning_centers_tree=False, n_shifts=3
+    )
     world.households = Households([household])
-    world.people = Population([teacher,pupil_shift_1, pupil_shift_2, pupil_shift_3])
+    world.people = Population([teacher, pupil_shift_1, pupil_shift_2, pupil_shift_3])
     for person in world.people.members:
         person.busy = False
     learning_center.clear()

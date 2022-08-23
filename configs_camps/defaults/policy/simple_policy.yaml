@@ -1,7 +1,7 @@
 # needs more thinking
 social_distancing:
-        start_time: 2021-03-16
-        end_time: 2021-07-04 
+        start_time: 9999-03-16
+        end_time: 9999-07-04 
         beta_factors:
           communal: 0.5
           female_communal: 0.5

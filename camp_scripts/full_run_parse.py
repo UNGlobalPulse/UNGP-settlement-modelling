@@ -37,7 +37,13 @@ from june.demography.demography import (
 )
 from june.paths import data_path, configs_path
 from june.epidemiology.epidemiology import Epidemiology
-from june.epidemiology.infection import Infection, HealthIndexGenerator, InfectionSelector, InfectionSelectors, SusceptibilitySetter
+from june.epidemiology.infection import (
+    Infection,
+    HealthIndexGenerator,
+    InfectionSelector,
+    InfectionSelectors,
+    SusceptibilitySetter,
+)
 from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
@@ -72,10 +78,12 @@ from camps.groups import EVouchers, EVoucherDistributor
 from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 
+
 def set_random_seed(seed=999):
     """
     Sets global seeds for testing in numpy, random, and numbaized numpy.
     """
+
     @nb.njit(cache=True)
     def set_seed_numba(seed):
         random.seed(seed)
@@ -85,6 +93,7 @@ def set_random_seed(seed=999):
     set_seed_numba(seed)
     random.seed(seed)
     return
+
 
 set_random_seed(0)
 
@@ -110,10 +119,18 @@ parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
 parser.add_argument(
-    "-nnv", "--no_vaccines", help="Implement no vaccine policies", required=False, default="False"
+    "-nnv",
+    "--no_vaccines",
+    help="Implement no vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
-    "-v", "--vaccines", help="Implement vaccine policies", required=False, default="False"
+    "-v",
+    "--vaccines",
+    help="Implement vaccine policies",
+    required=False,
+    default="False",
 )
 parser.add_argument(
     "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
@@ -154,11 +171,7 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t",
-    "--isolation_testing",
-    help="Mean testing time",
-    required=False,
-    default=3,
+    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -340,10 +353,10 @@ time.sleep(10)
 CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
-#world = generate_empty_world({"super_area": ["CXB-219-C"]})
+# world = generate_empty_world({"super_area": ["CXB-219-C"]})
 world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-#world = generate_empty_world({"region": ["CXB-219"]})
-#world = generate_empty_world()
+# world = generate_empty_world({"region": ["CXB-219"]})
+# world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -391,7 +404,7 @@ if args.learning_centers:
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-int(args.extra_learning_centers) :]
+        top_k = learning_centers_sorted[-int(args.extra_learning_centers):]
         for learning_center in top_k:
             extra_lc = LearningCenter(
                 coordinates=learning_center.super_area.coordinates
@@ -415,7 +428,7 @@ if args.learning_centers:
 
 if args.no_visits:
     CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
-    
+
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
 world.play_groups = PlayGroups.for_areas(world.areas)
 world.distribution_centers = DistributionCenters.for_areas(world.areas)
@@ -513,12 +526,12 @@ selector = InfectionSelector(
 
 interaction = Interaction.from_file(
     config_filename=camp_configs_path
-    / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
+    / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml"
 )
 if args.child_susceptibility:
-    susceptibility_setter = SusceptibilitySetter() # by default kids have 0.5
+    susceptibility_setter = SusceptibilitySetter()  # by default kids have 0.5
 else:
-    susceptibility_setter = SusceptibilitySetter(None) 
+    susceptibility_setter = SusceptibilitySetter(None)
 
 
 if args.household_beta:
@@ -580,9 +593,7 @@ print("Detected cases = ", sum(cases_detected.values()))
 
 super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
 super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
-infection_seed = InfectionSeed(
-    world=world, infection_selector=selector
-)
+infection_seed = InfectionSeed(world=world, infection_selector=selector)
 for region in world.regions:
     if region.name in cases_detected.keys():
         infection_seed.unleash_virus(
@@ -596,7 +607,9 @@ infection_seed.unleash_virus(n_cases=44, population=world.people, time=0)
 print("Infected people in seed = ", len(world.people.infected))
 
 infection_selectors = InfectionSelectors([selector])
-epidemiology = Epidemiology(infection_selectors = infection_selectors, susceptibility_setter=susceptibility_setter)
+epidemiology = Epidemiology(
+    infection_selectors=infection_selectors, susceptibility_setter=susceptibility_setter
+)
 
 # ==================================================================================#
 
@@ -615,9 +628,9 @@ leisure.leisure_distributors[
 leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
-leisure.leisure_distributors[
-    "female_communal"
-] = FemaleCommunalDistributor.from_config(world.female_communals)
+leisure.leisure_distributors["female_communal"] = FemaleCommunalDistributor.from_config(
+    world.female_communals
+)
 leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
 )
@@ -653,7 +666,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    epidemiology = epidemiology,
+    epidemiology=epidemiology,
     record=record,
 )
 

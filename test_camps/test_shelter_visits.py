@@ -27,7 +27,12 @@ from camps.groups import SheltersVisitsDistributor
 
 @pytest.fixture(name="visits_world", scope="module")
 def setup_shelter_visits(camps_world):
-    shelter_visits_distributor = SheltersVisitsDistributor.from_config()
+    shelter_visits_distributor = SheltersVisitsDistributor.from_config(
+        daytypes={
+            "weekday": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+            "weekend": ["Friday", "Saturday"],
+        },
+    )
     shelter_visits_distributor.link_shelters_to_shelters(camps_world.super_areas)
     return camps_world
 
@@ -35,7 +40,7 @@ def setup_shelter_visits(camps_world):
 def test__shelter_links(visits_world):
     shelters_to_visit_sizes = defaultdict(int)
     for shelter in visits_world.shelters:
-        if shelter.shelters_to_visit == None:
+        if shelter.shelters_to_visit is None:
             shelters_to_visit_sizes[0] += 1
         else:
             shelters_to_visit_sizes[len(shelter.shelters_to_visit)] += 1
@@ -46,5 +51,3 @@ def test__shelter_links(visits_world):
     for i in shelters_to_visit_sizes.values():
         for j in shelters_to_visit_sizes.values():
             assert np.isclose(i, j, rtol=0.11)
-
-

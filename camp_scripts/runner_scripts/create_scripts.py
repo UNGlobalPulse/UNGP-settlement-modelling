@@ -29,8 +29,7 @@ from named_grids import *
 import camps
 
 
-usage_output = ( # Taken directly from output when a "bad" arg is given to the full_run_parse
-    """
+usage_output = """
     [-h] [-c COMORBIDITIES] [-p PARAMETERS]
     [-hb HOUSEHOLD_BETA] [-ih INDOOR_BETA_RATIO]
     [-oh OUTDOOR_BETA_RATIO] [-inf INFECTIOUSNESS_PATH]
@@ -42,8 +41,7 @@ usage_output = ( # Taken directly from output when a "bad" arg is given to the f
     [-lce EXTRA_LEARNING_CENTERS]
     [-lch LEARNING_CENTER_BETA_RATIO]
     [-pgh PLAY_GROUP_BETA_RATIO] [-s SAVE_PATH]
-    """
-)
+    """  # Taken directly from output when a "bad" arg is given to the full_run_parse
 accepted = re.findall("\[(.*?)\]", usage_output)
 
 accepted_short = []
@@ -52,14 +50,15 @@ accepted_long = []
 for flag in accepted:
     spl = flag.split()
     if len(spl) == 1:
-        accepted_short.append(spl[0].replace("-",""))
+        accepted_short.append(spl[0].replace("-", ""))
     elif len(spl) == 2:
-        accepted_short.append(spl[0].replace("-",""))
+        accepted_short.append(spl[0].replace("-", ""))
         accepted_long.append(spl[1].casefold())
     else:
         print("usage_output has an unusual argument...")
 
 home_dir = Path(camps.__path__[0]).parent
+
 
 class ClusterRunner:
     def __init__(self, parameter_grid, output_dir):
@@ -89,21 +88,19 @@ class ClusterRunner:
                 if len(param) <= 2:
                     if pc not in accepted_short and pc not in arg_warnings:
                         arg_warnings.append(pc)
-                        print(warn + f"-{pc} not in known short arguments")                      
+                        print(warn + f"-{pc} not in known short arguments")
                     flags.append(f"-{param} {value}")
                 else:
                     if pc not in accepted_long and pc not in arg_warnings:
                         arg_warnings.append(pc)
-                        print(warn + f"--{pc} not in known long arguments")                      
+                        print(warn + f"--{pc} not in known long arguments")
                     flags.append(f"--{param} {value}")
-            
+
             is_save_path = [p in ["s", "save_path"] for p in parameter_set.keys()]
             if sum(is_save_path) == 0:
                 flags.append(f"--save_path {self.output_dir}/run_{ii:03d}")
 
-            script_flags.append(
-                ' '.join(flag for flag in flags)
-            )
+            script_flags.append(" ".join(flag for flag in flags))
         self.script_flags = script_flags
 
     @classmethod
@@ -125,7 +122,7 @@ class ClusterRunner:
             print(
                 "Named grids are: \n"
                 "    ['isolation', 'mask_wearing', 'learning_center', 'indoor_outdoor']\n"
-                "    choose from these, or modify \"named_grids.py\" and from_named_grid()"
+                '    choose from these, or modify "named_grids.py" and from_named_grid()'
                 "    Exiting."
             )
         return cls(parameter_grid, output_dir)
@@ -166,15 +163,14 @@ class ClusterRunner:
 
         for ii in range(number_of_scripts):
             low = ii * jobs_per_node
-            high = min( (ii + 1) * jobs_per_node - 1, number_of_parameters -1)
+            high = min((ii + 1) * jobs_per_node - 1, number_of_parameters - 1)
 
-            command_arr="\n".join(
-                f"\"{python_core} {self.script_flags[i]}\"" for i in range(low, high+1)
+            command_arr = "\n".join(
+                f'"{python_core} {self.script_flags[i]}"' for i in range(low, high + 1)
             )
 
             script = (
                 f"#!/bin/bash -l\n"
-                
                 + f"#SBATCH --ntasks {jobs_per_node}\n"
                 + f"#SBATCH -J {self.job_name[:4]}_{ii:03d}\n"
                 + f"#SBATCH -o {stdout_dir}/camps{ii:03d}.out\n"
@@ -183,7 +179,6 @@ class ClusterRunner:
                 + f"#SBATCH -A durham #durham #e.g. dp004\n"
                 + f"#SBATCH --exclusive\n"
                 + f"#SBATCH -t 12:00:00\n"
-
                 + f"module purge\n"
                 + f"#load the modules used to build your program.\n"
                 + f"module load python/3.6.5\n"
@@ -193,9 +188,8 @@ class ClusterRunner:
                 + f"module load gnu-parallel/20181122\n"
                 + f"#venv\n"
                 + f"source /cosma5/data/durham/dc-sedg2/cpmodelling/cpenv/bin/activate\n"
-
                 + f"COMMAND_ARR=({command_arr}) \n"
-                + "parallel --lb ::: \"${COMMAND_ARR[@]}\""
+                + 'parallel --lb ::: "${COMMAND_ARR[@]}"'
             )
 
             scripts_dir = self.output_dir / "scripts"
@@ -206,20 +200,22 @@ class ClusterRunner:
                 f.write(script)
 
             submit_all_script_lines.append(f"sbatch {script_path}\n")
-        
-            if ii==0:
+
+            if ii == 0:
                 try:
                     print_script_path = script_path.relative_to(Path.cwd())
-                except:
+                except FileNotFoundError:
+                    print("Wrong file or file path, using default")
                     print_script_path = script_path
                 print(f"script at eg.\n    {print_script_path}")
 
         submit_all_path = self.output_dir / "submit_all.sh"
-        with open(submit_all_path,"w") as submit_all:
+        with open(submit_all_path, "w") as submit_all:
             submit_all.writelines(submit_all_script_lines)
         try:
             print_submit_all_path = submit_all_path.relative_to(Path.cwd())
-        except:
+        except FileNotFoundError:
+            print("Wrong file or file path, using default")
             print_submit_all_path = submit_all_path
 
         print(f"submit all with\n    \033[35mbash {print_submit_all_path}\033[0m")
@@ -228,6 +224,7 @@ class ClusterRunner:
 if __name__ == "__main__":
 
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--named-grid", action="store", default=None)
     parser.add_argument("--json", action="store", default=None)
@@ -235,10 +232,12 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", action="store", default=None)
     args = parser.parse_args()
 
-    check = sum([getattr(args,x) is not None for x in ["named_grid", "json", "pkl"]])
+    check = sum([getattr(args, x) is not None for x in ["named_grid", "json", "pkl"]])
     if check != 1:
-        print("provide one of --named-grid [name], --json [json file] --pkl [file].\n Exiting.")
-        sys.exit()        
+        print(
+            "provide one of --named-grid [name], --json [json file] --pkl [file].\n Exiting."
+        )
+        sys.exit()
 
     if args.named_grid is not None:
         runner = ClusterRunner.from_named_grid(args.named_grid, args.output)
@@ -248,23 +247,3 @@ if __name__ == "__main__":
         runner = ClusterRunner.from_pkl(args.pkl, args.output)
 
     runner.create_submission_scripts()
-
-
-
-        
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

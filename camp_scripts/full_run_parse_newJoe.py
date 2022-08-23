@@ -55,6 +55,9 @@ from june.records import Record
 from june.simulator import Simulator
 from june.records import Record, RecordReader
 
+from june.tracker.tracker import Tracker
+from june.tracker.tracker_plots import PlotClass
+
 from camps.activity import CampActivityManager
 from camps.paths import camp_data_path, camp_configs_path
 from camps.world import World
@@ -78,6 +81,7 @@ from camps.groups import PlayGroups, PlayGroupDistributor
 from camps.groups import EVouchers, EVoucherDistributor
 from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
+from camps.groups import InformalWorks, InformalWorkDistributor
 
 
 def set_random_seed(seed=999):
@@ -110,12 +114,32 @@ parser.add_argument(
     default="True",
 )
 parser.add_argument(
+    "-con",
+    "--config",
+    help="Config file",
+    required=False,
+    default=camp_configs_path / "config_example.yaml",
+)
+parser.add_argument(
     "-p",
     "--parameters",
     help="Parameter file",
     required=False,
-    default="ContactInteraction.yaml",
+    default=camp_configs_path / "defaults/interaction/interaction_Survey.yaml",
 )
+
+parser.add_argument(
+    "-tr",
+    "--tracker",
+    help="Activate Tracker for CM tracing",
+    required=False,
+    default="False",
+)
+
+parser.add_argument(
+    "-ro", "--region_only", help="Run only one region", required=False, default="False"
+)
+
 parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
 )
@@ -162,7 +186,7 @@ parser.add_argument(
     "--child_susceptibility",
     help="Reduce child susceptibility for under 12s",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-u",
@@ -210,7 +234,7 @@ parser.add_argument(
     "--learning_centers",
     help="Add learning centers",
     required=False,
-    default=False,
+    default="True",
 )
 parser.add_argument(
     "-lcs",
@@ -224,21 +248,21 @@ parser.add_argument(
     "--extra_learning_centers",
     help="Number of learning centers to add based on enrolment",
     required=False,
-    default=False,
+    default="True",
 )
 parser.add_argument(
     "-lch",
     "--learning_center_beta_ratio",
     help="Learning center/household beta ratio scaling",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-pgh",
     "--play_group_beta_ratio",
     help="Play group/household beta ratio scaling",
     required=False,
-    default=False,
+    default="False",
 )
 parser.add_argument(
     "-s",
@@ -259,6 +283,27 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+args.save_path = Path(args.save_path)
+
+counter = 1
+OG_save_path = args.save_path
+while args.save_path.is_dir() is True:
+    args.save_path = Path(str(OG_save_path) + "_%s" % counter)
+    counter += 1
+args.save_path.mkdir(parents=True, exist_ok=False)
+
+if args.region_only == "False":
+    args.region_only = False
+elif args.region_only == "True":
+    args.region_only = ["CXB-219"]
+else:
+    args.region_only = [args.region_only]
+
+
+if args.tracker == "True":
+    args.tracker = True
+else:
+    args.tracker = False
 
 if args.comorbidities == "True":
     args.comorbidities = True
@@ -269,10 +314,12 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
+
 if args.no_vaccines == "True":
     args.no_vaccines = True
 else:
     args.no_vaccines = False
+
 if args.vaccines == "True":
     args.vaccines = True
 else:
@@ -298,14 +345,25 @@ if args.learning_centers == "True":
 else:
     args.learning_centers = False
 
-if args.extra_learning_centers == "False":
+if args.extra_learning_centers == "True":
+    args.extra_learning_centers = True
+else:
     args.extra_learning_centers = False
+
 
 if args.learning_center_shifts == "False":
     args.learning_center_shifts = 4
 
-if args.learning_center_beta_ratio == "False":
+if args.learning_center_beta_ratio == "True":
+    args.learning_center_beta_ratio = True
+else:
     args.learning_center_beta_ratio = False
+
+if args.play_group_beta_ratio == "True":
+    args.play_group_beta_ratio = True
+else:
+    args.play_group_beta_ratio = False
+
 
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
@@ -355,20 +413,29 @@ if args.learning_centers:
     print("Learning center shifts set to: {}".format(args.learning_center_shifts))
     print("Extra learning centers is set to: {}".format(args.extra_learning_centers))
 
-print("Plag group beta ratio set to: {}".format(args.play_group_beta_ratio))
+if args.region_only is False:
+    print("Running on all regions")
+else:
+    print("Running on regions: {}".format(args.region_only))
+
+print("Play group beta ratio set to: {}".format(args.play_group_beta_ratio))
 print("Save path set to: {}".format(args.save_path))
 
 print("\n", args.__dict__, "\n")
+
+
 time.sleep(10)
 
 # =============== world creation =========================#
-CONFIG_PATH = camp_configs_path / "config_example.yaml"
+CONFIG_PATH = args.config
 
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 # world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-# world = generate_empty_world({"region": ["CXB-219"]})
-world = generate_empty_world()
+if args.region_only is False:
+    world = generate_empty_world()
+else:
+    world = generate_empty_world({"region": args.region_only})
 
 # populate empty world
 populate_world(world)
@@ -377,6 +444,9 @@ populate_world(world)
 distribute_people_to_households(world)
 
 # medical facilities
+Hospitals.Get_Interaction(args.parameters)
+IsolationUnits.Get_Interaction(args.parameters)
+
 hospitals = Hospitals.from_file(
     filename=camp_data_path / "input/hospitals/hospitals.csv"
 )
@@ -387,11 +457,14 @@ hospital_distributor = HospitalDistributor(
     hospitals, medic_min_age=20, patients_per_medic=10
 )
 hospital_distributor.assign_closest_hospitals_to_super_areas(world.super_areas)
-world.isolation_units = IsolationUnits([IsolationUnit(area=world.areas[0])])
+world.isolation_units = IsolationUnits(
+    [IsolationUnit(area=hospital.area) for hospital in world.hospitals]
+)
 
 hospital_distributor.distribute_medics_from_world(world.people)
 
 if args.learning_centers:
+    LearningCenters.Get_Interaction(args.parameters)
     world.learning_centers = LearningCenters.for_areas(
         world.areas, n_shifts=int(args.learning_center_shifts)
     )
@@ -436,25 +509,46 @@ if args.learning_centers:
         learning_center_distributor.distribute_kids_to_learning_centers(world.areas)
         learning_center_distributor.distribute_teachers_to_learning_centers(world.areas)
 
-    CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
+    # CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
 if args.no_visits:
-    CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
+    pass
+    # CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
 
+PumpLatrines.Get_Interaction(args.parameters)
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
+
+PlayGroups.Get_Interaction(args.parameters)
 world.play_groups = PlayGroups.for_areas(world.areas)
+
+DistributionCenters.Get_Interaction(args.parameters)
 world.distribution_centers = DistributionCenters.for_areas(world.areas)
+
+Communals.Get_Interaction(args.parameters)
 world.communals = Communals.for_areas(world.areas)
+
+FemaleCommunals.Get_Interaction(args.parameters)
 world.female_communals = FemaleCommunals.for_areas(world.areas)
+
+Religiouss.Get_Interaction(args.parameters)
 world.religiouss = Religiouss.for_areas(world.areas)
+
+EVouchers.Get_Interaction(args.parameters)
 world.e_vouchers = EVouchers.for_areas(world.areas)
+
+NFDistributionCenters.Get_Interaction(args.parameters)
 world.n_f_distribution_centers = NFDistributionCenters.for_areas(world.areas)
+
+InformalWorks.Get_Interaction(args.parameters)
+world.informal_works = InformalWorks.for_areas(world.areas)
+
 
 print("Total people = ", len(world.people))
 print("Mean age = ", np.mean([person.age for person in world.people]))
 # world.box_mode = False
 world.cemeteries = Cemeteries()
 
+Shelters.Get_Interaction(args.parameters)
 world.shelters = Shelters.for_areas(world.areas)
 shelter_distributor = ShelterDistributor(
     sharing_shelter_ratio=0.75
@@ -505,6 +599,7 @@ if args.isolation_units:
     policies.policies[3].n_quarantine_days = int(args.isolation_time)
     policies.policies[3].testing_mean_time = int(args.isolation_testing)
     policies.policies[3].compliance = float(args.isolation_compliance)
+    print("Policy path set to: {}".format("defaults/policy/isolation.yaml"))
 
 elif args.mask_wearing:
     policies = Policies.from_file(
@@ -514,32 +609,39 @@ elif args.mask_wearing:
 
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
+    print("Policy path set to: {}".format("defaults/policy/mask_wearing.yaml"))
 
 elif args.no_vaccines:
     policies = Policies.from_file(
         camp_configs_path / "vaccine_tests/no_vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
+    print("Policy path set to: {}".format("vaccine_tests/no_vaccine.yaml"))
 
 elif args.vaccines:
     policies = Policies.from_file(
         camp_configs_path / "vaccine_tests/vaccine.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
+    print("Policy path set to: {}".format("vaccine_tests/vaccine.yaml"))
 
 else:
     policies = Policies.from_file(
-        camp_configs_path / "defaults/policy/home_care_policy.yaml",
+        camp_configs_path / "defaults/policy/simple_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
+    )
+
+    print(
+        "Policy path set to: {}".format(
+            camp_configs_path / "defaults/policy/simple_policy.yaml"
+        )
     )
 
 # ============================================================================#
 
 # =================================== infection ===============================#
 
-interaction = Interaction.from_file(
-    config_filename=camp_configs_path / "defaults/interaction/" / args.parameters
-)
+interaction = Interaction.from_file(config_filename=args.parameters)
 
 selector = InfectionSelector.from_file(
     transmission_config_path=transmission_config_path
@@ -600,7 +702,7 @@ if args.play_group_beta_ratio:
 # read out start date
 with open(CONFIG_PATH) as file:
     config_temp = yaml.load(file, Loader=yaml.FullLoader)
-    start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d")
+    start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d %H:%M")
 
 # generate seeding dataframe
 N_seeding_days = int(args.n_seeding_days)
@@ -635,40 +737,42 @@ epidemiology = Epidemiology(
 
 # =================================== leisure config ===============================#
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
-leisure.leisure_distributors = {}
-leisure.leisure_distributors["pump_latrine"] = PumpLatrineDistributor.from_config(
-    world.pump_latrines
-)
-leisure.leisure_distributors["play_group"] = PlayGroupDistributor.from_config(
-    world.play_groups
-)
-leisure.leisure_distributors[
-    "distribution_center"
-] = DistributionCenterDistributor.from_config(world.distribution_centers)
-leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
-    world.communals
-)
-leisure.leisure_distributors["female_communal"] = FemaleCommunalDistributor.from_config(
-    world.female_communals
-)
-leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
-    world.religiouss
-)
-leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
-    world.e_vouchers
-)
-leisure.leisure_distributors[
-    "n_f_distribution_center"
-] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
-if not args.no_visits:
-    leisure.leisure_distributors[
-        "shelters_visits"
-    ] = SheltersVisitsDistributor.from_config()
-    leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
-        world.super_areas
-    )
+# Check if shelters visits not in?
+
 # associate social activities to shelters
 leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
+
+# ==================================================================================#
+
+# =================================== tracker ===============================#
+if args.tracker:
+    group_types = [
+        world.hospitals,
+        world.distribution_centers,
+        world.communals,
+        world.female_communals,
+        world.pump_latrines,
+        world.religiouss,
+        world.play_groups,
+        world.e_vouchers,
+        world.n_f_distribution_centers,
+        world.shelters,
+        world.learning_centers,
+        world.informal_works,
+        world.isolation_units,
+    ]
+
+    tracker = Tracker(
+        world=world,
+        record_path=args.save_path,
+        group_types=group_types,
+        load_interactions_path=args.parameters,
+        contact_sexes=["unisex", "male", "female"],
+        Tracker_Contact_Type=["1D", "All"],
+    )
+else:
+    tracker = None
+
 
 # ==================================================================================#
 
@@ -683,6 +787,7 @@ Simulator.ActivityManager = CampActivityManager
 simulator = Simulator.from_file(
     world=world,
     interaction=interaction,
+    tracker=tracker,
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
@@ -706,4 +811,51 @@ infections_df = read.get_table_with_extras("infections", "infected_ids")
 
 locations_df = infections_df.groupby(["location_specs", "timestamp"]).size()
 
-locations_df.to_csv(args.save_path + "/locations.csv")
+locations_df.to_csv(args.save_path / "locations.csv")
+
+# ==================================================================================#
+
+# =================================== tracker figures ===============================#
+
+if args.tracker:
+    simulator.tracker.contract_matrices("AC", np.array([0, 18, 60]))
+    simulator.tracker.contract_matrices("All", np.array([0, 100]))
+    simulator.tracker.post_process_simulation(save=True)
+
+    # Make Plots
+    Plots = PlotClass(record_path=args.save_path / "Tracker", Tracker_Contact_Type="1D")
+    Plots.make_plots(
+        plot_BBC=True,
+        plot_thumbprints=True,
+        SameCMAP="Log",
+        plot_INPUTOUTPUT=True,
+        plot_AvContactsLocation=True,
+        plot_dTLocationPopulation=True,
+        plot_InteractionMatrices=True,
+        plot_ContactMatrices=True,
+        plot_CompareSexMatrices=True,
+        plot_AgeBinning=True,
+        plot_Distances=True,
+        
+        MaxAgeBin=60
+    )
+
+    # Make Plots
+    Plots = PlotClass(
+        record_path=args.save_path / "Tracker", Tracker_Contact_Type="All"
+    )
+    Plots.make_plots(
+        plot_BBC=True,
+        plot_thumbprints=True,
+        SameCMAP="Log",
+        plot_INPUTOUTPUT=False,
+        plot_AvContactsLocation=False,
+        plot_dTLocationPopulation=False,
+        plot_InteractionMatrices=True,
+        plot_ContactMatrices=True,
+        plot_CompareSexMatrices=True,
+        plot_AgeBinning=False,
+        plot_Distances=False,
+        
+        MaxAgeBin=60
+    )

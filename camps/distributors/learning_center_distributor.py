@@ -176,7 +176,7 @@ class LearningCenterDistributor:
         self, person: "Person", closest_centers_idx: List[int]
     ):
         """
-        Sends a given person to one of their closest learning centers. If full, send to a 
+        Sends a given person to one of their closest learning centers. If full, send to a
         different one. If all full, pick one at random.
 
         Parameters
@@ -192,6 +192,8 @@ class LearningCenterDistributor:
         """
         for i in closest_centers_idx:
             center = self.learning_centers.members[i]
+            if len(center.teachers) == 0:
+                continue
             if len(center.students) >= center.n_pupils_max:
                 continue
             else:
@@ -219,28 +221,51 @@ class LearningCenterDistributor:
         ----------
         areas
             Instance of the Areas class (group of Area classes)
-        
+
         Returns
         -------
         None
         """
+        area_k_max = 5
+        if len(areas) < area_k_max:
+            area_k_max = len(areas)
+
         for learning_center in self.learning_centers.members:
             # Find closest area to learning center
             area = areas.get_closest_areas(
-                coordinates=learning_center.coordinates, k=1, return_distance=False
-            )[0]
-            # get someone in working age
-            old_people = [
-                person
-                for person in area.people
-                if person.age >= self.teacher_min_age
-                and person.primary_activity is None
-            ]
-            teacher = random.choice(old_people)
+                coordinates=learning_center.coordinates,
+                k=area_k_max,
+                return_distance=False,
+            )
+            area_k = 0
+            while True:
+                # get someone in working age
+                old_people = [
+                    person
+                    for person in area[area_k].people
+                    if person.age >= self.teacher_min_age
+                    and person.primary_activity is None
+                ]
+                if len(old_people) > 0:
+                    break
+
+                if len(old_people) == 0:
+                    area_k += 1
+                    if area_k >= area_k_max or area_k == len(area):
+                        break
+
+            if len(old_people) == 0:
+                continue
+
+            NTeachers = int(np.random.poisson(3) + 1)
+            if NTeachers > len(old_people):
+                NTeachers = len(old_people)
+            teachers = np.random.choice(old_people, NTeachers, replace=False)
             # add the teacher to all shifts in the school
-            for shift in range(self.n_shifts):
-                learning_center.add(
-                    person=teacher,
-                    shift=shift,
-                    subgroup_type=learning_center.SubgroupType.teachers,
-                )
+            for teacher in teachers:
+                for shift in range(self.n_shifts):
+                    learning_center.add(
+                        person=teacher,
+                        shift=shift,
+                        subgroup_type=learning_center.SubgroupType.teachers,
+                    )

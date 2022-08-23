@@ -32,7 +32,8 @@ from camps.policy import Isolation
 @pytest.fixture(name="selector")
 def make_selector():
     selector_file = (
-        paths.configs_path / "defaults/epidemiology/infection/transmission/TransmissionConstant.yaml"
+        paths.configs_path
+        / "defaults/epidemiology/infection/transmission/TransmissionConstant.yaml"
     )
     return InfectionSelector.from_file(transmission_config_path=selector_file)
 

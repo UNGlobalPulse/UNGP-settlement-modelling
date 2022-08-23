@@ -25,6 +25,10 @@ from camps import paths
 from june.groups import Group, Supergroup
 from june.demography import Person
 
+import logging
+
+logger = logging.getLogger("learning_centers")
+
 default_learning_centers_coordinates_path = (
     paths.camp_data_path / "input/activities/learning_center.csv"
 )
@@ -33,15 +37,12 @@ default_config_path = paths.camp_configs_path / "defaults/groups/learning_center
 
 class LearningCenter(Group):
     """
-    One learning center is equivalent to one room that kids go to during weekdays in 
+    One learning center is equivalent to one room that kids go to during weekdays in
     different shifts. There are two subgroups, students and teachers
     """
-    class SubgroupType(IntEnum):
-        teachers = 0
-        students = 1
 
     def __init__(
-        self, coordinates: Tuple[float, float], n_pupils_max: int = 35,
+        self, coordinates: Tuple[float, float] = (None, None), n_pupils_max: int = 35
     ):
         """
         Parameters
@@ -59,7 +60,7 @@ class LearningCenter(Group):
         self.ids_per_shift = collections.defaultdict(list)
         self.area = None
 
-    def add(self, person: Person, shift: int, subgroup_type=SubgroupType.students):
+    def add(self, person: Person, shift: int, subgroup_type):
         """
         Add a person to the learning center
 
@@ -68,7 +69,7 @@ class LearningCenter(Group):
         person
             Person instance to add
         shift
-           shift that the person will attend 
+           shift that the person will attend
         subgroup_type
             subgroup to which the person is added
         """
@@ -99,9 +100,11 @@ class LearningCenter(Group):
 
 
 class LearningCenters(Supergroup):
+    venue_class = LearningCenter
+
     def __init__(
         self,
-        learning_centers: List[LearningCenter],
+        learning_centers: List[venue_class],
         learning_centers_tree: bool = True,
         n_shifts: int = 4,
     ):
@@ -115,7 +118,7 @@ class LearningCenters(Supergroup):
         learning_centers_tree
             Whether to build a tree with the learning center coordinates, for quick querying
         n_shifts
-            Number of daily shifts 
+            Number of daily shifts
         """
         super().__init__(members=learning_centers)
         self.members = learning_centers
@@ -138,13 +141,15 @@ class LearningCenters(Supergroup):
             Instance of LearningCentres contining all LearningCenter instances
         config_path
             Full path to config file
-        
+
         Returns
         -------
         LearningCentres class instance
         """
         with open(config_path) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
+
+        logger.info(f"There are {len(learning_centers)} learning center(s)")
         return cls(learning_centers, **config)
 
     @classmethod
@@ -152,9 +157,9 @@ class LearningCenters(Supergroup):
         cls,
         areas: "Areas",
         coordinates_path: str = default_learning_centers_coordinates_path,
-        max_distance_to_area=5,
+        max_distance_to_area=1,
         max_size=np.inf,
-        **kwargs
+        **kwargs,
     ):
         """
         Defines class from areas and coordinates of learning centers
@@ -175,9 +180,14 @@ class LearningCenters(Supergroup):
         LearningCenters class instance
         """
         learning_centers_df = pd.read_csv(coordinates_path)
+        logger.info(f"There are {len(learning_centers_df)} learning center(s)")
         coordinates = learning_centers_df.loc[:, ["latitude", "longitude"]].values
         return cls.from_coordinates(
-            coordinates, max_size, areas, max_distance_to_area=max_distance_to_area,**kwargs
+            coordinates=coordinates,
+            max_size=max_size,
+            areas=areas,
+            max_distance_to_area=max_distance_to_area,
+            **kwargs,
         )
 
     @classmethod
@@ -218,9 +228,9 @@ class LearningCenters(Supergroup):
         cls,
         coordinates: List[np.array],
         areas: Optional["Areas"] = None,
-        max_distance_to_area=5,
+        max_distance_to_area=0.25,
         max_size=np.inf,
-        **kwargs
+        **kwargs,
     ):
         """
         Defines class from coordinates
@@ -246,9 +256,11 @@ class LearningCenters(Supergroup):
             )
             distances_close = np.where(distances < max_distance_to_area)
             coordinates = coordinates[distances_close]
+
         learning_centers = list()
         for coord in coordinates:
-            lc = LearningCenter(coordinates=coord)
+            lc = cls.venue_class()
+            lc.coordinates = coord
             if areas is not None:
                 lc.area = areas.get_closest_area(coordinates=coord)
             learning_centers.append(lc)
@@ -262,12 +274,12 @@ class LearningCenters(Supergroup):
 
         Parameters
         ----------
-        learning_centers_coordinates 
+        learning_centers_coordinates
             array with coordinates
 
         Returns
         -------
-        Tree to query nearby learning centers 
+        Tree to query nearby learning centers
         """
         return BallTree(np.deg2rad(learning_centers_coordinates), metric="haversine")
 
@@ -290,7 +302,7 @@ class LearningCenters(Supergroup):
         coordinates_rad = np.deg2rad(coordinates).reshape(1, -1)
         k = min(k, len(list(self.learning_centers_tree.data)))
         distances, neighbours = self.learning_centers_tree.query(
-            coordinates_rad, k=k, sort_results=True,
+            coordinates_rad, k=k, sort_results=True
         )
         return neighbours[0]
 

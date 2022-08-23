@@ -1,22 +1,29 @@
 # collection is twice a month
 # those who collect aid: men under 18: 8%; men over 18 68%; women under 18 23%; women over 18: 1%
 # only 12% of people recieve their food from distribution centres
-
 times_per_week:
   weekday:
     male:
-      0-18: 0.0129
-      18-100: 0.133
+      #0-18: 0.0129
+      #18-100: 0.133
+      0-18: 0.04024
+      18-100: 0.12911
     female:
-      0-18: 0.0391
-      18-100: 0.00164
+      #0-18: 0.0391
+      #18-100: 0.00164
+      0-18: 0.08048
+      18-100: 0.25822
   weekend:
     male:
-      0-18: 0.00515
-      18-100: 0.0530
+      #0-18: 0.00515
+      #18-100: 0.0530
+      0-18: 0.01610
+      18-100: 0.05164
     female:
-      7-18: 0.0156
-      18-100: 0.000650
+      #7-18: 0.0156
+      #18-100: 0.000650
+      0-18: 0.03219
+      18-100: 0.10329
 hours_per_day:
   weekday:
     male:
@@ -29,6 +36,5 @@ hours_per_day:
     female:
       0-100: 8
 drags_household_probability: 0
-neighbours_to_consider: 5
-maximum_distance: 1000
-
+neighbours_to_consider: 1
+maximum_distance: 0
