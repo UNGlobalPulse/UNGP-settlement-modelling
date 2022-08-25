@@ -437,10 +437,12 @@ if args.region_only is False:
 else:
     world = generate_empty_world({"region": args.region_only})
 
+print("Now populate")
 # populate empty world
 populate_world(world)
 
 # distribute people to households
+print("Now Distribute")
 distribute_people_to_households(world)
 
 # medical facilities
