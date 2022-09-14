@@ -491,7 +491,7 @@ if args.learning_centers:
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-int(args.extra_learning_centers):]
+        top_k = learning_centers_sorted[-int(args.extra_learning_centers) :]
         for learning_center in top_k:
             extra_lc = LearningCenter(
                 coordinates=learning_center.super_area.coordinates
@@ -838,8 +838,7 @@ if args.tracker:
         plot_CompareSexMatrices=True,
         plot_AgeBinning=True,
         plot_Distances=True,
-        
-        MaxAgeBin=60
+        MaxAgeBin=60,
     )
 
     # Make Plots
@@ -858,6 +857,5 @@ if args.tracker:
         plot_CompareSexMatrices=True,
         plot_AgeBinning=False,
         plot_Distances=False,
-        
-        MaxAgeBin=60
+        MaxAgeBin=60,
     )
