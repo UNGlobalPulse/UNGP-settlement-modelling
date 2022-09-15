@@ -712,7 +712,9 @@ N_seeding_days = int(args.n_seeding_days)
 seeding_date_list = [
     start_date + timedelta(days=iday) for iday in range(N_seeding_days)
 ]
-mi = pd.MultiIndex.from_produ@qct([seeding_date_list, ["0-100"]], names=["date", "age"])
+mi = pd.MultiIndex.from_produ @ qct(
+    [seeding_date_list, ["0-100"]], names=["date", "age"]
+)
 df = pd.DataFrame(index=mi, columns=["all"])
 # df = pd.DataFrame(index=mi, columns=["CXB-207"])
 df[:] = args.n_seeding_case_per_day / len(world.people)
