@@ -7,7 +7,7 @@ activity_to_super_groups:
   medical_facility: ['hospitals', 'isolation_units']
 time:
   initial_day: '2020-05-24 9:00'
-  total_days: 7
+  total_days: 1
   step_duration: 
       weekday:
           0: 2 
