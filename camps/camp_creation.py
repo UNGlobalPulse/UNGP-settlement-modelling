@@ -260,9 +260,7 @@ def distribute_people_to_households(world: CampWorld):
             ]["min_age_gap_between_childen"],
         )
     else:
-        household_distributor = CampHouseholdDistributor(
-            max_household_size=12,
-        )
+        household_distributor = CampHouseholdDistributor(max_household_size=12)
 
     households_total = []
     for area in world.areas:
@@ -318,9 +316,7 @@ def distribute_people_to_households(world: CampWorld):
         )
 
         nchildren_generator, dist = GenerateDiscretePDF(
-            datarange=[0, 8],
-            Mean=n_children,
-            SD=n_children_STD,
+            datarange=[0, 8], Mean=n_children, SD=n_children_STD
         )
 
         n_families = int(area_data["families"])

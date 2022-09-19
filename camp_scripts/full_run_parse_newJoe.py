@@ -818,20 +818,3 @@ if args.tracker:
     simulator.tracker.contract_matrices("AC", np.array([0, 18, 60]))
     simulator.tracker.contract_matrices("All", np.array([0, 100]))
     simulator.tracker.post_process_simulation(save=True)
-
-    # Make Plots
-    Plots = PlotClass(record_path=args.save_path / "Tracker")
-    Plots.make_plots(
-        plot_BBC=True,
-        plot_thumbprints=True,
-        SameCMAP="Log",
-        plot_INPUTOUTPUT=True,
-        plot_AvContactsLocation=True,
-        plot_dTLocationPopulation=True,
-        plot_InteractionMatrices=True,
-        plot_ContactMatrices=True,
-        plot_CompareSexMatrices=True,
-        plot_AgeBinning=True,
-        plot_Distances=True,
-        MaxAgeBin=60,
-    )

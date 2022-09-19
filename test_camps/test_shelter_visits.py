@@ -31,7 +31,7 @@ def setup_shelter_visits(camps_world):
         daytypes={
             "weekday": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
             "weekend": ["Friday", "Saturday"],
-        },
+        }
     )
     shelter_visits_distributor.link_shelters_to_shelters(camps_world.super_areas)
     return camps_world

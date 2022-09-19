@@ -405,8 +405,7 @@ class CampHouseholdDistributor:
 
         Houses_Single = list(
             np.random.choice(
-                np.array(Houses_W_Children)[indexes],
-                size=n_families_singleparent,
+                np.array(Houses_W_Children)[indexes], size=n_families_singleparent
             )
         )
         household_Single_sizes = np.array(

@@ -35,9 +35,7 @@ class CampActivityManager(ActivityManager):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def activate_next_shift(
-        self,
-    ):
+    def activate_next_shift(self,):
         for super_group in self.active_super_groups:
             if "visits" in super_group:
                 continue

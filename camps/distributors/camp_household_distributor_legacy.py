@@ -230,9 +230,7 @@ class CampHouseholdDistributor:
                 return None
 
     def distribute_people_to_households(
-        self,
-        area: Area,
-        n_families: int,
+        self, area: Area, n_families: int
     ) -> Households:
         """
         Distributes people to household given an area with a given number of families
