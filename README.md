@@ -8,18 +8,16 @@ If you wish to adapt this to your own setting, we encourage you to do so. If you
 
 When using this work please cite:
 ```
-@article {Bullock2021.01.27.21250611,
-	author = {Bullock, Joseph and Cuesta-Lazaro, Carolina and Quera-Bofarull, Arnau and Katta, Anjali and Hoffmann Pham, Katherine and Hoover, Benjamin and Strobelt, Hendrik and Moreno Jimenez, Rebeca and Sedgewick, Aidan and Samir Evers, Egmond and Kennedy, David and Harlass, Sandra and Gidraf Kahindo Maina, Allen and Hussien, Ahmad and Luengo-Oroz, Miguel},
-	title = {Operational response simulation tool for epidemics within refugee and IDP settlements},
-	elocation-id = {2021.01.27.21250611},
+@article {AylettBullock2021Operational,
+	author = {Aylett-Bullock, Joseph and Cuesta-Lazaro, Carolina and Quera-Bofarull, Arnau and Katta, Anjali and Hoffmann Pham, Katherine and Hoover, Benjamin and Strobelt, Hendrik and Moreno Jimenez, Rebeca and Sedgewick, Aidan and Samir Evers, Egmond and Kennedy, David and Harlass, Sandra and Gidraf Kahindo Maina, Allen and Hussien, Ahmad and Luengo-Oroz, Miguel},
+	title = {Operational response simulation tool for epidemics within refugee and IDP settlements: A scenario-based case study of the Cox’s Bazar settlement},
 	year = {2021},
-	doi = {10.1101/2021.01.27.21250611},
-	publisher = {Cold Spring Harbor Laboratory Press},
-	URL = {https://www.medrxiv.org/content/early/2021/01/29/2021.01.27.21250611},
-	eprint = {https://www.medrxiv.org/content/early/2021/01/29/2021.01.27.21250611.full.pdf},
-	journal = {medRxiv}
+	doi = {10.1371/journal.pcbi.1009360},
+	URL = {https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009360},
+	journal = {PLoS Comput Biol},
+    number = {17},
+    volume = {10}
 }
-
 ```
 
 # Setup
