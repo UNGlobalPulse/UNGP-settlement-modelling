@@ -437,10 +437,12 @@ if args.region_only is False:
 else:
     world = generate_empty_world({"region": args.region_only})
 
+print("Now populate")
 # populate empty world
 populate_world(world)
 
 # distribute people to households
+print("Now Distribute")
 distribute_people_to_households(world)
 
 # medical facilities
@@ -489,7 +491,7 @@ if args.learning_centers:
         learning_centers_sorted = learning_centers[np.argsort(enrolled)]
 
         # find top k most filled learning centers
-        top_k = learning_centers_sorted[-int(args.extra_learning_centers):]
+        top_k = learning_centers_sorted[-int(args.extra_learning_centers) :]
         for learning_center in top_k:
             extra_lc = LearningCenter(
                 coordinates=learning_center.super_area.coordinates
@@ -715,10 +717,6 @@ df = pd.DataFrame(index=mi, columns=["all"])
 # df = pd.DataFrame(index=mi, columns=["CXB-207"])
 df[:] = args.n_seeding_case_per_day / len(world.people)
 
-print("#### seeding df:")
-print(df)
-print("####")
-
 infection_seed = InfectionSeed(
     world=world,
     infection_selector=selector,
@@ -768,7 +766,6 @@ if args.tracker:
         group_types=group_types,
         load_interactions_path=args.parameters,
         contact_sexes=["unisex", "male", "female"],
-        Tracker_Contact_Type=["1D", "All"],
     )
 else:
     tracker = None
@@ -821,41 +818,3 @@ if args.tracker:
     simulator.tracker.contract_matrices("AC", np.array([0, 18, 60]))
     simulator.tracker.contract_matrices("All", np.array([0, 100]))
     simulator.tracker.post_process_simulation(save=True)
-
-    # Make Plots
-    Plots = PlotClass(record_path=args.save_path / "Tracker", Tracker_Contact_Type="1D")
-    Plots.make_plots(
-        plot_BBC=True,
-        plot_thumbprints=True,
-        SameCMAP="Log",
-        plot_INPUTOUTPUT=True,
-        plot_AvContactsLocation=True,
-        plot_dTLocationPopulation=True,
-        plot_InteractionMatrices=True,
-        plot_ContactMatrices=True,
-        plot_CompareSexMatrices=True,
-        plot_AgeBinning=True,
-        plot_Distances=True,
-        
-        MaxAgeBin=60
-    )
-
-    # Make Plots
-    Plots = PlotClass(
-        record_path=args.save_path / "Tracker", Tracker_Contact_Type="All"
-    )
-    Plots.make_plots(
-        plot_BBC=True,
-        plot_thumbprints=True,
-        SameCMAP="Log",
-        plot_INPUTOUTPUT=False,
-        plot_AvContactsLocation=False,
-        plot_dTLocationPopulation=False,
-        plot_InteractionMatrices=True,
-        plot_ContactMatrices=True,
-        plot_CompareSexMatrices=True,
-        plot_AgeBinning=False,
-        plot_Distances=False,
-        
-        MaxAgeBin=60
-    )

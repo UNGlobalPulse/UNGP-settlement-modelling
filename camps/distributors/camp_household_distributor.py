@@ -405,8 +405,7 @@ class CampHouseholdDistributor:
 
         Houses_Single = list(
             np.random.choice(
-                np.array(Houses_W_Children)[indexes],
-                size=n_families_singleparent,
+                np.array(Houses_W_Children)[indexes], size=n_families_singleparent
             )
         )
         household_Single_sizes = np.array(
@@ -451,6 +450,7 @@ class CampHouseholdDistributor:
 
         # put adults households with kids start
         Intersection = intersection(Houses_W_Children, households_with_space)
+        # print(f"Point A: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
         for household in Intersection:
             # Single House
             if household in Houses_Single:
@@ -487,7 +487,7 @@ class CampHouseholdDistributor:
             # House now full?
             if household.size >= household.max_size:
                 households_with_space.remove(household)
-        #print("Parents done")
+        # print("Parents done")
 
         # Distribute all the children
         Loop_1 = True
@@ -499,13 +499,16 @@ class CampHouseholdDistributor:
             if Loop_1:
                 Intersection = intersection(Houses_W_Children, households_with_space)
             else:
-                Intersection = intersection(not_in(Houses_W_Children,Houses_Single), households_with_space)
+                Intersection = intersection(
+                    not_in(Houses_W_Children, Houses_Single), households_with_space
+                )
 
             if len(Intersection) == 0:
                 # Need to find space for final children we sqeeze them into Houses_W_Children even if full
                 squeeze = True
                 Intersection = intersection(Houses_W_Children, Houses_W_Children)
 
+            # print(f"Point B: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
             for household in Intersection:
                 NKids = len(household.kids)
                 NAdults = len(household.adults)
@@ -575,6 +578,7 @@ class CampHouseholdDistributor:
             if len(Intersection) == 0:
                 break
 
+            # print(f"Point C: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
             for household in Intersection:
                 NKids = len(household.kids)
                 NAdults = len(household.adults)
@@ -620,7 +624,7 @@ class CampHouseholdDistributor:
                 # Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        #print("All multigen adults done")
+        # print("All multigen adults done")
 
         while True:
             sqeeze = False
@@ -635,19 +639,22 @@ class CampHouseholdDistributor:
                         sqeeze = True
                         Intersection = intersection(Houses_Multigen, Houses_Multigen)
 
-                #Find houses with space
+                # Find houses with space
                 if len(households_with_space) > 0:
-                    Intersection = intersection(households_with_space, households_with_space)
+                    Intersection = intersection(
+                        households_with_space, households_with_space
+                    )
                 else:
                     # Sqeeze in the final adults
                     sqeeze = True
                     Intersection = intersection(Houses_WO_Children, Houses_WO_Children)
 
+            # print(f"Point D: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
             if len(Intersection) == 0:
                 sqeeze = True
-                intersection(households, households)
+                Intersection = intersection(households, households)
 
-
+            # print(f"Point E: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
             for household in Intersection:
                 NAdults = len(household.adults)
 
@@ -708,8 +715,9 @@ class CampHouseholdDistributor:
                 # Check if we finished up adults
                 if not men_by_age and not women_by_age:
                     break
-        #print("All adults only houses done")
+        # print("All adults only houses done")
 
+        # print(f"END")
         # check everyone has a house
         people_in_households = len(
             [person for household in households for person in household.people]

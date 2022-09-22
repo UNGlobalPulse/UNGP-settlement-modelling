@@ -96,20 +96,28 @@ else:
 # area_household_structure_params_exists = False
 
 
-def GenerateDiscretePDF(Type="Gaussian", datarange=[0, 100], Mean=0, SD=1, stretch=False):
+def GenerateDiscretePDF(
+    Type="Gaussian", datarange=[0, 100], Mean=0, SD=1, stretch=False
+):
     def PValue(Mean, SD, Xmin, Xmax, stretch=False):
         return integrate.quad(lambda x: Gaussian(Mean, SD, x, stretch), Xmin, Xmax)
 
-
-    def Gaussian(Mean, SD, x,stretch):
+    def Gaussian(Mean, SD, x, stretch):
         if stretch:
             if abs(x - Mean) < 2:
-                return 4*np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
+                return (
+                    4
+                    * np.exp(-0.5 * ((x - Mean) / SD) ** 2.0)
+                    / (SD * np.sqrt(2 * np.pi))
+                )
             else:
-                return 1*np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
+                return (
+                    1
+                    * np.exp(-0.5 * ((x - Mean) / SD) ** 2.0)
+                    / (SD * np.sqrt(2 * np.pi))
+                )
         else:
             return np.exp(-0.5 * ((x - Mean) / SD) ** 2.0) / (SD * np.sqrt(2 * np.pi))
-
 
     Vals = np.arange(datarange[0], datarange[1] + 1, 1)
     dist = {}
@@ -252,9 +260,7 @@ def distribute_people_to_households(world: CampWorld):
             ]["min_age_gap_between_childen"],
         )
     else:
-        household_distributor = CampHouseholdDistributor(
-            max_household_size=12,
-        )
+        household_distributor = CampHouseholdDistributor(max_household_size=12)
 
     households_total = []
     for area in world.areas:
@@ -300,20 +306,17 @@ def distribute_people_to_households(world: CampWorld):
         mother_firstchild_gap_generator, dist = GenerateDiscretePDF(
             datarange=[14, 60],
             Mean=mother_firstchild_gap_mean + 0.5 + (9.0 / 12.0),
-            SD=mother_firstchild_gap_STD
-            
+            SD=mother_firstchild_gap_STD,
         )
         partner_age_gap_generator, dist = GenerateDiscretePDF(
-            datarange=[-20, 20], 
-            Mean=partner_age_gap_mean + 0.5, 
+            datarange=[-20, 20],
+            Mean=partner_age_gap_mean + 0.5,
             SD=partner_age_gap_mean_STD,
-            stretch=stretch
+            stretch=stretch,
         )
 
         nchildren_generator, dist = GenerateDiscretePDF(
-            datarange=[0, 8], 
-            Mean=n_children, 
-            SD=n_children_STD,
+            datarange=[0, 8], Mean=n_children, SD=n_children_STD
         )
 
         n_families = int(area_data["families"])
