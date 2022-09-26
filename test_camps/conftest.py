@@ -62,41 +62,77 @@ def set_random_seed(seed=999):
 
 @pytest.fixture(name="camps_world", scope="session")
 def generate_camp():
+    
+    interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
+    hospitals_file_path = camp_data_path / "input/hospitals/hospitals.csv"
+    
     world = generate_empty_world({"region": ["CXB-219"]})
     populate_world(world)
     # distribute people to households
     distribute_people_to_households(world)
 
-    # medical facilities
+    # learning_centers
+    LearningCenters.Get_Interaction(interactions_file_path)
+    world.learning_centers = LearningCenters.for_areas(world.areas)
+    learningcenter_distributor = LearningCenterDistributor.from_file(world.learning_centers)
+    learningcenter_distributor.distribute_teachers_to_learning_centers(world.areas)
+    learningcenter_distributor.distribute_kids_to_learning_centers(world.areas)
+    
+    # hospitals
+    Hospitals.Get_Interaction(interactions_file_path)
+    IsolationUnits.Get_Interaction(interactions_file_path)
+    
     hospitals = Hospitals.from_file(
-        filename=camp_data_path / "input/hospitals/hospitals.csv"
+        filename=hospitals_file_path
     )
+        
+    for hospital in hospitals:
+        hospital.area = world.areas.get_closest_area(hospital.coordinates)
+        
     world.hospitals = hospitals
-    for hospital in world.hospitals:
-        hospital.area = world.areas.members[0]
     hospital_distributor = HospitalDistributor(
         hospitals, medic_min_age=20, patients_per_medic=10
     )
-    world.isolation_units = IsolationUnits([IsolationUnit(area=world.areas[0])])
-    hospital_distributor.distribute_medics_from_world(world.people)
-    world.learning_centers = LearningCenters.for_areas(world.areas, n_shifts=4)
-    world.pump_latrines = PumpLatrines.for_areas(world.areas)
-    world.play_groups = PlayGroups.for_areas(world.areas)
-    world.distribution_centers = DistributionCenters.for_areas(world.areas)
-    world.communals = Communals.for_areas(world.areas)
-    world.female_communals = FemaleCommunals.for_areas(world.areas)
-    world.religiouss = Religiouss.for_areas(world.areas)
-    world.e_vouchers = EVouchers.for_areas(world.areas)
-    world.n_f_distribution_centers = NFDistributionCenters.for_areas(world.areas)
+    hospital_distributor.assign_closest_hospitals_to_super_areas(
+        world.super_areas
+    )
 
+    # remaining locations
+    world.isolation_units = IsolationUnits([IsolationUnit(area=hospital.area) for hospital in world.hospitals])
+    hospital_distributor.distribute_medics_from_world(world.people)
+    
+    PumpLatrines.Get_Interaction(interactions_file_path)
+    world.pump_latrines = PumpLatrines.for_areas(world.areas)
+    
+    PlayGroups.Get_Interaction(interactions_file_path)
+    world.play_groups = PlayGroups.for_areas(world.areas)
+    
+    DistributionCenters.Get_Interaction(interactions_file_path)
+    world.distribution_centers = DistributionCenters.for_areas(world.areas)
+    
+    Communals.Get_Interaction(interactions_file_path)
+    world.communals = Communals.for_areas(world.areas)
+    
+    FemaleCommunals.Get_Interaction(interactions_file_path)
+    world.female_communals = FemaleCommunals.for_areas(world.areas)
+    
+    Religiouss.Get_Interaction(interactions_file_path)
+    world.religiouss = Religiouss.for_areas(world.areas)
+    
+    EVouchers.Get_Interaction(interactions_file_path)
+    world.e_vouchers = EVouchers.for_areas(world.areas)
+    
+    NFDistributionCenters.Get_Interaction(interactions_file_path)
+    world.n_f_distribution_centers = NFDistributionCenters.for_areas(world.areas)
+    
+    InformalWorks.Get_Interaction(interactions_file_path)
+    world.informal_works = InformalWorks.for_areas(world.areas)
+
+    # cluster shelters
+    Shelters.Get_Interaction(interactions_file_path)
     world.shelters = Shelters.for_areas(world.areas)
-    world.cemeteries = Cemeteries()
-    shelter_distributor = ShelterDistributor(
-        sharing_shelter_ratio=0.75
-    )  # proportion of families that share a shelter
+    shelter_distributor = ShelterDistributor(sharing_shelter_ratio = 0.75) # proportion of families that share a shelter
     for area in world.areas:
-        shelter_distributor.distribute_people_in_shelters(
-            area.shelters, area.households
-        )
+        shelter_distributor.distribute_people_in_shelters(area.shelters, area.households)
 
     return world
