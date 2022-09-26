@@ -18,6 +18,7 @@ import pytest
 import numpy as np
 import numba as nb
 import random
+from collections import defaultdict
 
 from june.demography import Person, Population
 from june.groups import Household, Households, Hospital, Hospitals, Cemeteries
@@ -44,6 +45,7 @@ from camps.groups import PlayGroups, PlayGroupDistributor
 from camps.groups import EVouchers, EVoucherDistributor
 from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
+from camps.groups import InformalWorks, InformalWorkDistributor
 
 
 def set_random_seed(seed=999):
