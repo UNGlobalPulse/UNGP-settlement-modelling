@@ -131,6 +131,8 @@ def generate_camp():
     InformalWorks.Get_Interaction(interactions_file_path)
     world.informal_works = InformalWorks.for_areas(world.areas)
 
+    world.cemeteries = Cemeteries()
+
     # cluster shelters
     Shelters.Get_Interaction(interactions_file_path)
     world.shelters = Shelters.for_areas(world.areas)
