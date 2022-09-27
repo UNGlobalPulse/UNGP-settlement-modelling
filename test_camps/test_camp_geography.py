@@ -47,3 +47,5 @@ def test__create_areas():
     )
 
     assert len(areas) == 2
+    assert areas[0].name == "test_area_1"
+    assert areas[1].coordinates[0] == 0.0
