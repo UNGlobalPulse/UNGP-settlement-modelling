@@ -64,7 +64,7 @@ def set_random_seed(seed=999):
     return
 
 
-@pytest.fixture(name="camps_world", scope="session")
+@pytest.fixture(name="camps_world", scope="module")
 def generate_camp():
     
     interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"

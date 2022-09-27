@@ -96,3 +96,8 @@ def test__full_run(camps_world):
     )
 
     simulator.run()
+    for region in world.regions:
+        region.policy["local_closed_venues"] = set()
+        region.policy["global_closed_venues"] = set()
+
+    del world
