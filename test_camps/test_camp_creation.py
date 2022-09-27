@@ -24,3 +24,5 @@ def test__household_distribution(camps_world):
         assert household.n_residents == len(household.people)
         
     
+# TODO: Add more tests to populate_world and household_distribution based on synthetic data
+# TODO: Add test for GenerateDiscretePDF
