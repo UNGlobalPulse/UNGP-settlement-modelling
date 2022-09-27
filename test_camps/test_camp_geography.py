@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from june.geography import SuperArea
 
@@ -35,8 +36,8 @@ def test__create_areas():
     area_coords = pd.DataFrame(
         data = {
             "name": ["test_area_1", "test_area_2"],
-            "X": [0.0, 1.0]
-            "Y": [1.0, 0.0]
+            "longitude": [0.0, 1.0],
+            "latitude": [1.0, 0.0]
         }
     ).set_index("name")
 
