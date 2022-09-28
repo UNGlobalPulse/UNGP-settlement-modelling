@@ -95,3 +95,38 @@ def test__move_to_active_subgroup(camps_sim: Simulator):
         ["residence"], camps_sim.world.people.members[0]
     )
     assert camps_sim.world.people.members[0].residence.group.spec in ("shelter")
+
+def test__move_people_to_leisure(camps_sim: Simulator):
+    n_leisure = 0
+    n_pump_latrines = 0
+    n_e_vouchers = 0
+    n_distributions = 0
+    n_learning_centers = 0
+    repetitions = 100
+    for _ in range(repetitions):
+        camps_sim.clear_world()
+        camps_sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
+        for person in camps_sim.world.people.members:
+            if person.leisure is not None:
+                n_leisure += 1
+                if person.leisure.group.spec == "pump_latrine":
+                    n_pump_latrines += 1
+                elif person.leisure.group.spec == "e_voucher":
+                    n_e_vouchers += 1
+                elif person.leisure.group.spec == "distribution_center":
+                    n_distributions += 1
+                if person not in person.residence.people:
+                    assert person in person.leisure.people
+    assert n_leisure > 0
+    assert n_pump_latrines > 0
+    assert n_e_vouchers > 0
+    assert n_distributions > 0
+    camps_sim.clear_world()
+
+def test__bury_the_dead(camps_sim: Simulator):
+    dummy_person = camps_sim.world.people.members[0]
+    camps_sim.epidemiology.infection_selectors.infect_person_at_time(dummy_person, 0.0)
+    camps_sim.epidemiology.bury_the_dead(camps_sim.world, dummy_person)
+    assert dummy_person in camps_sim.world.cemeteries.members[0].people
+    assert dummy_person.dead
+    assert dummy_person.infection is None
