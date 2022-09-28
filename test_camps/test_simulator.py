@@ -1,0 +1,77 @@
+import random
+from datetime import datetime
+
+import pytest
+from june import paths
+from june.activity import activity_hierarchy
+from june.epidemiology.epidemiology import Epidemiology
+from june.epidemiology.infection import Immunity, InfectionSelector, InfectionSelectors
+from june.groups.leisure import leisure
+from june.groups.travel import Travel
+from june.interaction import Interaction
+from june.policy import Hospitalisation, MedicalCarePolicies, Policies
+from june.simulator import Simulator
+
+from camps.activity import CampActivityManager
+from camps.paths import camp_data_path, camp_configs_path
+from camps.world import World
+from camps.groups.leisure import generate_leisure_for_world, generate_leisure_for_config
+from camps.camp_creation import (
+    generate_empty_world,
+    populate_world,
+    distribute_people_to_households,
+)  # this is loaded from the ../camp_scripts folder
+
+config_file_path = camp_configs_path / "config_demo.yaml"
+interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
+
+@pytest.fixture(name="camps_selectors", scope="module")
+def make_selector():
+    selector = InfectionSelector.from_file()
+    selector.recovery_rate = 0.05
+    selector.transmission_probability = 0.7
+    return InfectionSelectors([selector])
+    return selector
+
+@pytest.fixture(name="camps_sim")
+def setup_sim(camps_world, camps_selectors):
+    world = camps_world
+    for person in world.people:
+        person.immunity = Immunity()
+        person.infection = None
+        person.subgroups.medical_facility = None
+        person.dead = False
+    leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
+    leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
+    interaction = Interaction.from_file(config_filename=interactions_file_path)
+    policies = Policies.from_file()
+    epidemiology = Epidemiology(infection_selectors=camps_selectors)
+    Simulator.ActivityManager = CampActivityManager
+    sim = Simulator.from_file(
+        world=world,
+        interaction=interaction,
+        leisure=leisure,
+        policies=policies,
+        config_filename=config_file_path,
+        epidemiology=epidemiology,
+    )
+    
+    sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=3,
+        working_hours=False,
+        date=datetime.strptime("2020-03-01", "%Y-%m-%d"),
+    )
+    sim.clear_world()
+    return sim
+
+def test__everyone_has_an_activity(camps_sim):
+    for person in camps_sim.world.people.members:
+        assert person.subgroups.iter().count(None) != len(person.subgroups.iter())
+
+def test__apply_activity_hierarchy(camps_sim):
+    unordered_activities = random.sample(activity_hierarchy, len(activity_hierarchy))
+    ordered_activities = camps_sim.activity_manager.apply_activity_hierarchy(
+        unordered_activities
+    )
+    assert ordered_activities == activity_hierarchy
+
