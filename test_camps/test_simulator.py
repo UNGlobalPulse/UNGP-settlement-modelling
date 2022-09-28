@@ -75,3 +75,17 @@ def test__apply_activity_hierarchy(camps_sim):
     )
     assert ordered_activities == activity_hierarchy
 
+def test__clear_world(campssim: Simulator):
+    camps_sim.clear_world()
+    for group_name in sim.activity_manager.activities_to_super_groups(
+        sim.activity_manager.all_activities
+    ):
+        if group_name in ["shelter_visits"]:
+            continue
+        grouptype = getattr(camps_sim.world, group_name)
+        for group in grouptype.members:
+            for subgroup in group.subgroups:
+                assert len(subgroup.people) == 0
+
+    for person in camps_sim.world.people.members:
+        assert person.busy is False
