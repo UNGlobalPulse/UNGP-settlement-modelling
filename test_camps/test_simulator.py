@@ -33,7 +33,7 @@ def make_selector():
     return InfectionSelectors([selector])
     return selector
 
-@pytest.fixture(name="camps_sim")
+@pytest.fixture(name="camps_sim", scope="module")
 def setup_sim(camps_world, camps_selectors):
     world = camps_world
     for person in world.people:
@@ -101,7 +101,10 @@ def test__move_people_to_leisure(camps_sim: Simulator):
     n_pump_latrines = 0
     n_e_vouchers = 0
     n_distributions = 0
-    n_learning_centers = 0
+    n_informal_works = 0
+    n_n_f_distribution_centers = 0
+    n_play_groups = 0
+    n_religiouss = 0
     repetitions = 100
     for _ in range(repetitions):
         camps_sim.clear_world()
@@ -115,12 +118,24 @@ def test__move_people_to_leisure(camps_sim: Simulator):
                     n_e_vouchers += 1
                 elif person.leisure.group.spec == "distribution_center":
                     n_distributions += 1
+                elif person.leisure.group.spec == "informal_work":
+                    n_informal_works += 1
+                elif person.leisure.group.spec == "n_f_distribution_center":
+                    n_n_f_distribution_centers += 1
+                elif person.leisure.group.spec == "play_group":
+                    n_play_groups += 1
+                elif person.leisure.group.spec == "religious":
+                    n_religiouss += 1
                 if person not in person.residence.people:
                     assert person in person.leisure.people
     assert n_leisure > 0
     assert n_pump_latrines > 0
     assert n_e_vouchers > 0
     assert n_distributions > 0
+    assert n_informal_works > 0
+    assert n_n_f_distribution_centers > 0
+    assert n_play_groups > 0
+    assert n_religiouss > 0
     camps_sim.clear_world()
 
 def test__bury_the_dead(camps_sim: Simulator):
