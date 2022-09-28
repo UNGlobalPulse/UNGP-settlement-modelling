@@ -94,4 +94,4 @@ def test__move_to_active_subgroup(camps_sim: Simulator):
     camps_sim.activity_manager.move_to_active_subgroup(
         ["residence"], camps_sim.world.people.members[0]
     )
-    assert sim.world.people.members[0].residence.group.spec in ("household")
+    assert camps_sim.world.people.members[0].residence.group.spec in ("shelter")
