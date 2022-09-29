@@ -44,7 +44,7 @@ def test__close_venues(camps_world, policy_simulator):
     world = camps_world
     sim = policy_simulator
     close_venues = CloseLeisureVenue(
-        start_time="2020-3-1", end_time="2020-3-30", venues_to_close=["pump_latrine"]
+        start_time="1000-1-01", end_time="3000-1-01", venues_to_close=["pump_latrine"]
     )
     policies = Policies([close_venues])
     leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
