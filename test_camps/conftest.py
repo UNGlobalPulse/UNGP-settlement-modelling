@@ -206,7 +206,6 @@ def make_selector():
     selector.recovery_rate = 0.05
     selector.transmission_probability = 0.7
     return InfectionSelectors([selector])
-    return selector
 
 @pytest.fixture(name="camps_sim", scope="module")
 def setup_sim(camps_world, camps_selectors):

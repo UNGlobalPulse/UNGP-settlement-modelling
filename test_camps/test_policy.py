@@ -47,6 +47,9 @@ def test__close_venues(camps_world, policy_simulator):
         start_time="1000-1-01", end_time="3000-1-01", venues_to_close=["pump_latrine"]
     )
     policies = Policies([close_venues])
+
+    assert policies.policies[0].spec == "close_leisure_venue"
+    
     leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
     leisure.distribute_social_venues_to_areas(
         world.areas, super_areas=world.super_areas
