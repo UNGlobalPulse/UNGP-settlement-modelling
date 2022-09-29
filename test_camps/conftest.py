@@ -24,7 +24,7 @@ from june.demography import Person, Population
 from june.groups import Household, Households, Hospital, Hospitals, Cemeteries
 from june.distributors import HospitalDistributor
 from june.world import World
-
+from june.epidemiology.infection import Immunity, InfectionSelector, InfectionSelectors
 
 from camps.paths import camp_data_path, camp_configs_path
 from camps.camp_creation import (
@@ -197,3 +197,11 @@ def make_dummy_world():
         household,
         world,
     )
+
+@pytest.fixture(name="camps_selectors", scope="module")
+def make_selector():
+    selector = InfectionSelector.from_file()
+    selector.recovery_rate = 0.05
+    selector.transmission_probability = 0.7
+    return InfectionSelectors([selector])
+    return selector

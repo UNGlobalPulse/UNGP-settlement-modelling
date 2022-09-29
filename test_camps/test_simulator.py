@@ -25,14 +25,6 @@ from camps.camp_creation import (
 config_file_path = camp_configs_path / "config_demo.yaml"
 interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
 
-@pytest.fixture(name="camps_selectors", scope="module")
-def make_selector():
-    selector = InfectionSelector.from_file()
-    selector.recovery_rate = 0.05
-    selector.transmission_probability = 0.7
-    return InfectionSelectors([selector])
-    return selector
-
 @pytest.fixture(name="camps_sim", scope="module")
 def setup_sim(camps_world, camps_selectors):
     world = camps_world

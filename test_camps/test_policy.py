@@ -1,5 +1,23 @@
+import pytest
+from datetime import datetime
+
+from june.interaction import Interaction
+from june.epidemiology.infection import Immunity
+from june.epidemiology.epidemiology import Epidemiology
+from june.simulator import Simulator
+from june.policy import Policies, CloseLeisureVenue
+
+from camps.activity import CampActivityManager
+from camps.paths import camp_data_path, camp_configs_path
+from camps.groups.leisure import generate_leisure_for_world, generate_leisure_for_config
+from camps.camp_creation import (
+    generate_empty_world,
+    populate_world,
+    distribute_people_to_households,
+)  # this is loaded from the ../camp_scripts folder
 
 config_file_path = camp_configs_path / "config_demo.yaml"
+interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
 
 @pytest.fixture(name="policy_simulator")
 def make_policy_simulator(camps_world, camps_selectors):
@@ -14,16 +32,16 @@ def make_policy_simulator(camps_world, camps_selectors):
     Simulator.ActivityManager = CampActivityManager
     sim = Simulator.from_file(
         world=world,
-        interaction,
-        epidemiology=epidemiology,
-        config_filename=config_file_path,
-        record=None,
-        policies=None,
+        interaction=interaction,
         leisure=None,
+        policies=None,
+        config_filename=config_file_path,
+        epidemiology=epidemiology,
     )
     return sim
 
 def test__close_venues(camps_world, policy_simulator):
+    world = camps_world
     sim = policy_simulator
     close_venues = CloseLeisureVenue(
         start_time="2020-3-1", end_time="2020-3-30", venues_to_close=["pump_latrine"]
@@ -57,5 +75,5 @@ def test__close_venues(camps_world, policy_simulator):
                 if person.leisure.group.spec == "pump_latrine":
                     n_pump_latrines += 1
                     
-    assert n_pump_latrines = 0
+    assert n_pump_latrines == 0
 
