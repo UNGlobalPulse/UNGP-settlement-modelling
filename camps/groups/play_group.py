@@ -123,7 +123,6 @@ class PlayGroupDistributor(SocialVenueDistributor):
 
     def get_possible_venues_for_area(self, area: Area):
         if area.play_groups:
-            venue = np.random.choice(area.play_groups)
-            return [venue]
+            return area.play_groups
         else:
             return None

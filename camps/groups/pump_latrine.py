@@ -123,7 +123,8 @@ class PumpLatrineDistributor(SocialVenueDistributor):
 
     def get_possible_venues_for_area(self, area: Area):
         """
-        Select a random pump or latrine from a given Area
+        Get full list of pump or latrine from a given Area.
+        People allow to visit any pump_latrine in their own area.
 
         Parameters
         ----------
@@ -135,5 +136,7 @@ class PumpLatrineDistributor(SocialVenueDistributor):
         venue
             Venue selected from area
         """
-        venue = np.random.choice(area.pump_latrines)
-        return [venue]
+        if area.pump_latrines:
+            return area.pump_latrines
+        else:
+            return None
