@@ -47,6 +47,8 @@ from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 from camps.groups import InformalWorks, InformalWorkDistributor
 
+config_file_path = camp_configs_path / "config_demo.yaml"
+interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
 
 def set_random_seed(seed=999):
     """
@@ -205,3 +207,34 @@ def make_selector():
     selector.transmission_probability = 0.7
     return InfectionSelectors([selector])
     return selector
+
+@pytest.fixture(name="camps_sim", scope="module")
+def setup_sim(camps_world, camps_selectors):
+    world = camps_world
+    for person in world.people:
+        person.immunity = Immunity()
+        person.infection = None
+        person.subgroups.medical_facility = None
+        person.dead = False
+    leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
+    leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
+    interaction = Interaction.from_file(config_filename=interactions_file_path)
+    policies = Policies.from_file()
+    epidemiology = Epidemiology(infection_selectors=camps_selectors)
+    Simulator.ActivityManager = CampActivityManager
+    sim = Simulator.from_file(
+        world=world,
+        interaction=interaction,
+        leisure=leisure,
+        policies=policies,
+        config_filename=config_file_path,
+        epidemiology=epidemiology,
+    )
+    
+    sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=3,
+        working_hours=False,
+        date=datetime.strptime("2020-03-01", "%Y-%m-%d"),
+    )
+    sim.clear_world()
+    return sim

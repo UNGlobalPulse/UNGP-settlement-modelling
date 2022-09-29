@@ -64,16 +64,19 @@ def test__close_venues(camps_world, policy_simulator):
     sim.activity_manager.move_people_to_active_subgroups(
         activities, time_before_policy, 0.0
     )
+
+    n_leisure = 0
     n_pump_latrines = 0
     repetitions = 10
     for _ in range(repetitions):
-        camps_sim.clear_world()
-        camps_sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
-        for person in camps_sim.world.people.members:
+        sim.clear_world()
+        sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
+        for person in sim.world.people.members:
             if person.leisure is not None:
                 n_leisure += 1
                 if person.leisure.group.spec == "pump_latrine":
                     n_pump_latrines += 1
-                    
+
+    assert n_leisure > 0
     assert n_pump_latrines == 0
 
