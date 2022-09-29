@@ -56,6 +56,8 @@ from camps.groups import InformalWorks, InformalWorkDistributor
 
 config_file_path = camp_configs_path / "config_demo.yaml"
 interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
+policies_file_path = camp_configs_path / "defaults/policy/simple_policy.yaml"
+hospitals_file_path = camp_data_path / "input/hospitals/hospitals.csv"
 
 def set_random_seed(seed=999):
     """
@@ -75,9 +77,6 @@ def set_random_seed(seed=999):
 
 @pytest.fixture(name="camps_world", scope="module")
 def generate_camp():
-    
-    interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
-    hospitals_file_path = camp_data_path / "input/hospitals/hospitals.csv"
     
     world = generate_empty_world({"region": ["CXB-219"]})
     populate_world(world)
@@ -225,7 +224,10 @@ def setup_sim(camps_world, camps_selectors):
     leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
     leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
     interaction = Interaction.from_file(config_filename=interactions_file_path)
-    policies = Policies.from_file()
+    policies = Policies.from_file(
+        policies_file_path,
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
     epidemiology = Epidemiology(infection_selectors=camps_selectors)
     Simulator.ActivityManager = CampActivityManager
     sim = Simulator.from_file(

@@ -66,7 +66,16 @@ def test__move_people_to_leisure(camps_sim: Simulator):
     n_n_f_distribution_centers = 0
     n_play_groups = 0
     n_religiouss = 0
+    n_communals = 0
+    n_female_communals = 0
     repetitions = 100
+
+    camps_sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=3,
+        working_hours=False,
+        date=datetime.strptime("2020-03-01-12", "%Y-%m-%d-%H"),
+    )
+    
     for _ in range(repetitions):
         camps_sim.clear_world()
         camps_sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
@@ -87,6 +96,10 @@ def test__move_people_to_leisure(camps_sim: Simulator):
                     n_play_groups += 1
                 elif person.leisure.group.spec == "religious":
                     n_religiouss += 1
+                elif person.leisure.group.spec == "communal":
+                    n_communals += 1
+                elif person.leisure.group.spec == "female_communal":
+                    n_female_communals += 1
                 if person not in person.residence.people:
                     assert person in person.leisure.people
     assert n_leisure > 0
@@ -97,8 +110,41 @@ def test__move_people_to_leisure(camps_sim: Simulator):
     assert n_n_f_distribution_centers > 0
     assert n_play_groups > 0
     assert n_religiouss > 0
+    assert n_communals > 0
+    assert n_female_communals > 0
     camps_sim.clear_world()
 
+
+def test__venues_closed_outside_hours(camps_sim: Simulator):
+    n_leisure = 0
+    n_communals = 0
+    n_female_communals = 0
+    repetitions = 10
+
+    camps_sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=3,
+        working_hours=False,
+        date=datetime.strptime("2020-03-01-01", "%Y-%m-%d-%H"),
+    )
+    
+    for _ in range(repetitions):
+        camps_sim.clear_world()
+        camps_sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
+        for person in camps_sim.world.people.members:
+            if person.leisure is not None:
+                n_leisure += 1
+                if person.leisure.group.spec == "communal":
+                    n_communals += 1
+                elif person.leisure.group.spec == "female_communal":
+                    n_female_communals += 1
+                if person not in person.residence.people:
+                    assert person in person.leisure.people
+
+    assert n_communals == 0
+    assert n_female_communals == 0
+    camps_sim.clear_world()
+
+    
 def test__bury_the_dead(camps_sim: Simulator):
     dummy_person = camps_sim.world.people.members[0]
     camps_sim.epidemiology.infection_selectors.infect_person_at_time(dummy_person, 0.0)
