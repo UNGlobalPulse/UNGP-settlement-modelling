@@ -22,7 +22,7 @@ interactions_file_path = camp_configs_path / "defaults/interaction/interaction_S
 def test__close_venues(camps_sim):
     sim = camps_sim
     close_venues = CloseLeisureVenue(
-        start_time="2020-05-01", end_time="2021-01-01", venues_to_close=["pump_latrine", "distribution_center"]
+        start_time="2020-04-01", end_time="2021-01-01", venues_to_close=["pump_latrine", "distribution_center"]
     )
     policies = Policies([close_venues])
     sim.activity_manager.policies = policies
