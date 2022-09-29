@@ -19,67 +19,71 @@ from camps.camp_creation import (
 config_file_path = camp_configs_path / "config_demo.yaml"
 interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
 
-@pytest.fixture(name="policy_simulator")
-def make_policy_simulator(camps_world, camps_selectors):
-    world = camps_world
-    for person in world.people:
-        person.immunity = Immunity()
-        person.infection = None
-        person.subgroups.medical_facility = None
-        person.dead = False
-    interaction = Interaction.from_file(config_filename=interactions_file_path)
-    epidemiology = Epidemiology(infection_selectors=camps_selectors)
-    Simulator.ActivityManager = CampActivityManager
-    sim = Simulator.from_file(
-        world=world,
-        interaction=interaction,
-        leisure=None,
-        policies=None,
-        config_filename=config_file_path,
-        epidemiology=epidemiology,
-    )
-    return sim
-
-def test__close_venues(camps_world, policy_simulator):
-    world = camps_world
-    sim = policy_simulator
+def test__close_venues(camps_sim):
+    sim = camps_sim
     close_venues = CloseLeisureVenue(
-        start_time="1000-1-01", end_time="3000-1-01", venues_to_close=["pump_latrine"]
+        start_time="2020-05-01", end_time="2021-01-01", venues_to_close=["pump_latrine", "distribution_center"]
     )
     policies = Policies([close_venues])
-
-    assert policies.policies[0].spec == "close_leisure_venue"
-    
-    leisure = generate_leisure_for_config(world=world, config_filename=config_file_path)
-    leisure.distribute_social_venues_to_areas(
-        world.areas, super_areas=world.super_areas
-    )
-    sim.activity_manager.leisure = leisure
     sim.activity_manager.policies = policies
     sim.clear_world()
-    time_before_policy = datetime(2019, 2, 1)
     activities = ["leisure", "residence"]
-    leisure.generate_leisure_probabilities_for_timestep(
+    leisure = sim.activity_manager.leisure
+
+    time_before_policy = datetime(2019, 2, 5, 10)
+    time_during_policy = datetime(2020, 5, 5, 10)
+    time_after_policy = datetime(2021, 5, 5, 10)
+
+    # Before policy
+    sim.activity_manager.policies.leisure_policies.apply(date=time_before_policy, leisure=leisure)
+    sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
         delta_time=10000,
         working_hours=False,
-        date=datetime.strptime("2020-03-02", "%Y-%m-%d"),
+        date=datetime.strptime("2019-03-02-10", "%Y-%m-%d-%H"),
     )
     sim.activity_manager.move_people_to_active_subgroups(
         activities, time_before_policy, 0.0
     )
+    specs = []
+    for person in sim.world.people.members:
+        if person.leisure is not None:
+            specs.append(person.leisure.group.spec)
+    assert "pump_latrine" in specs
+    assert "distribution_center" in specs
+    sim.clear_world()
 
-    n_leisure = 0
-    n_pump_latrines = 0
-    repetitions = 10
-    for _ in range(repetitions):
-        sim.clear_world()
-        sim.activity_manager.move_people_to_active_subgroups(["leisure", "residence"])
-        for person in sim.world.people.members:
-            if person.leisure is not None:
-                n_leisure += 1
-                if person.leisure.group.spec == "pump_latrine":
-                    n_pump_latrines += 1
+    # During policy
+    sim.activity_manager.policies.leisure_policies.apply(date=time_during_policy, leisure=leisure)
+    sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=10000,
+        working_hours=False,
+        date=datetime.strptime("2019-03-02-10", "%Y-%m-%d-%H"),
+    )
+    sim.activity_manager.move_people_to_active_subgroups(
+            activities, time_during_policy, 0.0
+    )
+    specs = []
+    for person in sim.world.people.members:
+        if person.leisure is not None:
+            specs.append(person.leisure.group.spec)
+    assert "pump_latrine" not in specs
+    assert "distribution_center" not in specs
+    sim.clear_world()
 
-    assert n_leisure > 0
-    assert n_pump_latrines == 0
-
+    # After policy
+    sim.activity_manager.policies.leisure_policies.apply(date=time_after_policy, leisure=leisure)
+    sim.activity_manager.leisure.generate_leisure_probabilities_for_timestep(
+        delta_time=10000,
+        working_hours=False,
+        date=datetime.strptime("2019-03-02-10", "%Y-%m-%d-%H"),
+    )
+    sim.activity_manager.move_people_to_active_subgroups(
+        activities, time_after_policy, 0.0
+    )
+    specs = []
+    for person in sim.world.people.members:
+        if person.leisure is not None:
+            specs.append(person.leisure.group.spec)
+    assert "pump_latrine" in specs
+    assert "distribution_center" in specs
+    sim.clear_world()
