@@ -48,7 +48,7 @@ def random_age(age_min, age_max):
 @nb.njit((nb.int32, nb.int32), cache=True)
 def numba_random_choice(n_total, n):
     """
-    chosses n from n_total with replacement
+    chooses n from n_total with replacement
     """
     return np.random.choice(n_total, n, replace=False)
 
@@ -56,7 +56,7 @@ def numba_random_choice(n_total, n):
 @nb.njit((nb.int32, nb.int32), cache=True)
 def numba_random_choice_replace(n_total, n):
     """
-    chosses n from n_total with replacement
+    chooses n from n_total with replacement
     """
     return np.random.choice(n_total, n, replace=True)
 
@@ -86,14 +86,14 @@ class CampHouseholdDistributor:
         household_size_distribution=None,
     ):
         """
-        Cluters people into households
+        Clusters people into households
 
         Parameters
         ----------
         kid_max_age : int
-            Maximum age of people categorised as 'children'
+            Maximum age of people categorized as 'children'
         adult_min_age : int
-            Minimum age of people categorised as 'adults'
+            Minimum age of people categorized as 'adults'
         adult_max_age : int
             Maximum age of adults
         max_household_size : int
@@ -136,7 +136,7 @@ class CampHouseholdDistributor:
         Returns
         -------
         kids
-            List of people categorised as children
+            List of people categorized as children
         men_by_age
             Dictionary of lists of men indexed by age
         women_by_age

@@ -173,7 +173,7 @@ def populate_world(world: CampWorld):
     Populates the world. For each super area, we initialize a population
     following the data's age and sex distribution. We then split the population
     into the areas by taking the ratio of the area residents to the total super area
-    population. Kids and adults are splited separately to keep a balanced population.
+    population. Kids and adults are splitted separately to keep a balanced population.
 
     Parameters
     ----------
@@ -236,7 +236,7 @@ def distribute_people_to_households(world: CampWorld):
     Parameters
     ----------
     world
-        CampWorld class with people ready to be cludtered into households
+        CampWorld class with people ready to be clustered into households
 
     Returns
     -------
@@ -249,15 +249,19 @@ def distribute_people_to_households(world: CampWorld):
             household_size_distribution=area_household_structure_params_df["area"][
                 "coarse"
             ]["household_size"],
-            chance_unaccompanied_childen=area_household_structure_params_df["area"][
+            chance_unaccompanied_children=area_household_structure_params_df["area"][
                 "coarse"
-            ]["chance_unaccompanied_childen"],
+            ][
+                "chance_unaccompanied_childen"
+            ],  # These are typos in the data files! Fix these in the data first...
             chance_single_parent_mf=area_household_structure_params_df["area"][
                 "coarse"
             ]["chance_single_parent"],
-            min_age_gap_between_childen=area_household_structure_params_df["area"][
+            min_age_gap_between_children=area_household_structure_params_df["area"][
                 "coarse"
-            ]["min_age_gap_between_childen"],
+            ][
+                "min_age_gap_between_childen"
+            ],  # These are typos in the data files!
         )
     else:
         household_distributor = CampHouseholdDistributor(max_household_size=12)
