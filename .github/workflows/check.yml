@@ -37,7 +37,7 @@ jobs:
         python setup.py install
 
     - name: Get JUNE data
-      run: bash scripts/get_june_data.sh
+      run: get_june_data.sh
 
     - name: Test with pytest
       run: |
