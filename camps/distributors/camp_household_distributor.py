@@ -98,20 +98,20 @@ class CampHouseholdDistributor:
         young_adult_max_age=49,
         max_household_size=8,
         household_size_distribution=None,
-        chance_unaccompanied_childen=None,
-        min_age_gap_between_childen=None,
+        chance_unaccompanied_children=None,
+        min_age_gap_between_children=None,
         chance_single_parent_mf=None,
         ignore_orphans: bool = False,
     ):
         """
-        Cluters people into households
+        Clusters people into households
 
         Parameters
         ----------
         kid_max_age : int
-            Maximum age of people categorised as 'children'
+            Maximum age of people categorized as 'children'
         adult_min_age : int
-            Minimum age of people categorised as 'adults'
+            Minimum age of people categorized as 'adults'
         adult_max_age : int
             Maximum age of adults
         max_household_size : int
@@ -147,15 +147,15 @@ class CampHouseholdDistributor:
             ]
         )
 
-        if chance_unaccompanied_childen is None:
-            self.chance_unaccompanied_childen = 0.01
+        if chance_unaccompanied_children is None:
+            self.chance_unaccompanied_children = 0.01
         else:
-            self.chance_unaccompanied_childen = chance_unaccompanied_childen
+            self.chance_unaccompanied_children = chance_unaccompanied_children
 
-        if min_age_gap_between_childen is None:
-            self.min_age_gap_between_childen = 1
+        if min_age_gap_between_children is None:
+            self.min_age_gap_between_children = 1
         else:
-            self.min_age_gap_between_childen = min_age_gap_between_childen
+            self.min_age_gap_between_children = min_age_gap_between_children
 
         if chance_single_parent_mf is None:
             self.chance_single_parent_mf = {"m": 1, "f": 10}
@@ -201,7 +201,7 @@ class CampHouseholdDistributor:
         Returns
         -------
         kids
-            List of people categorised as children
+            List of people categorized as children
         men_by_age
             Dictionary of lists of men indexed by age
         women_by_age
@@ -435,7 +435,7 @@ class CampHouseholdDistributor:
             + Houses_Multigen
         ]
         if len(Houses_Left) != 0:
-            print("House unasigned to house classifications")
+            print("House unassigned to house classifications")
             print(len(Houses_Left))
 
         households_with_space = households.copy()
@@ -504,7 +504,7 @@ class CampHouseholdDistributor:
                 )
 
             if len(Intersection) == 0:
-                # Need to find space for final children we sqeeze them into Houses_W_Children even if full
+                # Need to find space for final children we squeeze them into Houses_W_Children even if full
                 squeeze = True
                 Intersection = intersection(Houses_W_Children, Houses_W_Children)
 
@@ -528,7 +528,7 @@ class CampHouseholdDistributor:
                             adult_a_age - mother_firstchild_gap_generator.rvs(size=1)[0]
                         )
                     elif adult_a_sex == "m":
-                        # Need a dead(?) mother so generate the appropiate age gap
+                        # Need a dead(?) mother so generate the appropriate age gap
                         couple_age_gap = partner_age_gap_generator.rvs(size=1)[0]
                         mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)[0]
                         age_kid = adult_a_age - (couple_age_gap + mother_age_gap)
@@ -551,7 +551,7 @@ class CampHouseholdDistributor:
                 if NKids != 0 and NAdults != 0:
                     age_kid = (
                         min([kid_i.age for kid_i in household.kids])
-                        - self.min_age_gap_between_childen
+                        - self.min_age_gap_between_children
                     )
 
                 # Find a child to add
@@ -627,7 +627,7 @@ class CampHouseholdDistributor:
         # print("All multigen adults done")
 
         while True:
-            sqeeze = False
+            squeeze = False
             if not men_by_age and not women_by_age:
                 break
             Intersection = intersection(households_with_space, Houses_WO_Children)
@@ -636,7 +636,7 @@ class CampHouseholdDistributor:
                 if len(Houses_Multigen) > 0:
                     Intersection = intersection(Houses_Multigen, households_with_space)
                     if len(Intersection) == 0:
-                        sqeeze = True
+                        squeeze = True
                         Intersection = intersection(Houses_Multigen, Houses_Multigen)
 
                 # Find houses with space
@@ -645,13 +645,13 @@ class CampHouseholdDistributor:
                         households_with_space, households_with_space
                     )
                 else:
-                    # Sqeeze in the final adults
-                    sqeeze = True
+                    # squeeze in the final adults
+                    squeeze = True
                     Intersection = intersection(Houses_WO_Children, Houses_WO_Children)
 
             # print(f"Point D: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
             if len(Intersection) == 0:
-                sqeeze = True
+                squeeze = True
                 Intersection = intersection(households, households)
 
             # print(f"Point E: {len(Intersection)},Nkids:{n_kids},Nmen:{n_men},Nkids:{n_women}")
@@ -667,7 +667,7 @@ class CampHouseholdDistributor:
                         rand_adult = household.adults[idx]
 
                         sex = random_sex()
-                        # Generate the appropiate age gaps
+                        # Generate the appropriate age gaps
                         couple_age_gap = partner_age_gap_generator.rvs(size=1)
                         mother_age_gap = mother_firstchild_gap_generator.rvs(size=1)
                         if sex == "m":
@@ -688,15 +688,15 @@ class CampHouseholdDistributor:
                         rand_adult = household.adults[idx]
 
                         sex = random_sex()
-                        # Generate the appropiate age gaps
-                        auntuncle = self.get_closest_person_of_age(
+                        # Generate the appropriate age gaps
+                        AuntUncle = self.get_closest_person_of_age(
                             men_by_age, women_by_age, rand_adult.age, sex
                         )
-                        if auntuncle is None:
+                        if AuntUncle is None:
                             raise ValueError
                         else:
                             household.add(
-                                auntuncle, subgroup_type=household.SubgroupType.adults
+                                AuntUncle, subgroup_type=household.SubgroupType.adults
                             )
 
                 else:  # If there is no adult
@@ -710,7 +710,7 @@ class CampHouseholdDistributor:
                     household.add(person, subgroup_type=household.SubgroupType.adults)
 
                 # If we're trying to maintain household sizes still
-                if household.size >= household.max_size and not sqeeze:
+                if household.size >= household.max_size and not squeeze:
                     households_with_space.remove(household)
                 # Check if we finished up adults
                 if not men_by_age and not women_by_age:
