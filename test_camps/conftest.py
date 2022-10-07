@@ -376,8 +376,8 @@ def distribute_virtual_people_to_households(world, basecamp_famsize_dict, baseca
         young_adult_max_age=49,
         max_household_size=max_hh_size,
         household_size_distribution=basecamp_famsize_dict,
-        chance_unaccompanied_childen=None,   # will be set to 0.01  # todo: correct children spelling
-        min_age_gap_between_childen=None,    # will be set to 1  # todo: correct children spelling
+        chance_unaccompanied_children=None,   # will be set to 0.01  # todo: correct children spelling
+        min_age_gap_between_children=None,    # will be set to 1  # todo: correct children spelling
         chance_single_parent_mf=None,        # will be set to {"m": 1, "f": 10}
         ignore_orphans=False
     )
