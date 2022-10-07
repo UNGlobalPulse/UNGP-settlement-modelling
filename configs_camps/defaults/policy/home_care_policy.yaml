@@ -55,7 +55,7 @@ change_leisure_probability:
             both_sexes:
               0-100: 0.66
 
-          shelter_visit:
+          shelters_visits:
             male:
               0-100: 1.0
             female:
@@ -81,7 +81,7 @@ change_leisure_probability:
             both_sexes:
               0-100: 0.5
 
-          shelter_visit:
+          shelters_visits:
             male:
               0-100: 1.0
             female:
