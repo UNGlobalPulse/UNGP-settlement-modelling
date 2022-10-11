@@ -73,7 +73,41 @@ def test__GenerateDiscretePDF():
     assert np.max(Randoms) <= Max
 
 def test__HouseholdDistributor():
-    basecamp_famsize_avg = 5.5
+    ########################################################################
+    # TODO: VARY THIS QUANTITIES STOCASTICALLY
+    ########################################################################
+    basecamp_famsize_avg = 4.378533721106532
+
+    max_household_size = 10
+    household_size_distribution = {
+                1: 0.07,
+                2: 0.11,
+                3: 0.15,
+                4: 0.18,
+                5: 0.16,
+                6: 0.13,
+                7: 0.08,
+                8: 0.07,
+                9: 0.03,
+                10: 0.02,
+            }
+        
+    chance_unaccompanied_children=0.01
+    min_age_gap_between_children=1
+    chance_single_parent_mf={"m": 1, "f": 10}
+
+    # default parameters for family composition
+    mother_firstchild_gap_mean = 22
+    mother_firstchild_gap_STD = 8
+    partner_age_gap_mean = 0
+    partner_age_gap_mean_STD = 10
+    chance_single_parent = 0.179
+    chance_multigenerational = 0.268
+    chance_withchildren = 0.922
+    n_children = 2.5
+    n_children_STD = 2
+
+    ########################################################################
      
     dummy_area = Area(name="dummy", super_area=None, coordinates=(12.0, 15.0))
     dummy_areas = Areas(areas=[dummy_area])
@@ -87,41 +121,18 @@ def test__HouseholdDistributor():
         adult_min_age=17,
         adult_max_age=99,
         young_adult_max_age=49,
-        max_household_size=10,
-        household_size_distribution={
-                1: 0.07,
-                2: 0.11,
-                3: 0.15,
-                4: 0.18,
-                5: 0.16,
-                6: 0.13,
-                7: 0.08,
-                8: 0.07,
-                9: 0.03,
-                10: 0.02,
-            },
-        chance_unaccompanied_children=0.01,
-        min_age_gap_between_children=1,
-        chance_single_parent_mf={"m": 1, "f": 10},
+        max_household_size=max_household_size,
+        household_size_distribution=household_size_distribution,
+        chance_unaccompanied_children=chance_unaccompanied_children,
+        min_age_gap_between_children=min_age_gap_between_children,
+        chance_single_parent_mf=chance_single_parent_mf,
         ignore_orphans=False
     )
 
     households_total = []
     for area in dummy_areas:
         n_residents = len(area.people)
-        n_families = n_residents / basecamp_famsize_avg
-
-        # default parameters for family composition
-        mother_firstchild_gap_mean = 22
-        mother_firstchild_gap_STD = 8
-        partner_age_gap_mean = 0
-        partner_age_gap_mean_STD = 10
-        chance_single_parent = 0.179
-        chance_multigenerational = 0.268
-        chance_withchildren = 0.922
-        n_children = 2.5
-        n_children_STD = 2
-        stretch = True
+        n_families = int(n_residents / basecamp_famsize_avg)
 
         mother_firstchild_gap_generator, dist = GenerateDiscretePDF(
             datarange=[14, 60],
@@ -132,7 +143,7 @@ def test__HouseholdDistributor():
             datarange=[-20, 20],
             Mean=partner_age_gap_mean + 0.5,
             SD=partner_age_gap_mean_STD,
-            stretch=stretch
+            stretch=True
         )
         nchildren_generator, dist = GenerateDiscretePDF(
             datarange=[0, 8],
@@ -151,9 +162,11 @@ def test__HouseholdDistributor():
             nchildren_generator=nchildren_generator,
         )
         households_total += area.households
-    dummy_areas.households = Households(households_total)
+    households = Households(households_total)
 
+    ########################################################################
+    # TODO: Add assert statements
+    ########################################################################
     assert 1 == 1
     
-
 # TODO: Add more tests to populate_world and household_distribution based on synthetic data
