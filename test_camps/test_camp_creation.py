@@ -1,9 +1,11 @@
 import numpy as np
 from camps.camp_creation import GenerateDiscretePDF
 from camps.distributors.camp_household_distributor import CampHouseholdDistributor
-from june.groups import Households
+from june.groups import Households, household
 from june.demography import Person, Population
 from june.geography import Area, Areas
+import random
+from scipy import stats
 
 def test__populate_world(camps_world):
     world = camps_world
@@ -57,8 +59,8 @@ def test__GenerateDiscretePDF():
     Min = 0
     Max = 150
     datarange = [Min,Max]
-    Mean = (np.random.rand(1) + np.random.randint(60,80))[0]
-    SD = (np.random.rand(1) + np.random.randint(5,14))[0]
+    Mean = int(np.random.uniform(60, 80))
+    SD = int(np.random.uniform(5, 14))
 
     generator, dist = GenerateDiscretePDF(datarange=datarange, Mean=Mean, SD=SD)
     assert np.isclose(sum(dist.values()),  1.0, rtol=1e-3) #Normalized
@@ -73,54 +75,82 @@ def test__GenerateDiscretePDF():
     assert np.max(Randoms) <= Max
 
 def test__HouseholdDistributor():
-    ########################################################################
-    # TODO: VARY THIS QUANTITIES STOCASTICALLY
-    ########################################################################
-    basecamp_famsize_avg = 4.378533721106532
+    np.random.seed(5)
+    random.seed(5)
 
-    max_household_size = 10
-    household_size_distribution = {
-                1: 0.07,
-                2: 0.11,
-                3: 0.15,
-                4: 0.18,
-                5: 0.16,
-                6: 0.13,
-                7: 0.08,
-                8: 0.07,
-                9: 0.03,
-                10: 0.02,
-            }
-        
-    chance_unaccompanied_children=0.01
-    min_age_gap_between_children=1
-    chance_single_parent_mf={"m": 1, "f": 10}
+    kid_max_age=17
+    adult_min_age=17
+    adult_max_age=99
+    young_adult_max_age=49
 
-    # default parameters for family composition
-    mother_firstchild_gap_mean = 22
-    mother_firstchild_gap_STD = 8
-    partner_age_gap_mean = 0
-    partner_age_gap_mean_STD = 10
-    chance_single_parent = 0.179
-    chance_multigenerational = 0.268
-    chance_withchildren = 0.922
-    n_children = 2.5
-    n_children_STD = 2
-
-    ########################################################################
-     
     dummy_area = Area(name="dummy", super_area=None, coordinates=(12.0, 15.0))
     dummy_areas = Areas(areas=[dummy_area])
-    people = [Person.from_attributes(sex="f", age=age) for age in range(100)]
+
+    P_child = 0.5
+    P_adult = 0.45
+    P_old = 0.05
+    npeople = 10000
+
+    people_categories = random.choices(["Child", "Adult", "Old"], [P_child,P_adult,P_old], k=npeople)
+    people = []
+    for person_categories in people_categories:
+        if np.random.rand(1) < 0.5:
+            sex = "m"
+        else:
+            sex = "f"
+
+        if person_categories == "Child":
+            age_i = np.random.randint(0, kid_max_age)
+        elif person_categories == "Adult":
+            age_i = np.random.randint(kid_max_age+1, young_adult_max_age)
+        elif person_categories == "Old":
+            age_i = np.random.randint(young_adult_max_age+1, adult_max_age)
+        people += [Person.from_attributes(age=age_i, sex=sex)]
+
     for person in people:
         person.area = dummy_area
     dummy_area.people = people
 
+    kids = [p for p in people if p.age < adult_min_age]
+    world_nkids = len(kids)
+    adults = [p for p in people if p.age >= adult_min_age]
+    world_nadults = len(adults)
+    world_npeople = len(people)
+    
+    ########################################################################
+    # TODO: VARY THIS QUANTITIES STOCHASTICALLY
+    ########################################################################
+    famsize_avg = np.random.uniform(5, 10)
+    max_household_size = int(famsize_avg + 10)
+
+    _, household_size_distribution = GenerateDiscretePDF(
+            datarange=[1, max_household_size],
+            Mean=famsize_avg+4,
+            SD=2
+        )
+
+    mean_nfamilies = npeople / famsize_avg
+        
+    chance_unaccompanied_children=np.random.uniform(1e-2, 1e-1)
+    min_age_gap_between_children = 1 
+    chance_single_parent_mf={"m": np.random.randint(1,10), "f": np.random.randint(1,10)}
+
+    # default parameters for family composition
+    mother_firstchild_gap_mean = np.random.uniform(20, 30)
+    mother_firstchild_gap_STD = np.random.uniform(3, 10)
+    partner_age_gap_mean = np.random.uniform(0, 5)
+    partner_age_gap_mean_STD = np.random.uniform(8, 15)
+    chance_single_parent = np.random.uniform(0, .3) #0.179
+    chance_multigenerational = np.random.uniform(0, (npeople*P_old) / mean_nfamilies) #0.268
+    chance_withchildren = np.random.uniform(.7, 1) #0.922
+
+    ########################################################################
+     
     household_distributor = CampHouseholdDistributor(
-        kid_max_age=17,
-        adult_min_age=17,
-        adult_max_age=99,
-        young_adult_max_age=49,
+        kid_max_age=kid_max_age,
+        adult_min_age=adult_min_age,
+        adult_max_age=adult_max_age,
+        young_adult_max_age=young_adult_max_age,
         max_household_size=max_household_size,
         household_size_distribution=household_size_distribution,
         chance_unaccompanied_children=chance_unaccompanied_children,
@@ -132,7 +162,10 @@ def test__HouseholdDistributor():
     households_total = []
     for area in dummy_areas:
         n_residents = len(area.people)
-        n_families = int(n_residents / basecamp_famsize_avg)
+        n_families = int(n_residents / famsize_avg)
+
+        n_children =  world_nkids / (chance_withchildren*n_families)
+        n_children_STD = np.random.uniform(1, 4)
 
         mother_firstchild_gap_generator, dist = GenerateDiscretePDF(
             datarange=[14, 60],
@@ -146,11 +179,12 @@ def test__HouseholdDistributor():
             stretch=True
         )
         nchildren_generator, dist = GenerateDiscretePDF(
-            datarange=[0, 8],
+            datarange=[0, 10],
             Mean=n_children,
             SD=n_children_STD,
         )
 
+        
         area.households = household_distributor.distribute_people_to_households(
             area=area,
             n_families=n_families,
@@ -164,9 +198,77 @@ def test__HouseholdDistributor():
         households_total += area.households
     households = Households(households_total)
 
-    ########################################################################
-    # TODO: Add assert statements
-    ########################################################################
-    assert 1 == 1
+    NHouseholds = len(households.members)
+    metrics = {
+        "unaccompaniedchildren" : 0,
+        "wchildren" : 0,
+        "multigen": 0,
+        "singleparent": {"u":0, "m": 0, "f": 0},
+        "nchildren" : 0,
+        "P_AG": 0,
+        "MD_AG": 0,
+    }
+
     
+    
+    for H in households:
+        ages_m = [p.age for p in H.people if p.sex == "m"] 
+        ages_f = [p.age for p in H.people if p.sex == "f"] 
+
+        ages = ages_f + ages_m
+
+        H_children = [age for age in ages if age < adult_min_age]
+        H_children.sort()
+        H_adults_m = [age for age in ages_m if age >= adult_min_age and age <= young_adult_max_age]
+        H_adults_f = [age for age in ages_f if age >= adult_min_age and age <= young_adult_max_age]
+        H_adults = H_adults_f + H_adults_m
+        H_adults.sort()
+
+        H_olds_m = [age for age in ages_m if age > young_adult_max_age]
+        H_olds_f = [age for age in ages_f if age > young_adult_max_age]
+        H_olds = H_olds_f + H_olds_m
+        H_olds.sort()
+
+        if len(H_children) > 0:
+            metrics["wchildren"] += 1 
+            metrics["nchildren"] += len(H_children)
+            if len(H_adults) > 0 and len(H_olds) > 0:
+                metrics["multigen"] += 1 
+            if len(H_adults) == 1:
+                metrics["singleparent"]["u"] += 1
+                if len(H_adults_m) == 1:
+                    metrics["singleparent"]["m"] += 1
+                if len(H_adults_f) == 1:
+                    metrics["singleparent"]["f"] += 1
+                
+
+
+
+            if len(H_adults) == 0 and len(H_olds) == 0:
+                metrics["unaccompaniedchildren"] += 1
+            
+
+
+    metrics["nchildren"] /= metrics["wchildren"]
+    print("nchildren", metrics["nchildren"], n_children)
+    assert np.isclose(metrics["nchildren"], n_children, rtol=0.2)
+    print("Wchildrnen", metrics["wchildren"], np.round(chance_withchildren * NHouseholds))
+    assert np.isclose(metrics["wchildren"], np.round(chance_withchildren * NHouseholds), rtol=.2)
+    print("multi", metrics["multigen"], np.round(chance_multigenerational * NHouseholds))
+    assert np.isclose(metrics["multigen"], np.round(chance_multigenerational * NHouseholds), rtol=.8)
+    print("single", metrics["singleparent"]["u"], np.round(chance_single_parent * NHouseholds))
+    assert np.isclose(metrics["singleparent"]["u"], np.round(chance_single_parent * NHouseholds), rtol=.8)
+    print("un", metrics["unaccompaniedchildren"], np.round(chance_unaccompanied_children * NHouseholds))
+    assert np.isclose(metrics["unaccompaniedchildren"], np.round(chance_unaccompanied_children * NHouseholds), rtol=1)
+
+    print(metrics["singleparent"])
+    print(chance_single_parent_mf)
+    mf_ratio = metrics["singleparent"]["m"] / metrics["singleparent"]["u"]
+    chance_mf_ratio = chance_single_parent_mf["m"] / (chance_single_parent_mf["m"] + chance_single_parent_mf["f"])
+    print("mf", mf_ratio, chance_mf_ratio)
+    assert np.isclose(mf_ratio, chance_mf_ratio, rtol = 0.4)
+
+    # mother_firstchild_gap_mean
+    # partner_age_gap_mean
+  
 # TODO: Add more tests to populate_world and household_distribution based on synthetic data

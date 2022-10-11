@@ -345,7 +345,7 @@ class CampHouseholdDistributor:
 
         def SingleHousePickSex():
             pick = ["m" for i in range(self.chance_single_parent_mf["m"])] + [
-                "f" for i in range(self.chance_single_parent_mf["f"])
+                "f" for j in range(self.chance_single_parent_mf["f"])
             ]
             idx = np.random.randint(0, len(pick))
             return pick[idx]
