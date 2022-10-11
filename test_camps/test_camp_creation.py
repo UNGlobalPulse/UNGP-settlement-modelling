@@ -1,5 +1,9 @@
 import numpy as np
 from camps.camp_creation import GenerateDiscretePDF
+from camps.distributors.camp_household_distributor import CampHouseholdDistributor
+from june.groups import Households
+from june.demography import Person, Population
+from june.geography import Area, Areas
 
 def test__populate_world(camps_world):
     world = camps_world
@@ -67,5 +71,89 @@ def test__GenerateDiscretePDF():
     assert np.isclose(Randoms_SD, SD, rtol=0.2)
     assert np.min(Randoms) >= Min
     assert np.max(Randoms) <= Max
+
+def test__HouseholdDistributor():
+    basecamp_famsize_avg = 5.5
+     
+    dummy_area = Area(name="dummy", super_area=None, coordinates=(12.0, 15.0))
+    dummy_areas = Areas(areas=[dummy_area])
+    people = [Person.from_attributes(sex="f", age=age) for age in range(100)]
+    for person in people:
+        person.area = dummy_area
+    dummy_area.people = people
+
+    household_distributor = CampHouseholdDistributor(
+        kid_max_age=17,
+        adult_min_age=17,
+        adult_max_age=99,
+        young_adult_max_age=49,
+        max_household_size=10,
+        household_size_distribution={
+                1: 0.07,
+                2: 0.11,
+                3: 0.15,
+                4: 0.18,
+                5: 0.16,
+                6: 0.13,
+                7: 0.08,
+                8: 0.07,
+                9: 0.03,
+                10: 0.02,
+            },
+        chance_unaccompanied_children=0.01,
+        min_age_gap_between_children=1,
+        chance_single_parent_mf={"m": 1, "f": 10},
+        ignore_orphans=False
+    )
+
+    households_total = []
+    for area in dummy_areas:
+        n_residents = len(area.people)
+        n_families = n_residents / basecamp_famsize_avg
+
+        # default parameters for family composition
+        mother_firstchild_gap_mean = 22
+        mother_firstchild_gap_STD = 8
+        partner_age_gap_mean = 0
+        partner_age_gap_mean_STD = 10
+        chance_single_parent = 0.179
+        chance_multigenerational = 0.268
+        chance_withchildren = 0.922
+        n_children = 2.5
+        n_children_STD = 2
+        stretch = True
+
+        mother_firstchild_gap_generator, dist = GenerateDiscretePDF(
+            datarange=[14, 60],
+            Mean=mother_firstchild_gap_mean + 0.5 + (9.0 / 12.0),
+            SD=mother_firstchild_gap_STD
+        )
+        partner_age_gap_generator, dist = GenerateDiscretePDF(
+            datarange=[-20, 20],
+            Mean=partner_age_gap_mean + 0.5,
+            SD=partner_age_gap_mean_STD,
+            stretch=stretch
+        )
+        nchildren_generator, dist = GenerateDiscretePDF(
+            datarange=[0, 8],
+            Mean=n_children,
+            SD=n_children_STD,
+        )
+
+        area.households = household_distributor.distribute_people_to_households(
+            area=area,
+            n_families=n_families,
+            n_families_wchildren=int(np.round(chance_withchildren * n_families)),
+            n_families_multigen=int(np.round(chance_multigenerational * n_families)),
+            n_families_singleparent=int(np.round(chance_single_parent * n_families)),
+            partner_age_gap_generator=partner_age_gap_generator,
+            mother_firstchild_gap_generator=mother_firstchild_gap_generator,
+            nchildren_generator=nchildren_generator,
+        )
+        households_total += area.households
+    dummy_areas.households = Households(households_total)
+
+    assert 1 == 1
+    
 
 # TODO: Add more tests to populate_world and household_distribution based on synthetic data
