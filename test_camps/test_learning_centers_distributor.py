@@ -137,8 +137,8 @@ def test__distribute_teachers():
     )
 
     for learning_center in learning_centers:
-        assert len(learning_center.teachers) > 3  # At least one teacher per shift
-        assert len(learning_center.teachers) < (3 * 10)  # No more than 10 teachers
+        assert len(learning_center.teachers) > 1  # At least one teacher per shift
+        assert len(learning_center.teachers) < (3 * 10)  # No more than 10 x poisson mean teachers
         assert len(learning_center.ids_per_shift[0]) < len(learning_center.teachers)
         assert learning_center.ids_per_shift[0] == learning_center.ids_per_shift[1]
         assert learning_center.ids_per_shift[1] == learning_center.ids_per_shift[2]

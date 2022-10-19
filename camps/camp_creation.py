@@ -262,7 +262,7 @@ def distribute_people_to_households(world: CampWorld):
             ][
                 "min_age_gap_between_childen"
             ],  # These are typos in the data files!
-        )
+        ) 
     else:
         household_distributor = CampHouseholdDistributor(max_household_size=12)
 
