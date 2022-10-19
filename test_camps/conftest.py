@@ -479,7 +479,7 @@ def generate_virtual_camp():
         venues_coords[v] = uniformly_sample_locations((lat_range, lon_range), n_venues=venues_counts[v])
 
     # learning_centers
-    LearningCenters.Get_Interaction(interactions_file_path)
+    LearningCenters.get_interaction(interactions_file_path)
     world.learning_centers = LearningCenters.from_coordinates(
         coordinates=venues_coords['learning_centers'],
         areas=world.areas,
@@ -501,8 +501,8 @@ def generate_virtual_camp():
     learningcenter_distributor.distribute_kids_to_learning_centers(world.areas)
 
     # hospitals
-    Hospitals.Get_Interaction(interactions_file_path)
-    IsolationUnits.Get_Interaction(interactions_file_path)
+    Hospitals.get_interaction(interactions_file_path)
+    IsolationUnits.get_interaction(interactions_file_path)
 
     hospitals_list = []
     for h in range(venues_counts['hospitals']):
@@ -525,49 +525,49 @@ def generate_virtual_camp():
     world.isolation_units = IsolationUnits([IsolationUnit(area=hospital.area) for hospital in world.hospitals])
     hospital_distributor.distribute_medics_from_world(world.people)
 
-    PumpLatrines.Get_Interaction(interactions_file_path)
+    PumpLatrines.get_interaction(interactions_file_path)
     world.pump_latrines = PumpLatrines.for_areas(world.areas)  # using default per-capita
 
-    PlayGroups.Get_Interaction(interactions_file_path)
+    PlayGroups.get_interaction(interactions_file_path)
     world.play_groups = PlayGroups.for_areas(world.areas)  # using default per-capita
 
-    DistributionCenters.Get_Interaction(interactions_file_path)
+    DistributionCenters.get_interaction(interactions_file_path)
     world.distribution_centers = DistributionCenters.from_coordinates(
         coordinates=venues_coords['distribution_centers'],
         super_areas=world.super_areas
     )
-    Communals.Get_Interaction(interactions_file_path)
+    Communals.get_interaction(interactions_file_path)
     world.communals = Communals.from_coordinates(
         coordinates=venues_coords['communals'],
         super_areas=world.super_areas
     )
-    FemaleCommunals.Get_Interaction(interactions_file_path)
+    FemaleCommunals.get_interaction(interactions_file_path)
     world.female_communals = FemaleCommunals.from_coordinates(
         coordinates=venues_coords['female_communals'],
         super_areas=world.super_areas
     )
-    Religiouss.Get_Interaction(interactions_file_path)
+    Religiouss.get_interaction(interactions_file_path)
     world.religiouss = Religiouss.from_coordinates(
         coordinates=venues_coords['religiouss'],
         super_areas=world.super_areas
     )
-    EVouchers.Get_Interaction(interactions_file_path)
+    EVouchers.get_interaction(interactions_file_path)
     world.e_vouchers = EVouchers.from_coordinates(
         coordinates=venues_coords['e_vouchers'],
         super_areas=world.super_areas
     )
-    NFDistributionCenters.Get_Interaction(interactions_file_path)
+    NFDistributionCenters.get_interaction(interactions_file_path)
     world.n_f_distribution_centers = NFDistributionCenters.from_coordinates(
         coordinates=venues_coords['n_f_distribution_centers'],
         super_areas=world.super_areas
     )
-    InformalWorks.Get_Interaction(interactions_file_path)
+    InformalWorks.get_interaction(interactions_file_path)
     world.informal_works = InformalWorks.for_areas(world.areas)
 
     world.cemeteries = Cemeteries()
 
     # cluster shelters
-    Shelters.Get_Interaction(interactions_file_path)
+    Shelters.get_interaction(interactions_file_path)
     world.shelters = Shelters.for_areas(world.areas)
     shelter_distributor = ShelterDistributor(sharing_shelter_ratio=0.75)  # proportion of families that share a shelter
     for area in world.areas:
@@ -585,15 +585,15 @@ def generate_camp():
     distribute_people_to_households(world)
 
     # learning_centers
-    LearningCenters.Get_Interaction(interactions_file_path)
+    LearningCenters.get_interaction(interactions_file_path)
     world.learning_centers = LearningCenters.for_areas(world.areas)
     learningcenter_distributor = LearningCenterDistributor.from_file(world.learning_centers)
     learningcenter_distributor.distribute_teachers_to_learning_centers(world.areas)
     learningcenter_distributor.distribute_kids_to_learning_centers(world.areas)
     
     # hospitals
-    Hospitals.Get_Interaction(interactions_file_path)
-    IsolationUnits.Get_Interaction(interactions_file_path)
+    Hospitals.get_interaction(interactions_file_path)
+    IsolationUnits.get_interaction(interactions_file_path)
     
     hospitals = Hospitals.from_file(
         filename=hospitals_file_path
@@ -613,37 +613,37 @@ def generate_camp():
     world.isolation_units = IsolationUnits([IsolationUnit(area=hospital.area) for hospital in world.hospitals])
     hospital_distributor.distribute_medics_from_world(world.people)
     
-    PumpLatrines.Get_Interaction(interactions_file_path)
+    PumpLatrines.get_interaction(interactions_file_path)
     world.pump_latrines = PumpLatrines.for_areas(world.areas)
     
-    PlayGroups.Get_Interaction(interactions_file_path)
+    PlayGroups.get_interaction(interactions_file_path)
     world.play_groups = PlayGroups.for_areas(world.areas)
     
-    DistributionCenters.Get_Interaction(interactions_file_path)
+    DistributionCenters.get_interaction(interactions_file_path)
     world.distribution_centers = DistributionCenters.for_areas(world.areas)
     
-    Communals.Get_Interaction(interactions_file_path)
+    Communals.get_interaction(interactions_file_path)
     world.communals = Communals.for_areas(world.areas)
     
-    FemaleCommunals.Get_Interaction(interactions_file_path)
+    FemaleCommunals.get_interaction(interactions_file_path)
     world.female_communals = FemaleCommunals.for_areas(world.areas)
     
-    Religiouss.Get_Interaction(interactions_file_path)
+    Religiouss.get_interaction(interactions_file_path)
     world.religiouss = Religiouss.for_areas(world.areas)
     
-    EVouchers.Get_Interaction(interactions_file_path)
+    EVouchers.get_interaction(interactions_file_path)
     world.e_vouchers = EVouchers.for_areas(world.areas)
     
-    NFDistributionCenters.Get_Interaction(interactions_file_path)
+    NFDistributionCenters.get_interaction(interactions_file_path)
     world.n_f_distribution_centers = NFDistributionCenters.for_areas(world.areas)
     
-    InformalWorks.Get_Interaction(interactions_file_path)
+    InformalWorks.get_interaction(interactions_file_path)
     world.informal_works = InformalWorks.for_areas(world.areas)
 
     world.cemeteries = Cemeteries()
 
     # cluster shelters
-    Shelters.Get_Interaction(interactions_file_path)
+    Shelters.get_interaction(interactions_file_path)
     world.shelters = Shelters.for_areas(world.areas)
     shelter_distributor = ShelterDistributor(sharing_shelter_ratio = 0.75) # proportion of families that share a shelter
     for area in world.areas:
