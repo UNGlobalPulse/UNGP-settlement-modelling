@@ -36,9 +36,10 @@ jobs:
         python -m pip install --upgrade pip
         python setup.py install
 
-    - name: Get JUNE data
-      run: get_june_data.sh
-      run: mkdir camp_data
+    - name: Get JUNE data and make camp_data
+      run: |
+        get_june_data.sh
+        mkdir camp_data
 
     - name: Test with pytest
       run: |
