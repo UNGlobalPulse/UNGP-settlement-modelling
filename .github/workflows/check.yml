@@ -43,4 +43,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest test_june --cov=june --cov-report xml
+        pytest test_camps --cov=june --cov-report xml
