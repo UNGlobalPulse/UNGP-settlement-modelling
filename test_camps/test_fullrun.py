@@ -37,8 +37,8 @@ config_file_path = camp_configs_path / "config_demo.yaml"
 interactions_file_path = camp_configs_path / "defaults/interaction/interaction_Survey.yaml"
 policies_file_path = camp_configs_path / "defaults/policy/simple_policy.yaml"
 comorbidity_multipliers_path = camp_configs_path / "defaults/comorbidities.yaml"
-male_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_male_comorbidities.csv"
-female_comorbidity_reference_prevalence_path = camp_data_path / "input/demography/uk_female_comorbidities.csv"
+male_comorbidity_reference_prevalence_path = data_path / "input/demography/uk_male_comorbidities.csv"
+female_comorbidity_reference_prevalence_path = data_path / "input/demography/uk_female_comorbidities.csv"
 
 def test__full_run(camps_world):
     world = camps_world
