@@ -17,12 +17,12 @@ with open(join(this_dir, "requirements.txt")) as f:
 
 setup(
     name="camps",
-    version="0.1.0",
+    version="1.0.0",
     description="Operational response simulation tool for epidemics within settlements",
-    url="https://github.com/JosephPB/june",
+    url="https://github.com/UNGlobalPulse/UNGP-settlement-modelling",
     long_description=long_description,
-    author="IDAS-Durham",
-    author_email="arnauq@protonmail.com",
+    author="UNGlobalPulse",
+    author_email="joseph@unglobalpulse.org",
     license="GPL 3 license",
     install_requires=requirements,
     packages=find_packages(exclude=["docs"]),
