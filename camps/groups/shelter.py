@@ -216,11 +216,14 @@ class ShelterDistributor:
         multifamily_shelters = int(
             np.floor(self.sharing_shelter_ratio * len(households) / 2)
         )
-        for i in range(multifamily_shelters):
-            shelter = shelters[i]
-            shelter.add(households[households_idx.pop()])
-            shelter.add(households[households_idx.pop()])
-        i += 1
+        if multifamily_shelters > 0:
+            for i in range(multifamily_shelters):
+                shelter = shelters[i]
+                shelter.add(households[households_idx.pop()])
+                shelter.add(households[households_idx.pop()])
+            i += 1
+        else:
+            i = 0
         while households_idx:
             i = i % len(shelters)
             shelter = shelters[i]
