@@ -18,7 +18,6 @@ When using this work please cite:
     number = {17},
     volume = {10}
 }
-
 ```
 
 # Setup
