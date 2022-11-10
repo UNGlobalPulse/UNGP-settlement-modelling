@@ -15,10 +15,11 @@ See the GNU General Public License for more details.
 """
 
 import numpy as np
+import random
+import numba as nb
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
-import seaborn as sns
 from datetime import datetime
 import sys
 import argparse
@@ -35,9 +36,15 @@ from june.demography.demography import (
     generate_comorbidity,
 )
 from june.paths import data_path, configs_path
-from june.infection import Infection, HealthIndexGenerator
-from june.infection_seed import InfectionSeed
-from june.infection import InfectionSelector
+from june.epidemiology.epidemiology import Epidemiology
+from june.epidemiology.infection import (
+    Infection,
+    HealthIndexGenerator,
+    InfectionSelector,
+    InfectionSelectors,
+    SusceptibilitySetter,
+)
+from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
 from june.distributors import HospitalDistributor
@@ -72,6 +79,24 @@ from camps.groups import NFDistributionCenters, NFDistributionCenterDistributor
 from camps.groups import SheltersVisitsDistributor
 
 
+def set_random_seed(seed=999):
+    """
+    Sets global seeds for testing in numpy, random, and numbaized numpy.
+    """
+
+    @nb.njit(cache=True)
+    def set_seed_numba(seed):
+        random.seed(seed)
+        return np.random.seed(seed)
+
+    np.random.seed(seed)
+    set_seed_numba(seed)
+    random.seed(seed)
+    return
+
+
+set_random_seed(0)
+
 # =============== Argparse =========================#
 
 parser = argparse.ArgumentParser(description="Full run of the camp")
@@ -81,7 +106,7 @@ parser.add_argument(
     "--comorbidities",
     help="True to include comorbidities",
     required=False,
-    default="True",
+    default="False",
 )
 parser.add_argument(
     "-p",
@@ -91,10 +116,24 @@ parser.add_argument(
     default="ContactInteraction_med_low_low_low.yaml",
 )
 parser.add_argument(
-    "-hb", "--household_beta",
-    help="Household beta",
+    "-hb", "--household_beta", help="Household beta", required=False, default=0.25
+)
+parser.add_argument(
+    "-nnv",
+    "--no_vaccines",
+    help="Implement no vaccine policies",
     required=False,
-    default=0.25
+    default="False",
+)
+parser.add_argument(
+    "-v",
+    "--vaccines",
+    help="Implement vaccine policies",
+    required=False,
+    default="False",
+)
+parser.add_argument(
+    "-nv", "--no_visits", help="No shelter visits", required=False, default="False"
 )
 parser.add_argument(
     "-ih",
@@ -132,7 +171,7 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3,
+    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -218,6 +257,19 @@ if args.child_susceptibility == "True":
     args.child_susceptibility = True
 else:
     args.child_susceptibility = False
+if args.no_vaccines == "True":
+    args.no_vaccines = True
+else:
+    args.no_vaccines = False
+if args.vaccines == "True":
+    args.vaccines = True
+else:
+    args.vaccines = False
+
+if args.no_visits == "True":
+    args.no_visits = True
+else:
+    args.no_visits = False
 
 if args.isolation_units == "True":
     args.isolation_units = True
@@ -302,9 +354,9 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
-#world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-#world = generate_empty_world({"region": ["CXB-219"]})
-world = generate_empty_world()
+world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
+# world = generate_empty_world({"region": ["CXB-219"]})
+# world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -374,6 +426,8 @@ if args.learning_centers:
 
     CONFIG_PATH = camp_configs_path / "learning_center_config.yaml"
 
+if args.no_visits:
+    CONFIG_PATH = camp_configs_path / "no_visits_config.yaml"
 
 world.pump_latrines = PumpLatrines.for_areas(world.areas)
 world.play_groups = PlayGroups.for_areas(world.areas)
@@ -442,12 +496,23 @@ elif args.mask_wearing:
     policies.policies[7].compliance = float(args.mask_compliance)
     policies.policies[7].beta_factor = float(args.mask_beta_factor)
 
+elif args.no_vaccines:
+    policies = Policies.from_file(
+        camp_configs_path / "vaccine_tests/no_vaccine.yaml",
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
+
+elif args.vaccines:
+    policies = Policies.from_file(
+        camp_configs_path / "vaccine_tests/vaccine.yaml",
+        base_policy_modules=("june.policy", "camps.policy"),
+    )
+
 else:
     policies = Policies.from_file(
         camp_configs_path / "defaults/policy/home_care_policy.yaml",
         base_policy_modules=("june.policy", "camps.policy"),
     )
-
 
 # ============================================================================#
 
@@ -460,21 +525,13 @@ selector = InfectionSelector(
 )
 
 interaction = Interaction.from_file(
-    config_filename=camp_configs_path / "defaults/interaction/" / args.parameters,
-    population=world.people,
+    config_filename=camp_configs_path
+    / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml"
 )
-
 if args.child_susceptibility:
-    interaction = Interaction.from_file(
-        config_filename=camp_configs_path
-        / "defaults/interaction/ContactInteraction_med_low_low_low_child.yaml",
-        population=world.people,
-    )
+    susceptibility_setter = SusceptibilitySetter()  # by default kids have 0.5
 else:
-    interaction = Interaction.from_file(
-        config_filename=camp_configs_path / "defaults/interaction/" / args.parameters,
-        population=world.people,
-    )
+    susceptibility_setter = SusceptibilitySetter(None)
 
 
 if args.household_beta:
@@ -503,9 +560,9 @@ if args.indoor_beta_ratio:
     interaction.betas["distribution_center"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
-    interaction.betas["n_f_distribution_center"] = interaction.betas["household"] * float(
-        args.indoor_beta_ratio
-    )
+    interaction.betas["n_f_distribution_center"] = interaction.betas[
+        "household"
+    ] * float(args.indoor_beta_ratio)
     interaction.betas["e_voucher"] = interaction.betas["household"] * float(
         args.indoor_beta_ratio
     )
@@ -536,54 +593,60 @@ print("Detected cases = ", sum(cases_detected.values()))
 
 super_region_filename = camp_data_path / "input/geography/area_super_area_region.csv"
 super_region_df = pd.read_csv(super_region_filename)[["super_area", "region"]]
-infection_seed = InfectionSeed(world=world, infection_selector=selector,)
+infection_seed = InfectionSeed(world=world, infection_selector=selector)
 for region in world.regions:
     if region.name in cases_detected.keys():
         infection_seed.unleash_virus(
             n_cases=2 * cases_detected[region.name],
             population=Population(region.people),
+            time=0,
         )
 # Add some extra random cases
-infection_seed.unleash_virus(n_cases=44, population=world.people)
+infection_seed.unleash_virus(n_cases=44, population=world.people, time=0)
 
 print("Infected people in seed = ", len(world.people.infected))
 
+infection_selectors = InfectionSelectors([selector])
+epidemiology = Epidemiology(
+    infection_selectors=infection_selectors, susceptibility_setter=susceptibility_setter
+)
 
 # ==================================================================================#
 
 # =================================== leisure config ===============================#
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
 leisure.leisure_distributors = {}
-leisure.leisure_distributors["pump_latrines"] = PumpLatrineDistributor.from_config(
+leisure.leisure_distributors["pump_latrine"] = PumpLatrineDistributor.from_config(
     world.pump_latrines
 )
-leisure.leisure_distributors["play_groups"] = PlayGroupDistributor.from_config(
+leisure.leisure_distributors["play_group"] = PlayGroupDistributor.from_config(
     world.play_groups
 )
 leisure.leisure_distributors[
-    "distribution_centers"
+    "distribution_center"
 ] = DistributionCenterDistributor.from_config(world.distribution_centers)
-leisure.leisure_distributors["communals"] = CommunalDistributor.from_config(
+leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
     world.communals
 )
-leisure.leisure_distributors[
-    "female_communals"
-] = FemaleCommunalDistributor.from_config(world.female_communals)
-leisure.leisure_distributors["religiouss"] = ReligiousDistributor.from_config(
+leisure.leisure_distributors["female_communal"] = FemaleCommunalDistributor.from_config(
+    world.female_communals
+)
+leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
     world.religiouss
 )
-leisure.leisure_distributors["e_vouchers"] = EVoucherDistributor.from_config(
+leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
     world.e_vouchers
 )
 leisure.leisure_distributors[
-    "n_f_distribution_centers"
+    "n_f_distribution_center"
 ] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
-leisure.leisure_distributors[
-    "shelters_visits"
-] = SheltersVisitsDistributor.from_config()
-leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
-    world.super_areas
-)
+if not args.no_visits:
+    leisure.leisure_distributors[
+        "shelters_visits"
+    ] = SheltersVisitsDistributor.from_config()
+    leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
+        world.super_areas
+    )
 # associate social activities to shelters
 leisure.distribute_social_venues_to_areas(world.areas, world.super_areas)
 
@@ -603,7 +666,7 @@ simulator = Simulator.from_file(
     leisure=leisure,
     policies=policies,
     config_filename=CONFIG_PATH,
-    infection_selector=selector,
+    epidemiology=epidemiology,
     record=record,
 )
 

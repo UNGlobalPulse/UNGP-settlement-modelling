@@ -9,7 +9,6 @@ data
 *__pycache__*
 *.ipynb_checkpoints*
 *.pyc
-*.ipynb
 *.csv
 *.pkl
 *.egg-info
@@ -25,3 +24,7 @@ dist/
 *.prof
 *.dat
 *.svg
+*~
+camp_data/
+**/tester_*
+**/results/**

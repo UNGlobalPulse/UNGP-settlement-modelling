@@ -1,9 +1,38 @@
-poisson_parameters:
-  male:
-    0-65: 2.0
-    65-100: 1.24
-  female:
-    0-65: 2.0
-    65-100: 1.24
-weekend_boost: 1.0
-drags_household_probability: 0.0
+# <65 visit on average once per day >65 half the regularity
+# Assume 80% compliance
+
+times_per_week:
+  weekday:
+    male:
+      #0-65: 4.00
+      #65-100: 2.00
+      0-65: 4.0
+      65-100: 2.0
+    female:
+      #0-65: 4.00
+      #65-100: 2.00
+      0-65: 4.0
+      65-100: 2.0
+  weekend:
+    male:
+      #0-65: 1.60
+      #65-100: 0.80
+      0-65: 1.6
+      65-100: 0.8
+    female:
+      #0-65: 1.60
+      #65-100: 0.80
+      0-65: 1.6
+      65-100: 0.8
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0

@@ -31,51 +31,66 @@ default_config_filename = camp_configs_path / "defaults/groups/play_group.yaml"
 
 
 class PlayGroup(SocialVenue):
-    class SubgroupType(IntEnum):
-        young = 0
-        mid = 1
-        old = 2
+    def __init__(self, max_size=np.inf, area=None):
+        """
+        Play groups in which children can play according to their age groups
 
-    def __init__(
-        self,
-        age_group_limits: List[int] = [3, 7, 12, 17],
-        max_size: int = 10,
-        area=None,
-    ):
+        Parameters
+        ----------
+        age_group_limits
+            List of successive upper bound age limits for different play groups.
+            For example, [3, 7, 12] creates 3 groups with upper bounds of 3, 7, and 12.
+        max_size
+            Maximum size of any one given play group
+        area
+            Optional Area class for play groups to be associated with
+        """
         super().__init__()
-        self.age_group_limits = age_group_limits
-        self.min_age = age_group_limits[0]
-        self.max_age = age_group_limits[-1] - 1
         self.max_size = max_size
         self.area = area
-
-    @property
-    def coordinates(self):
-        return self.area.coordinates
-
-    def get_leisure_subgroup(self, person: "Person"):
-        if person.age >= self.min_age and person.age <= self.max_age:
-            subgroup_idx = (
-                np.searchsorted(self.age_group_limits, person.age, side="right") - 1
-            )
-            return self.subgroups[subgroup_idx]
-        else:
-            return
+        self.coordinates = self.get_coordinates
 
 
 class PlayGroups(SocialVenues):
+    venue_class = PlayGroup
+
     def __init__(self, play_groups: List[PlayGroup]):
         super().__init__(play_groups, make_tree=False)
+        """
+        Create and store information on multiple PlayGroup instances
+        """
 
     @classmethod
     def for_areas(
         cls,
         areas: List[CampArea],
         venues_per_capita: float = 1 / 20,
-        age_group_limits: List[int] = [3, 7, 12, 16],
         max_size: int = 10,
     ):
+        """
+        Defines class from areas
+
+        Parameters
+        ----------
+        areas
+            List of CampArea instances
+        venues_per_capita
+            Number of venues to be created for every n people
+        age_group_limits
+            List of successive upper bound age limits for different play groups.
+            For example, [3, 7, 12] creates 3 groups with upper bounds of 3, 7, and 12.
+        max_size
+            Maximum size of any one given play group
+
+        Returns
+        -------
+        PlayGroups class instance
+        """
         play_groups = []
+
+        # Make a dummy to get the age bins
+        age_group_limits = cls.venue_class().subgroup_bins
+
         for area in areas:
             area_population = len(
                 [
@@ -86,15 +101,17 @@ class PlayGroups(SocialVenues):
                 ]
             )
             for _ in range(0, int(np.ceil(venues_per_capita * area_population))):
-                play_group = PlayGroup(
-                    age_group_limits=age_group_limits, max_size=max_size, area=area
-                )
+                play_group = cls.venue_class(max_size=max_size, area=area)
                 area.play_groups.append(play_group)
                 play_groups.append(play_group)
         return cls(play_groups=play_groups)
 
 
 class PlayGroupDistributor(SocialVenueDistributor):
+    """
+    Distributes people to play groups according to probability parameters
+    """
+
     default_config_filename = default_config_filename
 
     def get_social_venue_for_person(self, person):
@@ -106,7 +123,6 @@ class PlayGroupDistributor(SocialVenueDistributor):
 
     def get_possible_venues_for_area(self, area: Area):
         if area.play_groups:
-            venue = np.random.choice(area.play_groups)
-            return [venue]
+            return area.play_groups
         else:
             return None

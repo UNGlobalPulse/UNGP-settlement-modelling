@@ -45,52 +45,42 @@ change_leisure_probability:
     1:
         start_time: 1000-01-01
         end_time: 2020-04-15
-        leisure_poisson_parameters:
-            communals:
-                men: 
-                    0-100: 0.584
-                women: 
-                    0-100: 0.584
-            religiouss:
-                men:
-                    11-100: 0.112
-                women:
-                    0-100: 0.0
-            e_vouchers:
-                men:
-                    0-18: 0.007
-                    19-100: 0.065
-                women:
-                    0-18: 0.001
-                    19-100: 0.021
-            distribution_centers:
-                men:
-                    0-18: 0.002
-                    19-100: 0.018
-                women:
-                    0-18: 0.0003
-                    19-100: 0.006
+        activity_reductions:
+
+          communal:
+            both_sexes:
+              0-100: 0.5
+
+          religious:
+            both_sexes:
+              0-100: 0.34
+
+          e_voucher:
+            both_sexes:
+              0-100: 0.5
+
+          distribution_center:
+            both_sexes:
+              0-100: 0.5
 
     2:
         start_time: 2020-04-15
         end_time: 2021-01-01
-        leisure_poisson_parameters:
-            communals:
-                men:
-                    0-100: 1.07
-                women: 
-                    0-100: 0.584
-            e_vouchers:
-                men:
-                    0-18: 0.007
-                    19-100: 0.065
-                women:
-                    0-18: 0.001
-                    19-100: 0.021
-            distribution_centers:
-                men:
-                    0-18: 0.002
-                    19-100: 0.018
-                women:
-                    0-18: 0.0003
-                    19-100: 0.006
+        activity_reductions:
+          communal:
+            male:
+              0-100: 1.0
+            female:
+              0-100: 0.5
+
+          religious:
+            both_sexes:
+              0-100: 0.34
+
+          e_voucher:
+            both_sexes:
+              0-100: 0.5
+
+          distribution_center:
+            both_sexes:
+              0-100: 0.5

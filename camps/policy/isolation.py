@@ -19,7 +19,7 @@ from datetime import datetime
 
 from june.policy import MedicalCarePolicy
 from june.demography import Person
-from june.infection.symptoms import SymptomTag
+from june.epidemiology.infection.symptoms import SymptomTag
 
 from camps.groups import IsolationUnits
 

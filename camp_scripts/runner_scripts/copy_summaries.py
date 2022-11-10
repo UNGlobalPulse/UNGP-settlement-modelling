@@ -56,8 +56,4 @@ new_param_path = new_dir / "parameter_grid.pkl"
 shutil.copy2(old_param_path, new_param_path)
 
 
-shutil.make_archive(
-    base_name=new_dir.stem, 
-    format="zip",
-    base_dir=new_dir,
-)
+shutil.make_archive(base_name=new_dir.stem, format="zip", base_dir=new_dir)

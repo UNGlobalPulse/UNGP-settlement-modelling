@@ -1,15 +1,65 @@
-poisson_parameters:
-  male:
-    0-3: 0.
-    3-7: 6.91
-    7-12: 5.69
-    12-17: 4.83
-    17-100: 0.
-  female:
-    0-3: 0.
-    3-7: 6.91
-    7-12: 5.69
-    12-16: 4.83
-    17-100: 0.
-weekend_boost: 1.0
-drags_household_probability: 0.0
+# Assume children meet up twice a day
+# Assume younger children play more often than older: 15% falling off over time
+
+times_per_week:
+  weekday:
+    male:
+      #0-3: 0.
+      #3-7: 9.00
+      #7-12: 8.50
+      #12-16: 7.00
+      #17-100: 0.
+      0-3: 0.
+      3-7: 4.95
+      7-12: 4.67
+      12-17: 3.85
+      17-100: 0.
+    female:
+      #0-3: 0.
+      #3-7: 9.00
+      #7-12: 8.50
+      #12-16: 7.00
+      #17-100: 0.
+      0-3: 0.
+      3-7: 4.95
+      7-12: 4.67
+      12-17: 3.85
+      17-100: 0.
+  weekend:
+    male:
+      #0-3: 0.
+      #3-7: 3.60
+      #7-12: 3.40
+      #12-17: 2.80
+      #17-100: 0.
+      0-3: 0.
+      3-7: 1.98
+      7-12: 1.87
+      12-17: 1.54
+      17-100: 0.
+    female:
+      #0-3: 0.
+      #3-7: 3.60
+      #7-12: 3.40
+      #12-17: 2.80
+      #17-100: 0.
+      0-3: 0.
+      3-7: 1.98
+      7-12: 1.87
+      12-17: 1.54
+      17-100: 0.
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
+neighbours_to_consider: 5
+maximum_distance: 1000
+

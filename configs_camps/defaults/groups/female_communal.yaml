@@ -1,11 +1,39 @@
-poisson_parameters:
-  female:
-    0-100: 0.222
-  male:
-    0-100: 0.
-neighbours_to_consider: 5
-maximum_distance: 1000
-weekend_boost: 1.0
-drags_household_probability: 0.0
+# Once per week 50 % compliance
 
-# this includes distirbution centres of all types and therefore we set the max distance to be arbitrarily large
+times_per_week:
+  weekday:
+    male:
+      #0-100: 0.0
+      0-18: 0.0
+      18-100: 0.0
+    female:
+      #0-100: 0.357
+      0-18: 0.42891
+      18-100: 0.37525
+  weekend:
+    male:
+      #0-100: 0.0
+      0-18: 0.0
+      18-100: 0.0
+    female:
+      #0-100: 0.143
+      0-18: 0.17156
+      18-100: 0.15010
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
+neighbours_to_consider: 3
+maximum_distance: 0
+open:
+   weekday: 9-17 
+   weekend : 9-9
+

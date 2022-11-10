@@ -1,9 +1,40 @@
-poisson_parameters:
-  male:
-    11-100: 0.348
-  female:
-    0-100: 0.0
+# Men go to religious meetings once a week 76 % chance
+
+times_per_week:
+  weekday:
+    male:
+      #11-100: 0.543
+      0-11: 0.0
+      11-18: 35.71429
+      18-100: 35.71429
+    female:
+      #0-100: 0.0
+      0-11: 0.0
+      11-18: 0.0
+      18-100: 0.0
+  weekend:
+    male:
+      #11-100: 0.217
+      0-11: 0.0
+      11-18: 14.28571
+      18-100: 14.28571
+    female:
+      #0-100: 0.0
+      0-11: 0.0
+      11-18: 0.0
+      18-100: 0.0
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
 neighbours_to_consider: 5
-maximum_distance: 1000
-weekend_boost: 1.0
-drags_household_probability: 0.0
+maximum_distance: 0
+

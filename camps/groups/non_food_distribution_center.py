@@ -19,6 +19,7 @@ import pandas as pd
 import yaml
 from typing import List, Optional
 from june.geography import Areas
+from enum import IntEnum
 
 from june.groups.leisure.social_venue import SocialVenue, SocialVenues, SocialVenueError
 from june.groups.leisure.social_venue_distributor import SocialVenueDistributor
@@ -33,11 +34,15 @@ default_config_filename = (
 
 
 class NFDistributionCenter(SocialVenue):
-    max_size = np.inf
+    def __init__(self, max_size=np.inf, area=None):
+        super().__init__()
+        self.max_size = max_size
+        self.area = area
+        self.coordinates = self.get_coordinates
 
 
 class NFDistributionCenters(SocialVenues):
-    social_venue_class = NFDistributionCenter
+    venue_class = NFDistributionCenter
     default_coordinates_filename = default_nfdistributioncenters_coordinates_filename
 
 

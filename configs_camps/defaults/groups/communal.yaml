@@ -1,10 +1,39 @@
-poisson_parameters:
-  male:
-    0-100: 1.07
-  female:
-    0-100: 1.07
-neighbours_to_consider: 5
-maximum_distance: 1000
-weekend_boost: 1.0
-drags_household_probability: 0.0 # disabled for now
-# We assume communal spaces to be arbitrarily large
+# Assume people go twice a week to community centers, any day equally likely (weekdays and weekends)
+# Assume 80% compliance
+
+times_per_week:
+  weekday:
+    male:
+      #0-100: 1.143
+      0-18: 0.05676
+      18-100: 0.19578
+    female:
+      #0-100: 1.143
+      0-18: 0.05676
+      18-100: 0.19578
+  weekend:
+    male:
+      #0-100: 0.457
+      0-18: 0.02270
+      18-100: 0.07831
+    female:
+      #0-100: 0.457
+      0-18: 0.02270
+      18-100: 0.07831
+hours_per_day:
+  weekday:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+  weekend:
+    male:
+      0-100: 8
+    female:
+      0-100: 8
+drags_household_probability: 0
+neighbours_to_consider: 3
+maximum_distance: 0
+open:
+   weekday: 9-17 
+   weekend : 9-9
