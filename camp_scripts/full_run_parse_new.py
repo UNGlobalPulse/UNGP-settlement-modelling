@@ -45,13 +45,17 @@ from june.epidemiology.infection import (
     InfectionSelector,
     InfectionSelectors,
 )
-from june.epidemiology.infection_seed import InfectionSeed, InfectionSeeds
+from june.epidemiology.infection_seed import (
+    InfectionSeed,
+    InfectionSeeds,
+    ExactNumClusteredInfectionSeed,
+    ExactNumInfectionSeed,
+)
 from june.interaction import Interaction
 from june.groups import Hospital, Hospitals, Cemeteries
 from june.distributors import HospitalDistributor
 from june.hdf5_savers import generate_world_from_hdf5
 from june.policy import Policy, Policies
-from june.records import Record
 from june.simulator import Simulator
 from june.records import Record, RecordReader
 
@@ -114,7 +118,7 @@ parser.add_argument(
     "--parameters",
     help="Parameter file",
     required=False,
-    default="ContactInteraction.yaml",
+    default="interaction_Survey.yaml",
 )
 parser.add_argument(
     "-hb", "--household_beta", help="Household beta", required=False, default=0.25
@@ -172,7 +176,11 @@ parser.add_argument(
     default="False",
 )
 parser.add_argument(
-    "-t", "--isolation_testing", help="Mean testing time", required=False, default=3
+    "-t",
+    "--isolation_testing",
+    help="Mean testing time",
+    required=False,
+    default=3,
 )
 parser.add_argument(
     "-i", "--isolation_time", help="Ouput file name", required=False, default=7
@@ -240,16 +248,11 @@ parser.add_argument(
     required=False,
     default=False,
 )
-parser.add_argument(
-    "-s",
-    "--save_path",
-    help="Path of where to save logger",
-    required=False,
-    default="results",
-)
 
 parser.add_argument(
-    "--n_seeding_days", help="number of seeding days", required=False, default=10
+    "--n_seeding_days",
+    help="number of seeding days",
+    default=10,
 )
 parser.add_argument(
     "--n_seeding_case_per_day",
@@ -257,7 +260,49 @@ parser.add_argument(
     required=False,
     default=10,
 )
-
+parser.add_argument(
+    "--comorbidity_scaling",
+    help=" comorbidity_scaling",
+    required=False,
+    default=False,
+)
+parser.add_argument(
+    "--male_life_expectancy",
+    help=" male_life_expectancy",
+    required=False,
+    default=79.4,
+)
+parser.add_argument(
+    "--female_life_expectancy",
+    help=" female_life_expectancy",
+    required=False,
+    default=83.1,
+)
+parser.add_argument(
+    "--cut_off_age",
+    help=" cut off age for life_expectancy",
+    required=False,
+    default=16,
+)
+parser.add_argument(
+    "--cluster_seeding",
+    help="Whether to use cluster seeding or not",
+    required=False,
+    default=True,
+)
+parser.add_argument(
+    "--nearest_venues_to_visit",
+    help="nearest_venues_to_visit, override neighbours_to_consider",
+    required=False,
+    default=3,
+)
+parser.add_argument(
+    "-s",
+    "--save_path",
+    help="Path of where to save logger",
+    required=False,
+    default="results",
+)
 args = parser.parse_args()
 
 if args.comorbidities == "True":
@@ -307,6 +352,11 @@ if args.learning_center_shifts == "False":
 if args.learning_center_beta_ratio == "False":
     args.learning_center_beta_ratio = False
 
+if args.cluster_seeding == "True":
+    args.cluster_seeding = True
+else:
+    args.cluster_seeding = False
+
 if args.infectiousness_path == "nature":
     transmission_config_path = camp_configs_path / "defaults/transmission/nature.yaml"
 elif args.infectiousness_path == "correction_nature":
@@ -329,6 +379,10 @@ else:
     raise NotImplementedError
 
 print("Comorbidities set to: {}".format(args.comorbidities))
+print("Comorbidities scaling set to: {}".format(args.comorbidity_scaling))
+print("camp male life expectancy set to: {}".format(args.male_life_expectancy))
+print("camp female life expectancy set to: {}".format(args.female_life_expectancy))
+print("Reference UK life expectancy F:83.1, M:79.4")
 print("Parameters path set to: {}".format(args.parameters))
 print("Indoor beta ratio is set to: {}".format(args.indoor_beta_ratio))
 print("Outdoor beta ratio set to: {}".format(args.outdoor_beta_ratio))
@@ -367,8 +421,8 @@ CONFIG_PATH = camp_configs_path / "config_example.yaml"
 # create empty world's geography
 # world = generate_empty_world({"super_area": ["CXB-219-C"]})
 # world = generate_empty_world({"region": ["CXB-219", "CXB-217", "CXB-209"]})
-# world = generate_empty_world({"region": ["CXB-219"]})
-world = generate_empty_world()
+world = generate_empty_world({"region": ["CXB-219"]})
+# world = generate_empty_world()
 
 # populate empty world
 populate_world(world)
@@ -387,7 +441,9 @@ hospital_distributor = HospitalDistributor(
     hospitals, medic_min_age=20, patients_per_medic=10
 )
 hospital_distributor.assign_closest_hospitals_to_super_areas(world.super_areas)
-world.isolation_units = IsolationUnits([IsolationUnit(area=world.areas[0])])
+
+if args.isolation_units:
+    world.isolation_units = IsolationUnits([IsolationUnit(area=world.areas[0])])
 
 hospital_distributor.distribute_medics_from_world(world.people)
 
@@ -479,19 +535,6 @@ else:
     print("WARNING: no comorbidities. All people are super health as ini conditon")
     # health_index_generator = HealthIndexGenerator.from_file()
 
-male_comorbidity_reference_prevalence_path = (
-    camp_data_path / "input/demography/uk_male_comorbidities.csv"
-)
-female_comorbidity_reference_prevalence_path = (
-    camp_data_path / "input/demography/uk_female_comorbidities.csv"
-)
-comorbidities_multipliers_path = camp_configs_path / "defaults/comorbidities.yaml"
-
-immunity_setter = ImmunitySetter.from_file_with_comorbidities(
-    comorbidity_multipliers_path=comorbidities_multipliers_path,
-    male_comorbidity_reference_prevalence_path=male_comorbidity_reference_prevalence_path,
-    female_comorbidity_reference_prevalence_path=female_comorbidity_reference_prevalence_path,
-)
 # ============================================================================#
 
 # =================================== policies ===============================#
@@ -535,18 +578,11 @@ else:
 
 # ============================================================================#
 
-# =================================== infection ===============================#
+# =================================== betas ===============================#
 
 interaction = Interaction.from_file(
     config_filename=camp_configs_path / "defaults/interaction/" / args.parameters
 )
-
-selector = InfectionSelector.from_file(
-    transmission_config_path=transmission_config_path
-)
-
-selectors = InfectionSelectors([selector])
-
 
 if args.household_beta:
     interaction.betas["household"] = float(args.household_beta)
@@ -594,13 +630,31 @@ if args.play_group_beta_ratio:
         args.play_group_beta_ratio
     )
 
-# ============================================================================#
+# ============================ infection ============================#
+HealthIndex = HealthIndexGenerator.from_file(
+    m_exp=float(args.male_life_expectancy),
+    f_exp=float(args.female_life_expectancy),
+    cutoff_age=np.round(float(args.cut_off_age)),
+)
+selector = InfectionSelector(
+    transmission_config_path=transmission_config_path,
+    health_index_generator=HealthIndex,
+)
+selectors = InfectionSelectors([selector])
 
 # =================================== seeding ================================#
 # read out start date
 with open(CONFIG_PATH) as file:
     config_temp = yaml.load(file, Loader=yaml.FullLoader)
-    start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d")
+
+
+start_date = datetime.strptime(config_temp["time"]["initial_day"], "%Y-%m-%d %H:%M")
+
+#### read daytypes from config
+default_daytypes = {}
+default_daytypes["weekend"] = config_temp["weekend"]
+default_daytypes["weekday"] = config_temp["weekday"]
+####
 
 # generate seeding dataframe
 N_seeding_days = int(args.n_seeding_days)
@@ -611,29 +665,71 @@ seeding_date_list = [
 mi = pd.MultiIndex.from_product([seeding_date_list, ["0-100"]], names=["date", "age"])
 df = pd.DataFrame(index=mi, columns=["all"])
 # df = pd.DataFrame(index=mi, columns=["CXB-207"])
-df[:] = args.n_seeding_case_per_day / len(world.people)
+df[:] = int(args.n_seeding_case_per_day)
 
 print("#### seeding df:")
 print(df)
 print("####")
 
-infection_seed = InfectionSeed(
-    world=world,
-    infection_selector=selector,
-    daily_cases_per_capita_per_age_per_region=df,
-)
+###################################################################################
+if args.cluster_seeding:
+    infection_seed = ExactNumClusteredInfectionSeed(
+        world=world,
+        infection_selector=selector,
+        daily_cases_per_capita_per_age_per_region=df,
+    )
+else:
+    infection_seed = ExactNumInfectionSeed(
+        world=world,
+        infection_selector=selector,
+        daily_cases_per_capita_per_age_per_region=df,
+    )
 infection_seeds = InfectionSeeds([infection_seed])
 
-# ==================================================================================#
+######################### comorbidity scaling ################################
+male_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_male_comorbidities.csv"
+)
+female_comorbidity_reference_prevalence_path = (
+    camp_data_path / "input/demography/uk_female_comorbidities.csv"
+)
+
+comorbidities_multipliers_path = camp_configs_path / "defaults/comorbidities.yaml"
+if args.comorbidity_scaling:
+    with open(comorbidities_multipliers_path) as file:
+        config_temp = yaml.load(file, Loader=yaml.FullLoader)
+    for key in config_temp:
+        config_temp[key] *= float(args.comorbidity_scaling)
+    config_temp["no_condition"] = 1.0
+    comorbidities_multipliers_path = args.save_path + "/comorbidities_multipliers.yaml"
+    with open(comorbidities_multipliers_path, "w") as file:
+        yaml.dump(config_temp, file)
+
+
+###################################################################################
+print(comorbidities_multipliers_path)
+print(male_comorbidity_reference_prevalence_path)
+print(female_comorbidity_reference_prevalence_path)
+print("####")
+
+immunity_setter = ImmunitySetter.from_file_with_comorbidities(
+    comorbidity_multipliers_path=comorbidities_multipliers_path,
+    male_comorbidity_reference_prevalence_path=male_comorbidity_reference_prevalence_path,
+    female_comorbidity_reference_prevalence_path=female_comorbidity_reference_prevalence_path,
+)
+####
 epidemiology = Epidemiology(
     infection_selectors=selectors,
     infection_seeds=infection_seeds,
     immunity_setter=immunity_setter,
 )
 
-# ==================================================================================#
-
 # =================================== leisure config ===============================#
+group_config_override = {
+    "maximum_distance": 1.0,
+    "nearest_venues_to_visit": int(args.nearest_venues_to_visit),
+}
+####
 leisure = generate_leisure_for_config(world=world, config_filename=CONFIG_PATH)
 leisure.leisure_distributors = {}
 leisure.leisure_distributors["pump_latrine"] = PumpLatrineDistributor.from_config(
@@ -644,26 +740,30 @@ leisure.leisure_distributors["play_group"] = PlayGroupDistributor.from_config(
 )
 leisure.leisure_distributors[
     "distribution_center"
-] = DistributionCenterDistributor.from_config(world.distribution_centers)
+] = DistributionCenterDistributor.from_config(
+    world.distribution_centers, config_override=group_config_override
+)
 leisure.leisure_distributors["communal"] = CommunalDistributor.from_config(
-    world.communals
+    world.communals, config_override=group_config_override
 )
 leisure.leisure_distributors["female_communal"] = FemaleCommunalDistributor.from_config(
-    world.female_communals
+    world.female_communals, config_override=group_config_override
 )
 leisure.leisure_distributors["religious"] = ReligiousDistributor.from_config(
-    world.religiouss
+    world.religiouss, config_override=group_config_override
 )
 leisure.leisure_distributors["e_voucher"] = EVoucherDistributor.from_config(
-    world.e_vouchers
+    world.e_vouchers, config_override=group_config_override
 )
 leisure.leisure_distributors[
     "n_f_distribution_center"
-] = NFDistributionCenterDistributor.from_config(world.n_f_distribution_centers)
+] = NFDistributionCenterDistributor.from_config(
+    world.n_f_distribution_centers, config_override=group_config_override
+)
 if not args.no_visits:
     leisure.leisure_distributors[
         "shelters_visits"
-    ] = SheltersVisitsDistributor.from_config()
+    ] = SheltersVisitsDistributor.from_config(daytypes=default_daytypes)
     leisure.leisure_distributors["shelters_visits"].link_shelters_to_shelters(
         world.super_areas
     )
