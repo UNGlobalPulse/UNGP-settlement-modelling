@@ -17,7 +17,7 @@ with open(join(this_dir, "requirements.txt")) as f:
 
 setup(
     name="camps",
-    version="1.0.0",
+    version="2.0.0",
     description="Operational response simulation tool for epidemics within settlements",
     url="https://github.com/UNGlobalPulse/UNGP-settlement-modelling",
     long_description=long_description,
