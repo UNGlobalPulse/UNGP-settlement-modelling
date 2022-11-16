@@ -22,10 +22,10 @@ We now go through the key components of the file:
 **1. Activities**
 ::
   activity_to_super_groups:
-    primary_activity: []
-    leisure: []
-    residence: []
-    medical_facility: []
+    primary_activity: [...]
+    leisure: [...]
+    residence: [...]
+    medical_facility: [...]
 
 The ``primary_activity`` here refers to a list of all activities
 which have fixed time points at which the activity is done. In the
@@ -35,9 +35,11 @@ other activities which people in the model might perform are chosen
 based on probability distributions of attendance frequency.
 
 The ``leisure`` list will give all probabilistically chosen
-activities. The term -leisure- is a legacy term used by the
+activities. The term `leisure` is a legacy term used by the
 ``JUNE`` framework but refers to activities more than just those
-otherwise considered as leisure activities.
+otherwise considered as leisure activities. In the case of Cox's
+Bazar, all other venues are considered as ``leisure`` venues as agents
+in the model probabilistically choose when and where to go.
 
 The ``residence`` list provides all the possible classes of places
 people can live. In the case of Cox's Bazar, this just includes the
@@ -51,7 +53,7 @@ in the model. In the case of Cox's Bazar, this is just
 **2. Time**
 ::
   time:
-    initial_day: '2020-05-24'
+    initial_day: '2020-05-24 9:00'
     total_days: 120
     step_duration:
       weekday:
@@ -77,12 +79,14 @@ in the model. In the case of Cox's Bazar, this is just
 	0: ['medical_facility', 'residence']
 	1: ['medical_facility', 'leisure', 'residence']
 
-The ``initial_day`` covers the date on which the simualtion starts
-(i.e. in the past, future or present).
+The ``initial_day`` covers the date and time on which the simualtion starts
+(i.e. in the past, future or present). The additionl of the hour
+timing is optional. If not specified, the config will assume 00:00 on
+the specified day.
 
 The ``total_days`` is the number of days it will run for.
 
-The ``step_duration`` speciied the timeslot lengths at which each
+The ``step_duration`` specifies the timeslot lengths at which each
 activity can be chosen, indexed by numbers. In the example above,
 there are at least two possible time slots each 2 hours long. These
 occur on both weekdays and weekends. (``JUNE`` lets the user
@@ -109,23 +113,23 @@ The requirements for each file are as follows
   times_per_week:
     weekday:
       male:
-	[min_age]-[max_age]: [# times]
+	[min_age]-[max_age]: [\# times]
 	.
 	.
 	.
       female:
-	[min_age]-[max_age]: [# times]
+	[min_age]-[max_age]: [\# times]
 	.
 	.
 	.
     weekend:
       male:
-	[min_age]-[max_age]: [# times]
+	[min_age]-[max_age]: [\# times]
 	.
 	.
 	.
       female:
-	[min_age]-[max_age]: [# times]
+	[min_age]-[max_age]: [\# times]
 	.
 	.
 	.
@@ -142,27 +146,29 @@ The requirements for each file are as follows
 	.
 	.
     drags_household_probability: [probability]
-    neighbours_to_consider: [#]
-    maximum_distance: [#]
+    neighbours_to_consider: [\#]
+    maximum_distance: [\#]
+    open:
+      weekday: [\#]-[\#] 
+      weekend: [\#]-[\#]
 
 The ``times_per_week`` sets, by age and sex, the regularity with which
 people attend certain locations during the weekdays or weekends (as
-defined by the global config file). This is calculated by look
-determining how many times per weekday or weekend a person visits
+defined by the global config file). This is calculated by determining how many times per weekday or weekend a person visits
 those locations on average.
 
 For example, if a person attends a community centre 2 times on average
 during the weekday, then ``# times = 2``.
 
 To make it more complicated, if
-there is a 30% change that someone in a given age and sex bracket will
+there is a 30% chance that someone in a given age and sex bracket will
 go to an activity and that if they do then they will go 2 times per
-weekday on average, then this can be represented as a meanfield effect
-as ``# times = 2-0.3 = 0.6``.
+weekday on average, then this can be represented as a mean field effect
+as ``# times = 2**0.3 = 0.6``.
 
 As a final example, if a person goes 2 times a week on average,
 regardless of weekday or weekend then for the weekday ``# times =
-2-(5/7) = 1.43`` and on the weekend ``# times = 2-(2/7) = 0.57``.
+2-(5/7) = 1.43`` and on the weekend ``# times = 2**(2/7) = 0.57``.
 
 The ``hours_per_day`` specifies the number of hours with which a
 person of those demographic characteristics, can do the activity in a
@@ -175,7 +181,7 @@ decides to do an activity, they will bring their whole
 household/family with them. For example, this might be more likely to
 be the case when visiting other households.
 
-The ``neightbours_to_consider`` parameter sets the number of possible
+The ``neighbours_to_consider`` parameter sets the number of possible
 nearby venues, within the radius (in km) of where they live set by the
 ``maximum_distance`` parameter, which a person might consider
 visiting. For example, if::
@@ -191,6 +197,23 @@ local venues of given types rather than always randomly choosing based
 on proximity; and ii) for computational efficency, the number of
 possible selectable venues is pre-computed when the model is
 initialised to save on random number generation.
+
+Finally, the ``open`` parameter sets the hours during which the venues
+are open for. While there must be a fixed number of hours in which
+people can do `leisure` activites, not all activities need to be
+available to them at the same time. This parameter allows the user to
+set the hours (in 24hr formatting) that a venue is open for. For
+example::
+  open:
+    weekday: 9-17
+    weekend: 9-9
+
+will mean that the venue is open between 9am and 5pm on weekdays and
+closed on a weekend. This needs to be varefully matched up against the
+global config file - especially the ``initial_day`` setting described
+above. Here, the user can specify at what hour the time slots start
+at. This parameter is optional and if not specified then the model
+will assume the venue is open in all possible leisure time slots.
 
 **Note:** In theory, one is not restricted to setting regularities of
 attendance based only on age and sex. Other characteristics can be
@@ -212,10 +235,10 @@ Interaction parameters are controlled by a ``.yaml`` file passed to
 the ``Interaction`` class. This is stored in the
 ``configs_camps/defaults/interaction/`` folder. There are several key
 sets of interaction parameters::
-  alpha_physical: [#]
+  alpha_physical: [\#]
   betas:
-    religious: [#]
-    distribution_center: [#]
+    religious: [\#]
+    distribution_center: [\#]
     .
     .
     .
@@ -223,11 +246,11 @@ sets of interaction parameters::
     religious:
       contacts: [matrix]
       proportion_physical: [matrix]
-      characteristic_time: [#]
+      characteristic_time: [\#]
     distribution_center:
       contacts: [matrix]
       proportion_physical: [matrix]
-      characteristic_time: [#]
+      characteristic_time: [\#]
 
 Contacts between people in the model can induce disease spread if one
 of these people are infected. The number of contacts between people of
