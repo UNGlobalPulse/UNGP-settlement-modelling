@@ -39,6 +39,9 @@ sensitivity of this project we are not open-sourcing t his data,
 however, please get in contact with us if you would like to know more
 about data access: ``joseph[at]unglobalpulse.org``.
 
+The model can, however, be run using synthetic data. Examples of how
+to generate this can be found in ``test_camps/conftest.py``.
+
 Quickstart
 ----------
 
@@ -52,4 +55,7 @@ out of the box. Alternatively, a pre-run version is published on the
 
 Troubleshooting
 ---------------
+
+The `JUNE Setup <https://github.com/IDAS-Durham/JUNE#setup>`_ documentation has information on troubleshooting the
+installation of this package. This is the only dependency of ``camps``.
 
