@@ -113,23 +113,23 @@ The requirements for each file are as follows
   times_per_week:
     weekday:
       male:
-	[min_age]-[max_age]: [\# times]
+	[min_age]-[max_age]: [no. of times]
 	.
 	.
 	.
       female:
-	[min_age]-[max_age]: [\# times]
+	[min_age]-[max_age]: [no. of times]
 	.
 	.
 	.
     weekend:
       male:
-	[min_age]-[max_age]: [\# times]
+	[min_age]-[max_age]: [no. of times]
 	.
 	.
 	.
       female:
-	[min_age]-[max_age]: [\# times]
+	[min_age]-[max_age]: [no. of times]
 	.
 	.
 	.
@@ -146,11 +146,11 @@ The requirements for each file are as follows
 	.
 	.
     drags_household_probability: [probability]
-    neighbours_to_consider: [\#]
-    maximum_distance: [\#]
+    neighbours_to_consider: [...]
+    maximum_distance: [...]
     open:
-      weekday: [\#]-[\#] 
-      weekend: [\#]-[\#]
+      weekday: [start hour]-[end hour] 
+      weekend: [start hour]-[end hour]
 
 The ``times_per_week`` sets, by age and sex, the regularity with which
 people attend certain locations during the weekdays or weekends (as
@@ -158,17 +158,17 @@ defined by the global config file). This is calculated by determining how many t
 those locations on average.
 
 For example, if a person attends a community centre 2 times on average
-during the weekday, then ``# times = 2``.
+during the weekday, then ``no. of times = 2``.
 
 To make it more complicated, if
 there is a 30% chance that someone in a given age and sex bracket will
 go to an activity and that if they do then they will go 2 times per
 weekday on average, then this can be represented as a mean field effect
-as ``# times = 2**0.3 = 0.6``.
+as ``no. of times = 2**0.3 = 0.6``.
 
 As a final example, if a person goes 2 times a week on average,
-regardless of weekday or weekend then for the weekday ``# times =
-2-(5/7) = 1.43`` and on the weekend ``# times = 2**(2/7) = 0.57``.
+regardless of weekday or weekend then for the weekday ``no. of times =
+2-(5/7) = 1.43`` and on the weekend ``no. of times = 2**(2/7) = 0.57``.
 
 The ``hours_per_day`` specifies the number of hours with which a
 person of those demographic characteristics, can do the activity in a
@@ -235,10 +235,10 @@ Interaction parameters are controlled by a ``.yaml`` file passed to
 the ``Interaction`` class. This is stored in the
 ``configs_camps/defaults/interaction/`` folder. There are several key
 sets of interaction parameters::
-  alpha_physical: [\#]
+  alpha_physical: [...]
   betas:
-    religious: [\#]
-    distribution_center: [\#]
+    religious: [...]
+    distribution_center: [...]
     .
     .
     .
@@ -246,11 +246,11 @@ sets of interaction parameters::
     religious:
       contacts: [matrix]
       proportion_physical: [matrix]
-      characteristic_time: [\#]
+      characteristic_time: [...]
     distribution_center:
       contacts: [matrix]
       proportion_physical: [matrix]
-      characteristic_time: [\#]
+      characteristic_time: [...]
 
 Contacts between people in the model can induce disease spread if one
 of these people are infected. The number of contacts between people of
