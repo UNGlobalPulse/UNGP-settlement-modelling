@@ -120,7 +120,7 @@ Finally, this is all combined into the ``Epidemiology`` class::
 
 See the `Quickstart notebook
 <https://github.com/UNGlobalPulse/UNGP-settlement-modelling/blob/master/Notebooks/quickstart%20camp.ipynb>`_
-for details on how this fits together into the model.
+in ``Notebooks/quickstart camp.ipynb`` for details on how this fits together into the model.
 
 
 
