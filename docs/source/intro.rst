@@ -21,12 +21,14 @@ We lay out the documentation in the following way:
 1. First, we address the minmal high level changes needed to run the
    model for a new location - the :ref:`data inputs <data-inputs>` (how to construct
    the input data necessary to run the model), the :ref:`config file <configs>` changes which specify how the model is setup, and
-   then how :ref:`run the model <model-running>` model without changing anything else.
+   then how to :ref:`run the model <model-running>` model without changing anything else.
 
-2. Once we have covered the higher level changes to the model, we cover
-   the code operations and how they are used to provide more
-   understanding of the underlying mechanics, as well as which bits
-   might be changes to allow for more fine-grained control over the
+2. Once we have covered the higher level changes which can be made to
+   the model, we turn to the lower level. Here, we address
+   the operation of the code, and how they are used to provide a greater
+   understanding of the underlying mechanics of the disease spread. We
+   will also cover which bits
+   might be changed to allow for more fine-grained control over the
    model. This includes a overview of the :ref:`model setup <model-setup>` and a dive into the way the :ref:`disease characteristics
    <disease-characteristics>` are handled.
 3. Finally, we have some examples on changing or running particular
