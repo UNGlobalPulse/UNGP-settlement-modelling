@@ -12,7 +12,7 @@ but can be added to the repository in ``$BASE/data/`` (see
 the base installation of ``JUNE`` to use this data then modifications can be made to the ``$BASE/data/`` folder which is useful for editing disease parameter
 characteristics. In this section we will only cover data in the
 ``camp_data`` folder which is related to the set up of the digital
-twin of the camp in question but we might make references in later
+twin of the camp in question. However, we might make references in later
 section to changes to the make data in the ``$BASE/data/`` folder.
 
 The data to run the model is stored in the ``$BASE/camp_data/``
@@ -21,11 +21,7 @@ the simplest way is to keep a consistent setup and naming convention
 of files as there are defaults set in the code where appropriate. In
 addition, each file is expected to be confingured in a certain way to
 be read in by the necessary functions. The structure of the data
-folder, the minimum input requirements will be covered here.
-
-**Note:** This covers the contents of the ``camp_data`` folder and
-does not cover configuration changes which could also be considered as
-`input` data. See the 
+folder and the minimum input requirements will be covered here.
 
 The default data folder setup is as follows::
 
@@ -57,17 +53,20 @@ Geography
 ---------
 
 In the ``geography/`` folder we include information about the
-geogrpahy of the ``world`` we are modelling - e.g. a refugee settlement.
+geography of the ``world`` we are modelling - e.g. a refugee settlement.
 
 ``JUNE`` operates on a three-tiered geographical hierarchy:
+
 1. Regions: the highest level
 2. Super areas: the middle level
 3. Areas: the lowest level
 
 As an example, in the case of the Cox's Bazar settlement: regions
-correspond to the ~20 camps which make up the settlements; super areas
-refer to the UNHCR deliniated blocks in whach camp; and areas refer to
-the Majhee blocks. How to choose the components of the hierarchy
+correspond to the ~20 camps which make up the settlement; super areas
+refer to the UNHCR deliniated blocks in a given camp; and areas refer to
+the Majhee blocks which make up the super areas.
+
+How to choose the components of the hierarchy
 depends on the availablility of geo-tagged data, as well as the
 availability of other data at these levels of geographical
 disaggregation. For example, as described in later sections, we will
@@ -83,7 +82,7 @@ describing JUNE's application to Cox's Bazar.
 
 The following files are required to create the geography:
 
-``area_coordinates.csv``
+``area_coordinates.csv``:
 
 +--------------+----------+-----------+
 |    area      | latitude | longitude |
@@ -95,7 +94,7 @@ The following files are required to create the geography:
 
 where the area IDs are unique identifiers for each area in the world.
 
-``super_area_coordinates.csv``
+``super_area_coordinates.csv``:
 
 +-----------------+----------+-----------+
 |    super_area   | latitude | longitude |
@@ -105,7 +104,7 @@ where the area IDs are unique identifiers for each area in the world.
 |[super_area2_id] |  [coord] |  [coord]  |
 +-----------------+----------+-----------+
 
-``area_super_area_region.csv``
+``area_super_area_region.csv``:
 
 Once the coordinates of the areas and super areas have been given, we
 just need to provide the hierarchical mapping of the geography. The
@@ -149,7 +148,7 @@ population (which is the reference population in the ``JUNE``
 framework) is also required ro correct the symptomatic progression
 probabilities.
 
-**Note:** If data is not availability at the granularities dpecified
+**Note:** If data is not availability at the granularities specified
 in this documentation, then the available data may need to
 preprocessed outside the model to project up and/or down (aggregate or
 disaggregate) in
@@ -158,7 +157,7 @@ appropriate source code to accomodate the different levels of granularity.
  
 The following files are required to initialise the population:
 
-``age_structure_super_area.csv``
+``age_structure_super_area.csv``:
 
 Contains information on the population by age and sex at the super
 area level. Any age bins can be used, disggregated by females and
@@ -172,12 +171,13 @@ males. The following is an example of the formatting of the file:
 |[super_area2_id] |  #     |  #     |   #     |   #     |   #     |   #     |
 +-----------------+--------+--------+---------+---------+---------+---------+
 
-where ``F []-[]`` denotes the number of females between the ages in
+where ``F []-[]`` and ``F []-[]`` denote the number of females and
+males respectively between the ages in
 brackets and ``#`` is a placeholder for the number of people in each
 column by super area.
 
 
-``age_residents_families.csv``
+``age_residents_families.csv``:
 
 Specifies the number of residents and families by area. The numbers
 should match up with the total number of people in the super area of
@@ -195,7 +195,7 @@ approximation.
 |  [area2_id]  |  #       |  #        |
 +--------------+----------+-----------+
 
-``[location]_female_comorbidities.csv``
+``[location]_female_comorbidities.csv``:
 
 Distribution of comorbidities by age - different file for each
 sex. The following is an example of the formatting of the file:
@@ -215,18 +215,18 @@ is people in the age bracket ``0-5``, whereas the 2nd column denotes
 people in the age bracket ``6-10``. This formatting is thereofre
 slightly different to that over the age structure file. The ``%``
 people people in each age bracket should be given as a float - e.g. if
-10% of people between the ages of 6-10 have comorbidity2, then that
+10% of people between the ages of 6-10 have ``comorbidity2``, then that
 element of the table should be ``0.1``.
 
-``[location]_male_comorbidities.csv``
+``[location]_male_comorbidities.csv``:
 
-Same as above for men in the world population.
+Same as above for men in the population.
 
-``uk_female_comorbidities.csv``
+``uk_female_comorbidities.csv``:
 
 As above but for the reference population - in this case the UK.
 
-``uk_male_comorbidities.csv``
+``uk_male_comorbidities.csv``:
 
 As above but for the reference population - in this case the UK.
 
@@ -235,14 +235,15 @@ Activities
 ----------
 
 In the ``activities/`` folder we store information on the locations of
-places in the model we want to specifically model and in which people
+places we want to specifically model and in which people
 in the model can go to. Each type of location should have its own
 ``csv`` file in this folder which specifies the latitude/longitude
 coordinates of those relevant locations.
 
 In the case of the Cox's Bazar model, we
 include the following locations:
-- Community centers and other communal location (``communal.csv``)
+
+- Community centers and other communal locations (``communal.csv``)
 - Female-friendly spaces (``female_communal.csv``)
 - Food distribution centers (``distribution_center.csv``)
 - E-voucher outlets (``e_voucher_outlet.csv``)
