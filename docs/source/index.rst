@@ -29,6 +29,7 @@ Welcome to settlement-modelling's documentation!
 
    model_setup
    symptoms
+   contact_tracker
    modules
 
 .. toctree::
