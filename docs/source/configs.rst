@@ -11,6 +11,8 @@ at what time.
 
 All config files are in the ``configs_camps`` folder.
 
+.. _global-config: 
+
 Global Config
 -------------
 
@@ -218,7 +220,8 @@ will assume the venue is open in all possible leisure time slots.
 **Note:** In theory, one is not restricted to setting regularities of
 attendance based only on age and sex. Other characteristics can be
 readily added by modifying the distributor classes of the given venues.
-      
+
+.. _interaction-parameters:
 
 Interaction Parameters
 ----------------------
