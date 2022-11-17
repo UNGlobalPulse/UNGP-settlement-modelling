@@ -3,10 +3,6 @@
 Disease Characteristics
 =======================
 
-TODO:
-- Be clear which ones of these can be set from the camps model itself
-  as there are some which are set in the model running script.
-
 By default, the ``JUNE`` framework is set up to model COVID-19. It has the
 capacity to model multiple variants, where different parameters are
 set relative to the wild-type (original) variant. however, the disease is able
